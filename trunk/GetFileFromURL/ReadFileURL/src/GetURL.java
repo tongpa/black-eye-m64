@@ -13,7 +13,7 @@ import org.jsoup.nodes.Element;
 
 public class GetURL {
 
-	String url = "http://clinker.klicap.es/repos/opina/branches/2.x/";
+	String url = "www.bantakhospital.go.th/download/tong.rar";
 	List<String> value ;
 	
 	public GetURL(){
