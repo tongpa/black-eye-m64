@@ -13,7 +13,7 @@ from tgext.admin.controller import AdminController
 
 from pollandsurvey.lib.base import BaseController
 from pollandsurvey.controllers.error import ErrorController
-from pollandsurvey.widget.register.registerwidget import RegisterForm
+from pollandsurvey.widget.register.registerwidget import RegisterForm ,passwordValidator
 from tg import tmpl_context 
 
 import tw2.core
@@ -48,13 +48,17 @@ class RegisterController(BaseController):
 
     @expose('pollandsurvey.templates.widget')
     def index(self, *args, **kw):
-        w = RegisterForm(redirect='/register/').req()
+        w = RegisterForm(redirect='/register/',validate= passwordValidator).req()
         w.child.action ="/register/create";
+         
         return dict(widget=w, page='register',title="Register")
     
+    
     @expose()
-    @validate(RegisterForm, error_handler=index)
+    @validate(RegisterForm, error_handler=index)    
     def create(self,*args,**kw):
+        
+        return str(kw);
         flash(_('Wrong credentials'), 'warning')
         email =  kw['registerform:email_address'];
         user = kw['registerform:user_name'];

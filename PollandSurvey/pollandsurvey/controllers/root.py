@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Main Controller"""
 
-from tg import expose, flash, require, url, lurl, request, redirect, tmpl_context
+from tg import expose, flash, require, url, lurl, request, redirect, tmpl_context,validate
 from tg.i18n import ugettext as _, lazy_ugettext as l_
 from tg.exceptions import HTTPFound
 from tg import predicates
@@ -15,6 +15,10 @@ from pollandsurvey.lib.base import BaseController
 from pollandsurvey.controllers.error import ErrorController
 
 from pollandsurvey.controllers.register.registercontrol import RegisterController;
+
+
+from tg import tmpl_context
+from pollandsurvey.widget.movie_form import create_movie_form
 
 __all__ = ['RootController']
 
@@ -111,3 +115,18 @@ class RootController(BaseController):
         """
         flash(_('We hope to see you soon!'))
         return HTTPFound(location=came_from)
+    
+    
+    @expose('pollandsurvey.templates.new_form')
+    def new(self, **kw):
+ 
+        """Show form to add new movie data record."""
+        tmpl_context.form = create_movie_form
+        return dict(modelname='Movie', value=kw)
+    
+    
+    @validate(create_movie_form, error_handler=new)
+    @expose()
+    def create(self, **kw):
+        """Create a movie object and save it to the database."""
+        redirect("/register")
