@@ -1,0 +1,4 @@
+recursive-include pollandsurvey/public *
+include pollandsurvey/public/favicon.ico
+recursive-include pollandsurvey/i18n *
+recursive-include pollandsurvey/templates *
