@@ -64,7 +64,7 @@
         path = path.substring(0, path.lastIndexOf('/'));
     }
     // path == root of ext
-        
+    
     theme = 'ext-theme-' + theme;
     custom = '/javascript/extjs'
      
@@ -81,7 +81,7 @@
      
     document.write('<script type="text/javascript" src="' + path+ custom + extPrefix + (rtl ? '-rtl' : '') + '.js"></script>');
     
-    alert(path+custom + extPrefix +  (rtl ? '-rtl' : '') + '.js');
+    
     if (hasOverrides) {
         // since document.write('<script>') does not block execution in IE, we need to 
         // makes sure we prevent ext-theme-neptune.js from executing before ext-all.js

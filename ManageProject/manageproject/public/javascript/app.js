@@ -9,6 +9,37 @@ Ext.require([
 Ext.onReady(function(){
     var win,
         button = Ext.get('show-btn');
+    
+    
+    Ext.create('Ext.grid.Panel', {
+        renderTo: "test-panel",
+        store: myStore,
+        width: 400,
+        height: 200,
+        title: 'Application Project',
+        columns: [
+            {
+                text: 'Name',
+                width: 100,
+                sortable: false,
+                hideable: false,
+                dataIndex: 'id_projects'
+            },
+            {
+                text: 'Email Address',
+                width: 150,
+                dataIndex: 'description',
+                hidden: true
+            },
+            {
+                text: 'Phone Number',
+                flex: 1,
+                dataIndex: 'active'
+            }
+        ]
+    });
+    
+    
 
     button.on('click', function(){
 

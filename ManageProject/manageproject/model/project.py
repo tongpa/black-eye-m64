@@ -8,8 +8,8 @@ from sqlalchemy.types import Unicode, Integer, DateTime,String,Text,BLOB
 from sqlalchemy.orm import relation, synonym
 
 from manageproject.model import DeclarativeBase, metadata, DBSession
-
-
+from json import dumps
+from collections import OrderedDict
 __all__ = ['Projects','TasksProject','CategoryTasks','GroupTasks','ResourceProjects','TaskType','TaskStatus','ResourceTasksProjects','CommentTasksProjects','FilesTasksProjects']
 
 class Projects(DeclarativeBase):
@@ -25,10 +25,25 @@ class Projects(DeclarativeBase):
      
 
     def __repr__(self):
-        return '<Project: name=%s>' % repr(Unicode(str(self.description).encode('utf8')))
+        return '<Project: name=%s>' % repr(self.description )
 
     def __unicode__(self):
         return Unicode(str(self.description).encode('utf8'))
+    
+    @classmethod
+    def selectAll(cls):
+        return  DBSession.query(cls).all();
+    
+    
+    def _asdict(self):
+        result = OrderedDict()
+        for key in self.__mapper__.c.keys():
+            print key;
+            print self.__table__.c[key].type
+            #print self.__mapper__.c[key] 
+            result[key] = getattr(self, key)
+        return result
+    
     
 class TasksProject(DeclarativeBase):
     __tablename__ = 'tasks_project'

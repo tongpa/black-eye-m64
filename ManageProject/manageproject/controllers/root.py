@@ -13,6 +13,7 @@ from tgext.admin.controller import AdminController
 
 from manageproject.lib.base import BaseController
 from manageproject.controllers.error import ErrorController
+from manageproject.controllers.projects import ProjectsController
 
 __all__ = ['RootController']
 
@@ -35,6 +36,7 @@ class RootController(BaseController):
     admin = AdminController(model, DBSession, config_type=TGAdminConfig)
 
     error = ErrorController()
+    project = ProjectsController();
 
     def _before(self, *args, **kw):
         tmpl_context.project_name = "manageproject"
