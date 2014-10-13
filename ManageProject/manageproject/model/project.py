@@ -25,10 +25,10 @@ class Projects(DeclarativeBase):
      
 
     def __repr__(self):
-        return '<Project: name=%s>' % repr(self.description)
+        return '<Project: name=%s>' % repr(Unicode(str(self.description).encode('utf8')))
 
     def __unicode__(self):
-        return self.description
+        return Unicode(str(self.description).encode('utf8'))
     
 class TasksProject(DeclarativeBase):
     __tablename__ = 'tasks_project'
@@ -46,10 +46,10 @@ class TasksProject(DeclarativeBase):
      
 
     def __repr__(self):
-        return '<tasks_project: name=%s>' % repr(self.description)
+        return '<tasks_project: name=%s>' % repr(str(self.description))
 
     def __unicode__(self):
-        return self.description
+        return str(self.description)
     
 class CategoryTasks(DeclarativeBase):
     __tablename__ = 'category_tasks'
@@ -57,7 +57,7 @@ class CategoryTasks(DeclarativeBase):
     id_category_tasks = Column(Integer, autoincrement=True, primary_key=True)
     id_projects = Column(   Integer,ForeignKey('projects.id_projects'), nullable=False, index=True) ;
     projects = relation('Projects', backref='categoryTasks_projects');
-    id_parents = Column(   Integer,ForeignKey('category_tasks.id_category_tasks'), nullable=False, index=True) ;
+    id_parents = Column(   Integer,ForeignKey('category_tasks.id_category_tasks'), nullable=True, index=True) ;
     parents = relation('CategoryTasks', backref='categoryTasks_parents', remote_side='CategoryTasks.id_category_tasks');
     description = Column(String(255),  nullable=False);     
     activate  =  Column(String(1) , nullable=False,default =1);
@@ -165,6 +165,11 @@ class ResourceTasksProjects(DeclarativeBase):
     task_type = relation('TaskType', backref='resourceTasksProjects_task_type');
     
     description = Column(String(255),   nullable=True);   
+    
+    start_date = Column(DateTime,  nullable=True );
+    stop_date  = Column(DateTime,  nullable=True );
+    
+    
     activate  =  Column(String(1) , nullable=False,default =1);
     created = Column(DateTime, default=datetime.now)
     update_date = Column(DateTime, default=datetime.now)  

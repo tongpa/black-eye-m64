@@ -107,3 +107,10 @@ class RootController(BaseController):
         """
         flash(_('We hope to see you soon!'))
         return HTTPFound(location=came_from)
+    
+    @expose('manageproject.templates.extjstheme')
+    def extjstheme(self, *args, **kw):
+        return dict(page='editor stuff')
+        
+        
+    
