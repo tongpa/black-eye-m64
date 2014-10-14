@@ -19,29 +19,7 @@ Ext.application({
     launch: function() {
     	Ext.tip.QuickTipManager.init();
     	
-    	var project_test = Ext.create('Ext.Panel', {
-    	    width: 500,
-    	    
-    	    title: "AnchorLayout Panel",
-    	    layout: 'anchor',
-    	    items: [
-    	        {
-    	            xtype: 'panel',
-    	            title: '75% Width and 20% Height',
-    	            anchor: '75%'
-    	        },
-    	        {
-    	            xtype: 'panel',
-    	            title: 'Offset -300 Width & -200 Height',
-    	            anchor: '75%'
-    	        },
-    	        {
-    	            xtype: 'panel',
-    	            title: 'Mixed Offset and Percent',
-    	            anchor: '75%'
-    	        }
-    	    ]
-    	});
+    	 
     	 
     	var project_view = Ext.create('My.view.Project.Panel',{
     		 
@@ -49,7 +27,7 @@ Ext.application({
     	} );
     	
     	var project_grid = Ext.create('Ext.grid.Panel', {
-    	    title: 'Project',
+    	   // title: 'Project',
     	    store: myStore,//Ext.data.StoreManager.lookup('simpsonsStore'),
     	    columns: [
     	        { text: 'description',  dataIndex: 'description' },
@@ -57,7 +35,39 @@ Ext.application({
     	        { text: 'active', dataIndex: 'active' }
     	    ],
     	    height: 200,
-    	    width: 400 
+    	    width: 400 ,
+    	    listeners: {
+                selectionchange: function(model, records) {
+                    var json, name, i, l, items, series, fields;
+                    if (records[0]) {
+                    	
+                    	
+                        rec = records[0];
+                        if (!form) {
+                            form = this.up('form').getForm();
+                            fields = form.getFields();
+                            fields.each(function(field){
+                                if (field.name != 'company') {
+                                    field.setDisabled(false);
+                                }
+                            });
+                        } else {
+                            fields = form.getFields();
+                        }
+                        
+                        // prevent change events from firing
+                        fields.each(function(field){
+                            field.suspendEvents();
+                        });
+                        form.loadRecord(rec);
+                        updateRecord(rec);
+                        fields.each(function(field){
+                            field.resumeEvents();
+                        });
+                       
+                    }
+                }
+    	    }
     	});
 
 
@@ -106,13 +116,21 @@ Ext.application({
 	
 	
 });
-    	
+
+Ext.define('My.view.Project.ProjectId',{
+	extend : 'Ext.form.field.Hidden',
+	alias : 'my.projectid',
+	fieldLabel : 'Project Name',
+	name: 'id_projects'	,
+	id : 'id_projects',
+	allowBlank: false
+});    	
 Ext.define('My.view.Project.ProjectNameField',{
 	extend : 'Ext.form.field.Text',
 	alias : 'my.projectname',
 	fieldLabel : 'Project Name',
-	name: 'project_name'	,
-	id : 'project_name',
+	name: 'description'	,
+	id : 'description',
 	allowBlank: false
 });
 
@@ -148,15 +166,36 @@ Ext.create('Ext.data.Store', {
 
 Ext.define('My.view.Project.Panel', {
     name: 'Unknown',
-    extend : 'Ext.panel.Panel',
-     
+    extend : 'Ext.form.Panel',
+    url: '/project/save', 
     layout: 'anchor',
     constructor: function(config ) {
     	
     	main = this;
+    	main.project_id = Ext.create('My.view.Project.ProjectId');
     	main.project_name  = Ext.create('My.view.Project.ProjectNameField');
-    	main.saveProject =  Ext.create('My.view.Project.SaveProject');
-    	this.items = [main.project_name];
+    	
+    	main.saveProject =  Ext.create('My.view.Project.SaveProject',{
+    		handler: function() {
+    			
+    			var form = this.up('form').getForm();
+                if (form.isValid()) {
+                    form.submit({
+                        success: function(form, action) {
+                           Ext.Msg.alert('Success', "save comprese");
+                           //this.up('form').getForm().reset();
+                           myStore.load();
+                        },
+                        failure: function(form, action) {
+                            Ext.Msg.alert('Failed', action.result.msg);
+                        }
+                    });
+                }
+		        
+    	    }
+    		
+    	});
+    	this.items = [main.project_id,main.project_name];
     	//this.buttons = [main.saveProject];
     	
     	this.dockedItems = [{

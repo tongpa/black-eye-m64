@@ -34,5 +34,6 @@ class ConvertType(object):
             #print self.__mapper__.c[key] 
             #3result[key] = getattr(self, key)
         return result
-from manageproject.model import Projects        
-print ConvertType.getmodelField(Projects);
+    
+#from manageproject.model import Projects        
+#print ConvertType.getmodelField(Projects);

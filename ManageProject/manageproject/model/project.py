@@ -6,7 +6,7 @@ from hashlib import sha256
 from sqlalchemy import Table, ForeignKey, Column
 from sqlalchemy.types import Unicode, Integer, DateTime,String,Text,BLOB
 from sqlalchemy.orm import relation, synonym
-
+from sqlalchemy.exc import IntegrityError
 from manageproject.model import DeclarativeBase, metadata, DBSession
 from json import dumps
 from collections import OrderedDict
@@ -34,7 +34,21 @@ class Projects(DeclarativeBase):
     def selectAll(cls):
         return  DBSession.query(cls).all();
     
+    @classmethod
+    def getByDescription(cls,description):
+        DBSession.query().all();
+        pass;
     
+    def save(self):
+        try:
+            DBSession.add(self); 
+            DBSession.flush() ;
+            return None;
+        except  IntegrityError:
+             
+            return "Duplicate entry"
+        
+        
     def _asdict(self):
         result = OrderedDict()
         for key in self.__mapper__.c.keys():
