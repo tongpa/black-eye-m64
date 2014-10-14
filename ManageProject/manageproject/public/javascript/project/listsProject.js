@@ -23,20 +23,93 @@ Ext.application({
     	 
     	var project_view = Ext.create('My.view.Project.Panel',{
     		 
-    	    width: 400 
+    	    width: '60%' 
     	} );
     	
     	var project_grid = Ext.create('Ext.grid.Panel', {
     	   // title: 'Project',
     	    store: myStore,//Ext.data.StoreManager.lookup('simpsonsStore'),
     	    columns: [
-    	        { text: 'description',  dataIndex: 'description' },
-    	        { text: 'create_date', dataIndex: 'create_date', flex: 1 },
-    	        { text: 'active', dataIndex: 'active' }
+    	        { text: 'description',  dataIndex: 'description' ,width: '45%'},
+    	        { text: 'create_date', dataIndex: 'create_date',  renderer: Ext.util.Format.dateRenderer('m/d/Y') ,width: '10%'  },
+    	        { text: 'active', dataIndex: 'active'  ,width: '10%'},
+    	        {
+                    header: 'Manage',
+                    renderer: function (v, m, r) {
+                        var id = Ext.id();
+                        Ext.defer(function () {
+                            Ext.widget('button', {
+                                renderTo: id,
+                                text: 'Manage',// + r.get('name'),
+                                width: 75,
+                                handler: function () { Ext.Msg.alert('Info', r.get('name')) }
+                            });
+                        }, 50);
+                        return Ext.String.format('<div id="{0}"></div>', id);
+                    } ,width: '12%'
+    	        },
+    	        {
+        	        
+                    header: 'Delete',
+                    renderer: function (v, m, r) {
+                        var id = Ext.id();
+                        Ext.defer(function () {
+                            Ext.widget('button', {
+                                renderTo: id,
+                                text: 'Delete',// + r.get('name'),
+                                width: 75,
+                                handler: function () { 
+                                	Ext.Msg.show(
+                                			{
+                                				title:'Info',
+                                				message :"Do you want to delete : " +r.get('description'),
+                                				buttons: Ext.Msg.YESNO ,
+                                				icon: Ext.Msg.QUESTION,
+                                				fn: function(btn) {
+				                                    if (btn === 'yes') {
+				                                        console.log('Yes pressed');
+				                                    } else if (btn === 'no') {
+				                                        console.log('No pressed');
+				                                    } else {
+				                                        console.log('Cancel pressed');
+				                                    } 
+                                				}  
+                                			}
+                                			)  
+                                }
+                            });
+                        }, 50);
+                        return Ext.String.format('<div id="{0}"></div>', id);
+                    } ,width: '12%'
+        	        
+                },
+    	        {
+        	        
+                    header: 'Edit',
+                    renderer: function (v, m, r) {
+                        var id = Ext.id();
+                        Ext.defer(function () {
+                            Ext.widget('button', {
+                                renderTo: id,
+                                text: 'Edit',// + r.get('name'),
+                                width: 75,
+                                handler: function () { Ext.Msg.alert('Info', r.get('name')) }
+                            });
+                        }, 50);
+                        return Ext.String.format('<div id="{0}"></div>', id);
+                    } ,width: '12%'
+        	        
+                }
     	    ],
+    	    
     	    height: 200,
-    	    width: 400 ,
-    	    listeners: {
+    	   
+            //columnLines: true,
+            //buttons: [{text:'Save'},{text:'Cancel'}],
+            //buttonAlign:'center',
+            
+    	    width: '60%'  
+    	   /*, listeners: {
                 selectionchange: function(model, records) {
                     var json, name, i, l, items, series, fields;
                     if (records[0]) {
@@ -67,7 +140,7 @@ Ext.application({
                        
                     }
                 }
-    	    }
+    	    }*/
     	});
 
 
@@ -87,7 +160,7 @@ Ext.application({
             items: [{
             	 region: 'north',
                  collapsible: true,
-                 title: 'North',
+                 //title: 'North',
                  split: true,
                  height: 50,
                  minHeight: 50,
