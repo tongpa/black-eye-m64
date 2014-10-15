@@ -17,3 +17,18 @@ class Utility(object):
             return None;
         
         return value;
+    
+    @classmethod
+    def isBoolean(cls,value):
+        if(value is None):
+            return False;
+        elif (len(value) == 0):
+            return False;
+        elif (value == ''):
+            return False;
+        elif  (value == '1'):
+            return True;
+        elif  (value == 1):
+            return True;
+        
+        return False;

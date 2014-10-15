@@ -10,7 +10,12 @@ Ext.require([
              'Ext.tip.QuickTipManager',
              //'Ext.ux.ajax.JsonSimlet',
              //'Ext.ux.ajax.SimManager',             
-             'Ext.window.MessageBox'
+             'Ext.window.MessageBox',
+             
+             'Ext.grid.*',
+             'Ext.data.*',
+             'Ext.util.*',
+             'Ext.state.*' 
              
          ]);
 
@@ -26,13 +31,35 @@ Ext.application({
     	    width: '60%' 
     	} );
     	
+    	var rowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
+            clicksToMoveEditor: 1,
+            autoCancel: false
+        });
+    	//
+    	
     	var project_grid = Ext.create('Ext.grid.Panel', {
-    	   // title: 'Project',
+    	   
     	    store: myStore,//Ext.data.StoreManager.lookup('simpsonsStore'),
+    	   // selType: 'rowmodel',
+    	    plugins: [rowEditing],
+    	    
     	    columns: [
-    	        { text: 'description',  dataIndex: 'description' ,width: '45%'},
-    	        { text: 'create_date', dataIndex: 'create_date',  renderer: Ext.util.Format.dateRenderer('m/d/Y') ,width: '10%'  },
-    	        { text: 'active', dataIndex: 'active'  ,width: '10%'},
+    	        { text: 'description',  dataIndex: 'description' ,width: '45%', flex: 1,
+    	            editor: {
+    	                // defaults to textfield if no xtype is supplied
+    	                allowBlank: false
+    	            }},
+    	     //   { text: 'create_date', dataIndex: 'create_date',  renderer:  function(val){   return val.substring(0,val.indexOf(' '));}  ,width: '10%'  }, 
+    	        {
+    	            xtype: 'checkcolumn',
+    	            header: 'Active?',
+    	            dataIndex: 'active',
+    	            width: '10%',
+    	            editor: {
+    	                xtype: 'checkbox',
+    	                cls: 'x-grid-checkheader-editor'
+    	            } 
+    	        },
     	        {
                     header: 'Manage',
                     renderer: function (v, m, r) {
@@ -47,8 +74,8 @@ Ext.application({
                         }, 50);
                         return Ext.String.format('<div id="{0}"></div>', id);
                     } ,width: '12%'
-    	        },
-    	        {
+    	        } 
+    	       /*, {
         	        
                     header: 'Delete',
                     renderer: function (v, m, r) {
@@ -99,16 +126,53 @@ Ext.application({
                         return Ext.String.format('<div id="{0}"></div>', id);
                     } ,width: '12%'
         	        
-                }
-    	    ],
-    	    
-    	    height: 200,
+                }*/
     	   
-            //columnLines: true,
-            //buttons: [{text:'Save'},{text:'Cancel'}],
-            //buttonAlign:'center',
+    	 
+    	        
+    	        ],
+    	    height: '100%',
+    	    tbar: [{
+                text: 'Add Employee',
+                 
+                handler : function() {
+                    rowEditing.cancelEdit();
+ 
+                    // Create a model instance
+                    var r = Ext.create('ProjectData', {
+                    	id_projects: '',
+                    	description: '',
+                    	active: true,
+                    	create_date: Ext.Date.clearTime(new Date()),
+                    	update_date: Ext.Date.clearTime(new Date())
+                    });
+ 
+                   // 
+                    myStore.insert(0, r);
+                    rowEditing.startEdit(0, 0);
+                }
+            }, {
+                itemId: 'removeProject',
+                text: 'Remove Employee',
+                
+                handler: function() {
+                    var sm = project_grid.getSelectionModel();
+                    rowEditing.cancelEdit();
+                    myStore.remove(sm.getSelection());
+                    if (myStore.getCount() > 0) {
+                        sm.select(0);
+                    }
+                },
+                disabled: true
+            }],
             
-    	    width: '60%'  
+    	    width: '60%'  ,
+            listeners: {
+                'selectionchange': function(view, records) {
+                	project_grid.down('#removeProject').setDisabled(!records.length);
+                }
+            }
+    	    	
     	   /*, listeners: {
                 selectionchange: function(model, records) {
                     var json, name, i, l, items, series, fields;
@@ -163,8 +227,8 @@ Ext.application({
                  //title: 'North',
                  split: true,
                  height: 50,
-                 minHeight: 50,
-                 html: 'north'
+                 minHeight: 50 
+                //, html: 'north'
                 
             } ,{
                 title: 'Menu',
@@ -242,6 +306,8 @@ Ext.define('My.view.Project.Panel', {
     extend : 'Ext.form.Panel',
     url: '/project/save', 
     layout: 'anchor',
+    
+    
     constructor: function(config ) {
     	
     	main = this;
