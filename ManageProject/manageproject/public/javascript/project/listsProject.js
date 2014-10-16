@@ -1,5 +1,5 @@
 Ext.Loader.setConfig({enabled: true});
-Ext.Loader.setPath('risks', '/javascript/project');
+Ext.Loader.setPath('My', '/javascript/project');
 
 Ext.require([
              'Ext.*',

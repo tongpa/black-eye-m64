@@ -36,24 +36,36 @@ class Projects(DeclarativeBase):
     
     @classmethod
     def getByDescription(cls,description):
-        DBSession.query().all();
+        DBSession.query(cls).all();
         pass;
+    
+    @classmethod
+    def getById(cls,id):
+        return  DBSession.query(cls).get(id);
+
+
+    @classmethod
+    def deleteById(cls,id):
+        return  DBSession.query(cls).filter(cls.id_projects== id ).delete();
+
+
     
     def save(self):
         try:
             DBSession.add(self); 
             DBSession.flush() ;
+            print "save project"
             return None;
         except  IntegrityError:
-             
+            print "Duplicate entry" 
             return "Duplicate entry"
         
         
     def _asdict(self):
         result = OrderedDict()
         for key in self.__mapper__.c.keys():
-            print key;
-            print self.__table__.c[key].type
+            #print key;
+            #print self.__table__.c[key].type
             #print self.__mapper__.c[key] 
             result[key] = getattr(self, key)
         return result

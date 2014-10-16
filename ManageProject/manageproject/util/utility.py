@@ -19,11 +19,17 @@ class Utility(object):
         return value;
     
     @classmethod
+    def convertBoolean(cls,value):
+        if (value == True):
+            return 1;
+        return 0;
+    
+    @classmethod
     def isBoolean(cls,value):
         if(value is None):
             return False;
-        elif (len(value) == 0):
-            return False;
+        #elif (len(value) == 0):
+        #    return False;
         elif (value == ''):
             return False;
         elif  (value == '1'):

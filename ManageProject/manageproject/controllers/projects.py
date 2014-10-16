@@ -40,7 +40,7 @@ class ProjectsController(BaseController):
         sys.setdefaultencoding("utf-8");
         projects = model.Projects.selectAll();
         
-        print projects;
+        #print projects;
         list=[];
         for p in projects:
             list.append(p._asdict())
@@ -71,8 +71,29 @@ class ProjectsController(BaseController):
     def add(self,*args,**kw):
         reload(sys);
         sys.setdefaultencoding("utf-8");
-        print kw;
-        print args;
+        df = loads(request.body, encoding=request.charset);
+        print df;
+        status = True;
+        msg = 'update success';
+        if(len(df) ==1 ):
+            d = df[0];
+            id_projects = d['id_projects'];
+            description = d['description'];
+            active = Utility.convertBoolean(d['active']);
+            print description
+            if str(id_projects) == '0' and description != '' :
+                project = model.Projects();
+                project.description = description;
+                project.active = 1;
+                msg = project.save();
+            else :
+                msg = "error";
+            
+            if msg :
+               print msg; 
+               status = False;
+        
+        return dict(success= status,message=msg);
         
     @expose('json')
     def update(self,*args,**kw):
@@ -86,13 +107,17 @@ class ProjectsController(BaseController):
             d = df[0];
             id_projects = d['id_projects'];
             description = d['description'];
-            active = Utility.isBoolean(d['active']);
+            active = Utility.convertBoolean(d['active']);
             print description
             if str(id_projects) == '0' and description != '' :
                 project = model.Projects();
                 project.description = description;
-                project.active = 1;
+                project.active =active;
                 msg = project.save();
+            else:
+                project = model.Projects.getById(id_projects);
+                project.description = description;
+                project.active = active;
             
             if msg :
                print msg; 
@@ -104,8 +129,18 @@ class ProjectsController(BaseController):
     def delete(self,*args,**kw):
         reload(sys);
         sys.setdefaultencoding("utf-8");
-        print kw;
-        print args;
+        df = loads(request.body, encoding=request.charset);
+        print df;
+        status = True;
+        msg = 'success';
+        if(len(df) ==1 ):
+            d = df[0];
+            id_projects = d['id_projects'];
+            model.Projects.deleteById(id_projects);
+            #description = d['description'];
+            #active = Utility.isBoolean(d['active']);
+        
+        return dict(success= status,message=msg);    
          
         
     
@@ -171,7 +206,7 @@ var myStore = new Ext.data.Store({
         
         }
     },
-  //  autoSync: true,
+    autoSync: true,
     autoLoad: true
 });
 
