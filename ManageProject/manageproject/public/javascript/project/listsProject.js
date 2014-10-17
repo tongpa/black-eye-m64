@@ -19,6 +19,15 @@ Ext.require([
              
          ]);
 
+
+ 
+
+
+
+
+
+
+
 Ext.application({
     name: 'My',
     launch: function() {
@@ -35,7 +44,11 @@ Ext.application({
             clicksToMoveEditor: 1,
             autoCancel: false
         });
-    	//
+    	
+    	
+    	var viewmenu = Ext.create('My.view.Project.MenuPanel');
+    	
+    	viewmenu.setVisible(false);
     	
     	var project_grid = Ext.create('Ext.grid.Panel', {
     	   
@@ -69,7 +82,7 @@ Ext.application({
                                 renderTo: id,
                                 text: 'Manage',// + r.get('name'),
                                 width: 75,
-                                handler: function () { Ext.Msg.alert('Info', r.get('name')) }
+                                handler: function () { Ext.Msg.alert('Info', r.get('name'));  viewmenu.setVisible(true); main.center_panel.setVisible(false); }
                             });
                         }, 50);
                         return Ext.String.format('<div id="{0}"></div>', id);
@@ -207,8 +220,13 @@ Ext.application({
     	    }*/
     	});
 
-
-    	//aaron.eat("Salad"); // alert("Aaron is eating: Salad");
+    	
+    	main.center_panel = Ext.create('Ext.panel.Panel',{
+    			 layout: 'auto',
+                 margins: '5 5 0 0',
+                 items: [project_view,project_grid]
+    	});
+    	
     	 
     	Ext.create('Ext.container.Viewport', {
     		renderTo : 'test-app',
@@ -227,7 +245,7 @@ Ext.application({
                  //title: 'North',
                  split: true,
                  height: 50,
-                 minHeight: 50 
+                 minHeight: 50
                 //, html: 'north'
                 
             } ,{
@@ -237,7 +255,8 @@ Ext.application({
                 cmargins: '5 5 0 0',
                 width: 175,
                 minSize: 100,
-                maxSize: 250
+                maxSize: 250 ,
+                items : [viewmenu]
             } , {
                 title: 'Center Region',
                 region: 'center',
@@ -245,7 +264,7 @@ Ext.application({
                 xtype: 'panel',
                 layout: 'auto',
                 margins: '5 5 0 0',
-                items: [project_view,project_grid]
+                items: [main.center_panel]
             }
             ]
     	});
