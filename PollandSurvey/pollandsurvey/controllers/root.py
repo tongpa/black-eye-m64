@@ -15,6 +15,7 @@ from pollandsurvey.lib.base import BaseController
 from pollandsurvey.controllers.error import ErrorController
 
 from pollandsurvey.controllers.register.registercontrol import RegisterController;
+from pollandsurvey.controllers.surveycontroller import SurveyController;
 
 
 from tg import tmpl_context
@@ -43,6 +44,7 @@ class RootController(BaseController):
     error = ErrorController()
     
     register = RegisterController();
+    survey = SurveyController();
 
     def _before(self, *args, **kw):
         tmpl_context.project_name = "pollandsurvey"
