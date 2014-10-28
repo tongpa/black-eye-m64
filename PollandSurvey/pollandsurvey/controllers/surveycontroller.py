@@ -30,7 +30,13 @@ class SurveyController(BaseController):
         """Handle the front-page."""
         return dict(page='index')
     
-    @expose()
+    @expose('json')
     def getAll(self):
         question = model.QuestionType.getAll(1);
-        return question;
+        return dict(page ="test",quest = question) ;
+    
+    
+    @expose('pollandsurvey.templates.survey.index')
+    def extjs(self):
+        """Handle the front-page."""
+        return dict(page='index')
