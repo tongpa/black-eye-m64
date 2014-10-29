@@ -20,23 +20,34 @@ from pollandsurvey.controllers.error import ErrorController
 from tg import tmpl_context
 from pollandsurvey.widget.movie_form import create_movie_form
 
+import logging;
+log = logging.getLogger(__name__);
+
 __all__ = ['SurveyController']
 
 
 class SurveyController(BaseController):
     
-    @expose('pollandsurvey.templates.index')
-    def index(self):
+    @expose('pollandsurvey.templates.survey.index')
+    @require(predicates.in_any_group('voter','managers', msg=l_('Only for voter')))
+    def index(self, *args, **kw):
         """Handle the front-page."""
         return dict(page='index')
     
     @expose('json')
-    def getAll(self):
+    def getProjectByUser(self, *args, **kw):
+        quest_project = model.QuestionProject.getAll(1);
+        
+        log.info("getProjectByUser");
+        return dict(survey=quest_project , total = len(quest_project));
+    
+    @expose('json')
+    def getAll(self, *args, **kw):
         question = model.QuestionType.getAll(1);
         return dict(page ="test",quest = question) ;
     
     
     @expose('pollandsurvey.templates.survey.index')
-    def extjs(self):
+    def extjs(self, *args, **kw):
         """Handle the front-page."""
         return dict(page='index')

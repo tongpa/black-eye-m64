@@ -22,6 +22,8 @@ from pollandsurvey.controllers.script.loadscriptcontroller import  ScriptControl
 from tg import tmpl_context
 from pollandsurvey.widget.movie_form import create_movie_form 
 
+import logging;
+log = logging.getLogger(__name__);
 __all__ = ['RootController']
 
 
@@ -71,10 +73,18 @@ class RootController(BaseController):
     def data(self, **kw):
         """This method showcases how you can use the same controller for a data page and a display page"""
         return dict(page='data', params=kw)
+    
     @expose('pollandsurvey.templates.index')
     @require(predicates.has_permission('manage', msg=l_('Only for managers')))
     def manage_permission_only(self, **kw):
         """Illustrate how a page for managers only works."""
+        
+         
+        
+        
+        
+        
+        
         return dict(page='managers stuff')
 
     @expose('pollandsurvey.templates.index')
@@ -105,7 +115,18 @@ class RootController(BaseController):
                 params=dict(came_from=came_from, __logins=login_counter))
         userid = request.identity['repoze.who.userid']
         flash(_('Welcome back, %s!') % userid)
-
+        
+        groups = request.identity['groups'] 
+        
+        if 'voter' in groups:
+            
+            log.info('voter');
+            return HTTPFound(location='/survey')
+        #print "----------------------------------------------------------------"
+        #for key in request.identity:
+        #    print key 
+        #    print request.identity[key];
+        #    print '-------'
         # Do not use tg.redirect with tg.url as it will add the mountpoint
         # of the application twice.
         return HTTPFound(location=came_from)

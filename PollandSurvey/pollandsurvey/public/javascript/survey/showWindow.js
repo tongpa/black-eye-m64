@@ -6,11 +6,14 @@ Ext.require([
     'Ext.layout.container.Border'
 ]);
 
-Ext.namespace("opina.constant","opina.constant.date");
+Ext.namespace("opina.constant","opina.constant.date","Survey");
 
 Ext.onReady(function(){
     var constrainedWin, constrainedWin2;
     
+    //v = Ext.create('Survey.store.listProjectid');
+    //v.load();
+    alert("load");
     Ext.util.Region.override({
         colors: ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'],
         nextColor: 0,

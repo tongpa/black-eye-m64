@@ -52,7 +52,7 @@ class ScriptController(BaseController):
         str = 'Ext.namespace("opina.locale");\n';
         for l in label:
             str = str + l.module + '.' + l.default_label + '="'  + l.getLang(language)+'";' + '\n';
-            print str;
+            #print str;
         
         return str;
             

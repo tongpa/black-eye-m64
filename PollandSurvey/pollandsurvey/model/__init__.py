@@ -61,4 +61,4 @@ def init_model(engine):
 # Import your model modules here.
 from pollandsurvey.model.auth import User, Group, Permission
 from movie import Movie
-from survey import QuestionType,LanguageLabel
+from survey import QuestionType,LanguageLabel,QuestionProject

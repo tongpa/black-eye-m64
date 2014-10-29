@@ -130,12 +130,12 @@ class QuestionProject(DeclarativeBase):
     user = relation('User', backref='sur_question_project_user_id');
     
     id_question_project_type = Column(   Integer,ForeignKey('sur_question_project_type.id_question_project_type'), nullable=False, index=True) ;
-    question_project_type = relation('User', backref='sur_question_project_id_question_project_type');
+    question_project_type = relation('QuestionProjectType', backref='sur_question_project_id_question_project_type');
      
     
     header_message = Column(String(255),  nullable=True) 
     footer_message = Column(String(255),  nullable=True) 
-    welcome_message = Column(String(255),  nullable=True) 
+    welcome_text = Column(String(255),  nullable=True) 
     end_text = Column(String(255),  nullable=True) 
     start_date =  Column(DateTime, nullable=False, default=datetime.now);
     end_date =  Column(DateTime, nullable=False, default=datetime.now);
@@ -150,11 +150,16 @@ class QuestionProject(DeclarativeBase):
     
     @classmethod
     def getAll(cls,act):
+        list =[];
         if act is not None:
-            return DBSession.query(cls).filter(cls.active == str(act).decode('utf-8')).all();
+            list =  DBSession.query(cls).filter(cls.active == str(act).decode('utf-8')).all();
             #return DBSession.query(cls).get(act); 
         else:
-            return DBSession.query(cls).all();
+            list =  DBSession.query(cls).all();
+        
+        for i in list:
+            i.question_project_type;
+        return list;
         
 
 class Question(DeclarativeBase):
