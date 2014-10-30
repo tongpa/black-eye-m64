@@ -40,3 +40,13 @@
     margin-bottom: 0;
     color: #555;
 }
+
+
+/**add **/
+.project-add {
+    background-image: url('../img/survey/image_add.png') !important;
+}
+
+.project-remove {
+    background-image: url('../img/survey/delete.gif') !important;
+}

@@ -36,6 +36,9 @@ Ext.application({
     	    width: '60%' 
     	} );
     	
+    	//var project_add = Ext.create('survey.view.list.Project.PanelAddProject',{showClose:false});
+    	
+    	
     	
     	
     	 Ext.create('Ext.panel.Panel', {
@@ -71,6 +74,7 @@ Ext.application({
                  margins: '5 5 0 0' ,
                  xtype:'panel',
                  items: [project_view]
+                // items: [project_add]
              }
              ]
      	});
