@@ -14,8 +14,8 @@ Ext.require([
              'Ext.grid.*',
              'Ext.data.*',
              'Ext.util.*',
-             'Ext.state.*' 
-             
+             'Ext.state.*', 
+             'Ext.Msg.*'
          ]);
  
 
@@ -36,9 +36,17 @@ Ext.application({
     	    width: '60%' 
     	} );
     	
-    	//var project_add = Ext.create('survey.view.list.Project.PanelAddProject',{showClose:false});
+    	//var project_add = Ext.create('survey.view.list.Project.PProject',{showClose:false});
     	
+    	panelProject = Ext.create('survey.view.list.Project.PProject' );
     	
+    	panel = Ext.create('Ext.panel.Panel',{
+    		width : 100,
+    		height : 100,
+    		//layout : 'fix',
+    		items : [panelProject
+    		         ]
+    	});
     	
     	
     	 Ext.create('Ext.panel.Panel', {
@@ -74,7 +82,7 @@ Ext.application({
                  margins: '5 5 0 0' ,
                  xtype:'panel',
                  items: [project_view]
-                // items: [project_add]
+                 // items: [panel]
              }
              ]
      	});

@@ -6,6 +6,9 @@ Ext.define('survey.view.list.Project.btAddProject',{
 	iconCls : 'project-add'
 });
 
+
+
+
  
 
 
@@ -25,7 +28,7 @@ Ext.define('survey.view.list.Project', {
     collapsible:false ,
     initComponent: function() {
     	
-    	main = this;
+    	var main = this;
     	main.store = survey.listProject; 
     	main.columns = [
     	       	       
@@ -37,12 +40,19 @@ Ext.define('survey.view.list.Project', {
     	            
     	        ]
     	
-    	main.showWin =  Ext.create('survey.view.list.Project.winAddProject');
+    
+		 
+    	
+    	main.showWin =  Ext.create('survey.view.list.Project.winAddProject',{
+    		url : '/survey/saveProject'
+    	} ) ;
     	 
     	main.addProject = Ext.create('survey.view.list.Project.btAddProject',{
+    		parent : main,
     		handler: function () { 
-    			
-    			main.showWin.show(this);
+    			 
+    			 
+    			this.parent.showWin.show(this);
     			
     		}
     	} );

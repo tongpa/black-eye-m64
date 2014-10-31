@@ -51,3 +51,11 @@ class SurveyController(BaseController):
     def extjs(self, *args, **kw):
         """Handle the front-page."""
         return dict(page='index')
+    
+    
+    @expose('json')
+    def saveProject(self, *args, **kw):
+        self.success = True;
+        self.message = "5555";
+        return dict(success=self.success, message = self.message);
+        #return dict(failed=self.success, message = self.message);

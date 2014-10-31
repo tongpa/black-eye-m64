@@ -46,7 +46,7 @@ def bootstrap(command, conf, vars):
         model.DBSession.add(u1)
         model.DBSession.flush()
         
-        """
+       
         
         quest_type = model.QuestionType();
         quest_type.id_question_type = 1;
@@ -73,6 +73,8 @@ def bootstrap(command, conf, vars):
         model.DBSession.flush();
         
         transaction.commit()
+         """
+        pass;
     except IntegrityError:
         print('Warning, there was a problem adding your auth data, it may have already been added:')
         import traceback
