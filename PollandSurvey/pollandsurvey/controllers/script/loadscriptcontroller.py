@@ -55,6 +55,54 @@ class ScriptController(BaseController):
             #print str;
         
         return str;
+    
+    
+    @expose(content_type="text/plain")
+    def loadModelObject(self, *args,  **kw):
+        
+        projectType = model.QuestionProjectType.getAll(1);
+        
+        modelProjectType = [];
+        
+        for type in projectType:
+            modelProjectType.append(type.to_json());
+            
+        value = dict(type =modelProjectType );
+        import json
+        print json.dumps(value);    
+     
+        str = """  
+            Ext.namespace("survey"); 
+            
+             
+            Ext.define('Survey.model.listQuestionProjectType', {
+                extend: 'Ext.data.Model',
+                idProperty: 'listProjectType',
+                fields: ['id_question_project_type', 'description', 'active' ] 
+                
+            });
+            
+            survey.listProjectType = new Ext.data.Store({
+                model : 'Survey.model.listQuestionProjectType',
+                storeId:'listProjectTypeInStore',
+                pageSize: 1000,
+                data :  """ + json.dumps(value)+ """ ,
+                proxy : {
+                    type: 'memory',
+                    reader: {
+                        type: 'json',
+                        root: 'type'
+                    }
+ 
+                },
+                autoLoad : true
+            });
+        
+        """;
+        
+         
+        
+        return  str;
             
     
     @expose(content_type="text/plain")

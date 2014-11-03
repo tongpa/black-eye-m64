@@ -12,18 +12,87 @@ Ext.define('Survey.model.listProjectid', {
     
 });
 
+survey.listProject1 = new Ext.data.Store({
+	model : 'Survey.model.listProjectid',
+	storeId:'listBookSendInStore',
+	pageSize: 50,
+	proxy : {
+		//type: 'ajax',
+		type: 'rest',
+		//url : '/survey/getProjectByUser',
+    	
+    	api: {
+            read: '/survey/getProjectByUser',
+           // create: '/survey/getProjectByUser',
+            update: '/survey/updateProject',
+            destroy: '/survey/deleteProject'
+        },
+        reader:{
+        	type: 'json',
+    		rootProperty : 'survey',
+    		totalProperty : 'total'
+    	},
+        writer: {
+        	type: 'json',
+        	//rootProperty : 'survey',
+    		//totalProperty : 'total',
+            writeAllFields: false ,
+            allowSingle :false 
+            //root: 'data'
+        },
+        listeners: {
+            exception: function(proxy, response, operation){
+               /* Ext.MessageBox.show({
+                    title: 'REMOTE EXCEPTION',
+                    msg: operation.getError(),
+                    icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.Msg.OK
+                });*/
+            }
+        }
+	},
+	autoSync: true,
+	autoLoad : false
+});
+
 survey.listProject = new Ext.data.Store({
 	model : 'Survey.model.listProjectid',
 	storeId:'listBookSendInStore',
 	pageSize: 50,
 	proxy : {
+		 
 		type: 'ajax',
-		url : '/survey/getProjectByUser',
-    	reader:{
+		url : '/survey/getProjectByUser',    	
+		api: {
+            read: '/survey/getProjectByUser',
+            create: '/survey/getProjectByUser',
+            update: '/survey/updateProject',
+            destroy: '/survey/deleteProject'
+        }, 
+        reader:{
+        	type: 'json',
     		rootProperty : 'survey',
     		totalProperty : 'total'
-    	}
+    	},
+        writer: {
+        	type: 'json' 
+        	 
+           // writeAllFields: false ,
+           // allowSingle :false 
+             
+        },
+        listeners: {
+            exception: function(proxy, response, operation){
+               /* Ext.MessageBox.show({
+                    title: 'REMOTE EXCEPTION',
+                    msg: operation.getError(),
+                    icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.Msg.OK
+                });*/
+            } 
+        }
 	},
+	autoSync: true,
 	autoLoad : true
 });
 

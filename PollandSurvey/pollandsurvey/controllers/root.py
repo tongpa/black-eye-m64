@@ -118,15 +118,29 @@ class RootController(BaseController):
         
         groups = request.identity['groups'] 
         
-        if 'voter' in groups:
-            
-            log.info('voter');
-            return HTTPFound(location='/survey')
-        #print "----------------------------------------------------------------"
+        #identity = request.environ.get('repoze.who.identity') 
+        
+        
+        #for key in request.environ:
+        #    print key 
+        #    print request.environ[key];
+        #    print '-------'
+        #print "----------------------------------------------------------------";
         #for key in request.identity:
         #    print key 
         #    print request.identity[key];
         #    print '-------'
+        #print "----------------------------------------------------------------";
+        
+        #print "User id "  ;
+        #user =  request.identity['user'];
+        #print user.user_id;
+        
+        if 'voter' in groups:
+            
+            log.info('voter');
+            return HTTPFound(location='/survey')
+        
         # Do not use tg.redirect with tg.url as it will add the mountpoint
         # of the application twice.
         return HTTPFound(location=came_from)

@@ -31,12 +31,27 @@ Ext.application({
     launch: function() {
     	Ext.tip.QuickTipManager.init();
    	 
-    	var project_view = Ext.create('survey.view.list.Project',{
-   		 
-    	    width: '60%' 
+    	var project_view = Ext.create('survey.view.list.Project',{   		 
+    	    width: '60%' ,
+			listeners : {
+				showManage : function(current,record) {
+					
+					project_view.setHidden(true);
+					manage_project.setHidden(false);
+					
+					manage_project.loadData(record); 
+					
+		        }
+			}
     	} );
     	
-    	//var project_add = Ext.create('survey.view.list.Project.PProject',{showClose:false});
+    	var manage_project = Ext.create('survey.view.list.Project.ManageProject',{   		 
+    	    width: '60%' ,
+    	    hidden : true ,
+    	    url : '/survey/updateProject'
+    	});
+    	
+    	 
     	
     	panelProject = Ext.create('survey.view.list.Project.PProject' );
     	
@@ -63,7 +78,9 @@ Ext.application({
                  bodyStyle: 'padding:15px'
              },
               
-             items: [ {
+             items: [ 
+               /*       
+                      {
                 // title: 'Menu',
                  region:'west',
                  margins: '5 0 0 0',
@@ -73,15 +90,16 @@ Ext.application({
                  maxSize: 250  ,
                  xtype:'panel'
              //    items : [viewmenu]
-             } , {
+             } ,*/ 
+             {
                 // title: 'Center Region',
                  region: 'center',
-                 split: false,
+                // split: false,
                  xtype: 'panel',
                  layout: 'fit',
                  margins: '5 5 0 0' ,
-                 xtype:'panel',
-                 items: [project_view]
+                 collapsible:false ,
+                 items: [project_view,manage_project]
                  // items: [panel]
              }
              ]

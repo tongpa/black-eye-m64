@@ -35,7 +35,7 @@ Ext.define('survey.view.list.Project', {
     	    	    {header: 'name', dataIndex: 'name',width : '30%' , sortable: false }  ,
     	    	    {header: 'type', dataIndex: 'question_project_type',width : '20%', renderer :main.showprojecttype , sortable: false }  ,
     	    	    {header: 'create', dataIndex: 'start_date',width : '30%' , sortable: false }   ,
-    	    	    {header: 'Manage',  width : '10%', renderer :main.showbuttonManage, sortable: false  }    ,
+    	    	    {header: 'Manage',  width : '10%', renderer :main.showbuttonManage,  sortable: false  }    ,
     	    	    {header: 'Delete',  width : '10%', renderer :main.deleteButton, sortable: false  }  
     	            
     	        ]
@@ -44,7 +44,12 @@ Ext.define('survey.view.list.Project', {
 		 
     	
     	main.showWin =  Ext.create('survey.view.list.Project.winAddProject',{
-    		url : '/survey/saveProject'
+    		url : '/survey/saveProject',
+			listeners : {
+				refreshOther : function(cmp) {
+					survey.listProject.reload();
+		        }
+			}
     	} ) ;
     	 
     	main.addProject = Ext.create('survey.view.list.Project.btAddProject',{
@@ -69,13 +74,17 @@ Ext.define('survey.view.list.Project', {
     	return value.description;
     },
     showbuttonManage : function (value,m,r){
+    	var main = this;
     	var id = Ext.id();
         Ext.defer(function () {
             Ext.widget('button', {
                 renderTo: id,
                 text: 'Manage',// + r.get('name'),
                 width: 75,
-                handler: function () { Ext.Msg.alert('Info', r.get('name'));  }
+                handler: function () {
+                	//Ext.Msg.alert('Info', r.get('name'));  
+                	main.showManage(r);
+                }
             });
         }, 50);
         return Ext.String.format('<div id="{0}"></div>', id);
@@ -83,13 +92,23 @@ Ext.define('survey.view.list.Project', {
     } ,
     deleteButton : function(value,m,r){
     	var id = Ext.id();
+    	//console.log(m);
+    	console.log(r);
         Ext.defer(function () {
             Ext.widget('button', {
                 renderTo: id,
                 iconCls : 'project-remove',
                 text: 'Delete',// + r.get('name'),
                 width: 75,
-                handler: function () { Ext.Msg.alert('Info', r.get('name'));  }
+                record : r,
+                
+                handler: function (bt,ev) { 
+                	//debugger;
+                	 
+                	survey.listProject.remove(bt.record);
+                	Ext.Msg.alert('Info', r.get('name'));  
+                	
+                }
             });
         }, 50);
         return Ext.String.format('<div id="{0}"></div>', id);
@@ -98,7 +117,12 @@ Ext.define('survey.view.list.Project', {
         'selectionchange': function(view, records) {
             grid.down('#removeEmployee').setDisabled(!records.length);
         }
-    }/*,
+    },
+    showManage : function( record ) {
+        //do some stuff here
+
+        this.fireEvent('showManage', this,record);
+    },/*,
     onSelectionChange: function(selmodel, selection) {
         var selected = selection[0],
             button = this.down('button[action=remove]');

@@ -17,6 +17,7 @@ from sqlalchemy import Table, ForeignKey, Column
 from sqlalchemy.types import Unicode, Integer, DateTime, Date, Integer, String, Text,Boolean
 
 from sqlalchemy.orm import relation, synonym
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.dialects.mysql import BIT
 from pollandsurvey.model import DeclarativeBase, metadata, DBSession
 __all__ = ['QuestionType', 'QuestionProjectType' ,'BasicDataType', 'QuestionProject','LanguageLabel']
@@ -96,6 +97,11 @@ class QuestionProjectType(DeclarativeBase):
         else:
             return DBSession.query(cls) .all();
         
+    def to_json(self):
+        return {"id_question_project_type": self.id_question_project_type, "description": self.description, "active": self.active };
+    def to_dict(self):
+        return {"id_question_project_type": self.id_question_project_type, "description": self.description, "active": self.active };
+        
 class BasicDataType(DeclarativeBase):
 
     __tablename__ = 'sur_basic_data_type'
@@ -148,6 +154,22 @@ class QuestionProject(DeclarativeBase):
     def __str__(self):
         return '"%s"' % (self.description )
     
+    def save(self):
+        try:
+            DBSession.add(self); 
+            DBSession.flush() ;
+            print "save project"
+            return None;
+        except  IntegrityError:
+            print "Duplicate entry" 
+            return "Duplicate entry"
+    
+    @classmethod
+    def getId(cls,act):
+        if act is not None:
+            return DBSession.query(cls).get(act); 
+        else:
+            return DBSession.query(cls).all();   
     @classmethod
     def getAll(cls,act):
         list =[];
