@@ -37,8 +37,9 @@ Ext.application({
 				showManage : function(current,record) {
 					
 					project_view.setHidden(true);
-					manage_project.setHidden(false);
-					
+				//	manage_project.setHidden(false);
+					manage_question.setHidden(false);
+					tab_manage.setHidden(false);
 					manage_project.loadData(record); 
 					
 		        }
@@ -51,17 +52,23 @@ Ext.application({
     	    url : '/survey/updateProject'
     	});
     	
+    	var manage_question = Ext.create('survey.view.list.Project.PCreateQuestion',{   		 
+    	    width: '60%' ,
+    	    hidden : true ,
+    	    title : 'add Question',
+    	    url : '/survey/updateProject'
+    	});
     	 
     	
-    	panelProject = Ext.create('survey.view.list.Project.PProject' );
-    	
-    	panel = Ext.create('Ext.panel.Panel',{
-    		width : 100,
-    		height : 100,
-    		//layout : 'fix',
-    		items : [panelProject
-    		         ]
+    	var tab_manage = Ext.create('Ext.tab.Panel',{
+    		hidden : true ,
+    		width: '60%' ,
+    		height : 200,
+    		items : [manage_question]
+    		
     	});
+    	
+    	 
     	
     	
     	 Ext.create('Ext.panel.Panel', {
@@ -99,7 +106,7 @@ Ext.application({
                  layout: 'fit',
                  margins: '5 5 0 0' ,
                  collapsible:false ,
-                 items: [project_view,manage_project]
+                 items: [project_view,manage_project,tab_manage]
                  // items: [panel]
              }
              ]
