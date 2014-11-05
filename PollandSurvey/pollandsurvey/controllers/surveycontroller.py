@@ -28,6 +28,9 @@ __all__ = ['SurveyController']
 
 class SurveyController(BaseController):
     
+    def _before(self, *args, **kw):
+        tmpl_context.project_name = "pollandsurvey"
+        
     @expose('pollandsurvey.templates.survey.index')
     @require(predicates.in_any_group('voter','managers', msg=l_('Only for voter')))
     def index(self, *args, **kw):

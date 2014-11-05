@@ -3,7 +3,7 @@
 
 Ext.define('survey.view.list.Project.ManageProject',{
 	extend: 'Ext.form.Panel', 
-	frame: true,
+	frame: false,
 	bodyPadding: 10,
 	showClose : true,
     defaults: {

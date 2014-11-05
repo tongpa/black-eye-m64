@@ -2,7 +2,8 @@ Ext.namespace("survey");
 
 Ext.define('Survey.model.listProjectid', {
     extend: 'Ext.data.Model',
-    idProperty: 'listProjectid',
+    idProperty: 'id_question_project',
+    
     fields: ['id_question_project', 'name', 'description', 'user_id', 
              'id_question_project_type','question_project_type',
              'question_project_type.description',

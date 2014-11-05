@@ -68,7 +68,7 @@ Ext.define('survey.view.list.Project.fieldProjectType',{
 
 Ext.define('survey.view.list.Project.PProject',{
 	extend: 'Ext.form.Panel',	 
-	frame: true,
+	frame: false,
 	bodyPadding: 10,
 	showClose : true,
     defaults: {

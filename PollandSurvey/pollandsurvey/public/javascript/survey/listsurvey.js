@@ -32,42 +32,81 @@ Ext.application({
     	Ext.tip.QuickTipManager.init();
    	 
     	var project_view = Ext.create('survey.view.list.Project',{   		 
-    	    width: '60%' ,
+    		width: '100%',
+    	    hidden : false,
+    	    title : 'Poll and Survey',
 			listeners : {
 				showManage : function(current,record) {
 					
-					project_view.setHidden(true);
-				//	manage_project.setHidden(false);
-					manage_question.setHidden(false);
-					tab_manage.setHidden(false);
-					manage_project.loadData(record); 
+					var tabId =   'tab-' + record.id;
+					var title = record.data.name  + " (" + record.data.question_project_type.description + ")";
+					var count = tab_project.items.length;
+					 
+					var addAlready = false;
+					
+					for (var i = 0 ;i < count ;i++){
+						if( tab_project.items.items[i].id == tabId){
+							 
+							tab_project.setActiveTab(tab_project.items.items[i]);
+							addAlready = true;
+							break;
+						}
+					}
+					
+					if (!addAlready){
+					 
+						
+						//manage project 
+				    	var manage_project = Ext.create('survey.view.list.Project.ManageProject',{   		 
+				    		width: '100%',				    	     
+				    	    url : '/survey/updateProject'
+				    	});
+				    	
+				    	manage_project.loadData(record); 
+				    	
+				    	var manage_question = Ext.create('survey.view.list.Project.PCreateQuestion',{
+				    		width: '100%',   		
+				    		title : 'Create Questions'
+				    	});
+				    	
+				    	var tab_manage = Ext.create('Ext.tab.Panel', {
+				    	    width: '100%',   	
+				    	    items: [manage_question ]
+				    	});
+				    	
+				    	var panel_manage = Ext.create('Ext.panel.Panel',{
+				    		closable: true,
+				    		frame : true,
+				    		bodyPadding: 10,
+				    		id : tabId,
+				    		title : title,
+				    		items : [manage_project,tab_manage]
+				    	});
+						
+						tab_project.add(panel_manage).show();
+					
+					}
+
+					//tab_project.setActiveTab(tab);
+					
+					
+					
+					 
+					
 					
 		        }
 			}
     	} );
     	
-    	var manage_project = Ext.create('survey.view.list.Project.ManageProject',{   		 
-    	    width: '60%' ,
-    	    hidden : true ,
-    	    url : '/survey/updateProject'
+    	
+    	var tab_project = Ext.create('Ext.tab.Panel', {
+    	    width: '100%',   	
+    	     
+    	    items: [project_view ]
     	});
     	
-    	var manage_question = Ext.create('survey.view.list.Project.PCreateQuestion',{   		 
-    	    width: '60%' ,
-    	    hidden : true ,
-    	    title : 'add Question',
-    	    url : '/survey/updateProject'
-    	});
+    	
     	 
-    	
-    	var tab_manage = Ext.create('Ext.tab.Panel',{
-    		hidden : true ,
-    		width: '60%' ,
-    		height : 200,
-    		items : [manage_question]
-    		
-    	});
-    	
     	 
     	
     	
@@ -106,7 +145,7 @@ Ext.application({
                  layout: 'fit',
                  margins: '5 5 0 0' ,
                  collapsible:false ,
-                 items: [project_view,manage_project,tab_manage]
+                 items: [tab_project ]
                  // items: [panel]
              }
              ]
