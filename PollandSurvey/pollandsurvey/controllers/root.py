@@ -17,7 +17,7 @@ from pollandsurvey.controllers.error import ErrorController
 from pollandsurvey.controllers.register.registercontrol import RegisterController;
 from pollandsurvey.controllers.surveycontroller import SurveyController;
 from pollandsurvey.controllers.script.loadscriptcontroller import  ScriptController;
-
+from pollandsurvey.controllers.script.loadmodelcontroller import  ScriptModelController;
 
 from tg import tmpl_context
 from pollandsurvey.widget.movie_form import create_movie_form 
@@ -49,6 +49,7 @@ class RootController(BaseController):
     register = RegisterController();
     survey = SurveyController();
     script = ScriptController();
+    model = ScriptModelController();
     
     def _before(self, *args, **kw):
         tmpl_context.project_name = "pollandsurvey"

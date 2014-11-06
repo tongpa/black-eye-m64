@@ -13,14 +13,14 @@ from datetime import datetime
 from hashlib import sha256
 
 
-from sqlalchemy import Table, ForeignKey, Column
+from sqlalchemy import Table, ForeignKey, Column,and_
 from sqlalchemy.types import Unicode, Integer, DateTime, Date, Integer, String, Text,Boolean
 
 from sqlalchemy.orm import relation, synonym
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.dialects.mysql import BIT
 from pollandsurvey.model import DeclarativeBase, metadata, DBSession
-__all__ = ['QuestionType', 'QuestionProjectType' ,'BasicDataType', 'QuestionProject','LanguageLabel']
+__all__ = ['GroupVariables', 'QuestionType', 'QuestionProjectType' ,'BasicDataType', 'QuestionProject','LanguageLabel','Variables']
 
 
 class LanguageLabel(DeclarativeBase):
@@ -52,7 +52,27 @@ class LanguageLabel(DeclarativeBase):
         else:
             return DBSession.query(cls) .all();
      
-        
+
+class GroupVariables(DeclarativeBase):       
+    __tablename__ = 'sur_group_variables'
+
+    id_group_variables =  Column(Integer, autoincrement=True, primary_key=True)
+    name = Column(String(255),unique=True, nullable=False)
+    description = Column(String(255),unique=True, nullable=False)
+    active  = Column(BIT, nullable=True, default=1)
+    
+    def __init__(self):
+        self.active = 1;
+    def __str__(self):
+        return '"%s"' % (self.description )
+    
+    @classmethod
+    def getAll(cls,act):
+        if act is not None:
+            return DBSession.query(cls).filter(cls.active == str(act).decode('utf-8')).all();
+            #return DBSession.query(cls).get(act); 
+        else:
+            return DBSession.query(cls) .all(); 
         
 class QuestionType(DeclarativeBase):
 
@@ -137,7 +157,7 @@ class QuestionProject(DeclarativeBase):
     
     id_question_project_type = Column(   Integer,ForeignKey('sur_question_project_type.id_question_project_type'), nullable=False, index=True) ;
     question_project_type = relation('QuestionProjectType', backref='sur_question_project_id_question_project_type');
-     
+    
     
     header_message = Column(String(255),  nullable=True) 
     footer_message = Column(String(255),  nullable=True) 
@@ -217,6 +237,73 @@ class Question(DeclarativeBase):
         else:
             return DBSession.query(cls).all();
     
+
+class Variables(DeclarativeBase):
+    __tablename__ = 'sur_variables'
+    
+    
+    id_variables =  Column(Integer, autoincrement=True, primary_key=True)
+    name = Column(String(255) , nullable=False)
+    description = Column(String(255) , nullable=True)
+    
+    id_group_variables = Column(   Integer,ForeignKey('sur_group_variables.id_group_variables'), nullable=False, index=True) ;
+    group_variables = relation('GroupVariables', backref='sur_variables_id_group_variables');
+     
+    table_jm_ref = Column(String(255) , nullable=True)
+    field_jm_ref = Column(String(255) , nullable=True)
+    
+    
+    id_parent = Column(   Integer,ForeignKey('sur_variables.id_variables'), nullable=True, index=True) ;
+    #parrent = relation('Variables', backref='sur_variables_id_variables' , remote_side=['sur_variables.id_variables']); #,
+    childen = relation('Variables')  
+    
+    active  = Column(BIT, nullable=True, default=1)
+    
+    
+    def __init__(self):
+        self.active = 1;
+        
+    def __str__(self):
+        return '"%s"' % (self.name )
+    
+    @classmethod
+    def getId(cls,act):
+        if act is not None:
+            return DBSession.query(cls).get(act); 
+        else:
+            return DBSession.query(cls).all();   
+        
+    @classmethod
+    def getAll(cls,act):
+        if act is not None:
+            return DBSession.query(cls).filter(cls.active == str(act).decode('utf-8')).all(); 
+        else:
+            return DBSession.query(cls).all();
+    
+    @classmethod
+    def getAllParent(cls,act):
+        if act is not None:
+            return DBSession.query(cls).filter( and_ (cls.active == str(act).decode('utf-8'),cls.id_parent  == None )  ).all(); 
+        else:
+            return DBSession.query(cls).all();
+        
+    def to_json(self):
+        
+        dict  = {"id_variables": self.id_variables, "name": self.name,"description": self.description,"id_group_variables": self.id_group_variables,
+                "group_variables": self.group_variables.name, 
+                "table_jm_ref": self.table_jm_ref, 
+                "field_jm_ref": self.field_jm_ref, 
+                "group_variables": self.group_variables.name,
+                "childen": [],
+                "active": self.active };
+        child =[];
+        if len( self.childen ) >0 : 
+            for obj in  self.childen:
+                child.append(obj.to_json());
+        
+        dict['childen'] = child;
+         
+        return dict;
 
 class QuestionValidation(DeclarativeBase):
 

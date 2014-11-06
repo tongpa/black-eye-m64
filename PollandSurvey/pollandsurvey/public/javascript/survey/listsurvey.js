@@ -69,9 +69,15 @@ Ext.application({
 				    		title : 'Create Questions'
 				    	});
 				    	
+				    	var manage_variable = Ext.create('survey.view.list.Project.PCreateVariable',{
+				    		width: '100%',   		
+				    		title : 'Create variable'
+				    	});
+				    	
+				    	
 				    	var tab_manage = Ext.create('Ext.tab.Panel', {
 				    	    width: '100%',   	
-				    	    items: [manage_question ]
+				    	    items: [manage_question,manage_variable ]
 				    	});
 				    	
 				    	var panel_manage = Ext.create('Ext.panel.Panel',{

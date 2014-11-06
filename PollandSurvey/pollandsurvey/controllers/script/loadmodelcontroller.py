@@ -20,6 +20,9 @@ import sys;
 from tg import tmpl_context
 from pollandsurvey.widget.movie_form import create_movie_form
 
+import logging;
+log = logging.getLogger(__name__);
+
 __all__ = ['ScriptModelController']
 
 
@@ -37,6 +40,16 @@ class ScriptModelController(BaseController):
         # Do not use tg.redirect with tg.url as it will add the mountpoint
         # of the application twice.
         return HTTPFound(location=came_from)
+    
+    @expose('json')
+    def getVariable (self, *args, **kw):
+        variables = model.Variables.getAllParent(1);
+        for q in variables:
+            for sub in q.childen:
+                print "\t\t" +  sub.name;
+        #return dict(page ="test",quest = question) ;
+        log.info("getVariable");
+        return dict(survey=variables , total = len(variables));
     
      
             

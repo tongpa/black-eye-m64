@@ -69,7 +69,7 @@ class ScriptController(BaseController):
             
         value = dict(type =modelProjectType );
         import json
-        print json.dumps(value);    
+        #print json.dumps(value);    
      
         str = """  
             Ext.namespace("survey"); 
@@ -77,7 +77,7 @@ class ScriptController(BaseController):
              
             Ext.define('Survey.model.listQuestionProjectType', {
                 extend: 'Ext.data.Model',
-                idProperty: 'listProjectType',
+                idProperty: 'id_question_project_type',
                 fields: ['id_question_project_type', 'description', 'active' ] 
                 
             });
@@ -100,8 +100,46 @@ class ScriptController(BaseController):
         
         """;
         
-         
+        variables = model.Variables.getAllParent(1);
         
+        modelProjectType = [];
+        
+        for type in variables:
+            modelProjectType.append(type.to_json()); 
+        
+        value = dict(type =modelProjectType ); 
+         
+        str = str +  """    
+             
+            
+             
+            Ext.define('Survey.model.listVariablesType', {
+                extend: 'Ext.data.Model',
+                idProperty: 'id_variables',
+                fields: ['id_variables', 'name' , 'description', 'id_group_variables', 'table_jm_ref', 'field_jm_ref', 'id_parent', 'childen', 'active'  ] 
+                
+            });
+            
+            
+            survey.listVariablesType = new Ext.data.Store({
+                model : 'Survey.model.listVariablesType',
+                storeId:'listVariablesTypeInStore',
+                pageSize: 1000,
+                data :  """ + json.dumps(value)+ """ ,
+                proxy : {
+                    type: 'memory',
+                    reader: {
+                        type: 'json',
+                        root: 'type'
+                    }
+ 
+                },
+                autoLoad : true
+            });
+        
+        """
+        
+         
         return  str;
             
     

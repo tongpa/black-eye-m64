@@ -78,18 +78,26 @@ Ext.define('survey.view.list.Project.PProject',{
     isCreate : true,
     parentForm : null,
     setDefaultField : function(){
-    	 main.fieldDescriptProject.setHidden(true);
+    	var main = this;
+    	 
+    	 
+    	 main.fieldSet.setHidden(true);
+    	 /*
          main.fieldHeaderMessage.setHidden(true);
          main.fieldFooterMessage.setHidden(true);
          main.fieldWelcomeText.setHidden(true);
-         main.fieldEndText.setHidden(true);
+         main.fieldEndText.setHidden(true);*/
     },
     setEditField : function(){
-    	main.fieldDescriptProject.setVisible(true);
+    	var main = this;
+    	
+    	 main.fieldSet.setVisible(true);
+    	 
+    	 /*
         main.fieldHeaderMessage.setVisible(true);
         main.fieldFooterMessage.setVisible(true);
         main.fieldWelcomeText.setVisible(true);
-        main.fieldEndText.setVisible(true);
+        main.fieldEndText.setVisible(true);*/
     },
 	initComponent: function() {
 		
@@ -104,18 +112,30 @@ Ext.define('survey.view.list.Project.PProject',{
 		main.projectType = Ext.create('survey.view.list.Project.fieldProjectType',{msgTarget: 'side'});
 		
 		 
-		main.fieldHeaderMessage = Ext.create('survey.view.list.Project.fieldHeaderMessage',{msgTarget: 'side',hidden : main.isCreate});
-		main.fieldFooterMessage = Ext.create('survey.view.list.Project.fieldFooterMessage',{msgTarget: 'side',hidden : main.isCreate});
-		main.fieldWelcomeText = Ext.create('survey.view.list.Project.fieldWelcomeText',{msgTarget: 'side',hidden : main.isCreate});
-		main.fieldEndText = Ext.create('survey.view.list.Project.fieldEndText',{msgTarget: 'side',hidden : main.isCreate});
+		main.fieldHeaderMessage = Ext.create('survey.view.list.Project.fieldHeaderMessage',{msgTarget: 'side'});//,hidden : main.isCreate});
+		main.fieldFooterMessage = Ext.create('survey.view.list.Project.fieldFooterMessage',{msgTarget: 'side'});//,hidden : main.isCreate});
+		main.fieldWelcomeText = Ext.create('survey.view.list.Project.fieldWelcomeText',{msgTarget: 'side'});//,hidden : main.isCreate});
+		main.fieldEndText = Ext.create('survey.view.list.Project.fieldEndText',{msgTarget: 'side'});//,hidden : main.isCreate});
 		
-		
-		main.items = [main.projectid,main.name,main.description,main.projectType,
-		              
-		              main.fieldHeaderMessage,
+		 
+		main.fieldSets = Ext.create('Ext.form.FieldSet',{
+			title: 'Details',
+	        collapsible: true,
+	        collapsed: true,
+	        hidden : main.isCreate,
+	        defaults: {
+	            labelWidth: 120,
+	            anchor: '100%',
+	            layout: {   type: 'fix' }
+	        },
+	        items : [main.fieldHeaderMessage,
 		              main.fieldFooterMessage,
 		              main.fieldWelcomeText,
-		              main.fieldEndText];
+		              main.fieldEndText]
+		});
+		 
+		
+		main.items = [main.projectid, main.name, main.description, main.projectType , main.fieldSets ];  
 		
 		main.btsave = Ext.create('Ext.Button',{		 
 			text : 'Save',
