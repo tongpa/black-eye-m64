@@ -51,6 +51,12 @@ class ScriptModelController(BaseController):
         log.info("getVariable");
         return dict(survey=variables , total = len(variables));
     
+    @expose('json')
+    def getQuestionType(self, *args, **kw):
+        questiontype = model.QuestionType.getAll(1);
+        
+        return dict(survey=questiontype , total = len(questiontype));
+    
      
             
     

@@ -13,6 +13,31 @@ Ext.define('Survey.model.listProjectid', {
     
 });
 
+Ext.define('Survey.model.listQuestionType', {
+    extend: 'Ext.data.Model',
+    idProperty: 'id_question_type',
+    
+    fields: ['id_question_type',   'description', 'active' ] 
+    
+});
+
+
+survey.listQuestionType = new Ext.data.Store({
+	model : 'Survey.model.listQuestionType',
+	storeId : 'listQuestionTypeInStore',
+	pagSize : 50,
+	proxy : {
+		type : 'ajax',
+		url : '/model/getQuestionType',
+		reader : {
+			type : 'json',
+			rootProperty : 'survey'
+		}
+	},
+	autoLoad : false
+});
+
+
 survey.listProject1 = new Ext.data.Store({
 	model : 'Survey.model.listProjectid',
 	storeId:'listBookSendInStore',
