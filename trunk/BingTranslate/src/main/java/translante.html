@@ -1,0 +1,45 @@
+<!doctype html>
+<html> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript">  
+  function translate() {
+  document.getElementById('translate_to').innerHTML="";
+  var text= document.getElementById('translate_from').value;
+  window.mycallback = function(response) {
+  document.getElementById('translate_to').innerHTML=response;
+}
+
+var languageFrom = document.getElementById("langpairFROM").value;
+var languageTo = document.getElementById("langpairTO").value;
+var s = document.createElement("script");
+s.src = "http://api.microsofttranslator.com/V2/Ajax.svc/Translate?oncomplete=mycallback&appId=68D088969D79A8B23AF8585CC83EBA2A05A97651&from=" + languageFrom + "&to=" + languageTo + "&text=" + text;
+document.getElementsByTagName("head")[0].appendChild(s);
+}
+</script>
+</head>
+<body>
+<form action="javascript:translate()">
+<center>
+<select id="langpairFROM" STYLE=" font-size : 11pt">
+  <option value="de">German</option>
+  <option value="en" selected>English</option>
+  <option value="ru">Russian</option>                                         
+</select>
+<select id="langpairTO" STYLE=" font-size : 11pt">
+  <option value="ru">Russian</option>
+  <option value="de" selected>German</option>
+  <option value="en">English</option>  
+  <option value="th">Thai</option> 
+</select>
+<button type="submit">Translate</button> 
+<div >
+  <textarea id="translate_from" name="translate_from" ></textarea> 
+</div>
+<div id="translationField">
+  <textarea id="translate_to" >Translated Text</textarea> 
+</div
+</center>
+</form>
+</body> 
+</html> 
