@@ -57,12 +57,17 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
 		         if(success){
 		        	 for (var i =0;i< records.length ; i++){
 		        		 
-		        		 menus.add({text: records[i].data.description,id: records[i].id });
+		        		 menus.add({
+		        			 text: records[i].data.description, 
+		        			 record : records[i],
+		        			 id: records[i].id, 
+		        			 parent : main,
+		        			 handler: main.createQuestion });
 		        	 }
 		         }
 		         
 		         main.SplitBt.menu = menus;
-		         debugger;
+		         
 		    },
 			parent : main,
 			scope:this
@@ -70,7 +75,10 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
 		
 		
 		this.callParent();
-    } 
+    } ,
+    createQuestion : function(bt,ev){
+    	debugger;
+    }
     
     
 });    
