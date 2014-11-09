@@ -48,5 +48,13 @@
 }
 
 .project-remove {
-    background-image: url('../img/survey/delete.gif') !important;
+    background-image: url('../img/survey/delete.png') !important;
+}
+
+.icon-add {
+    background-image: url('../img/survey/add.png') !important;
+}
+
+.icon-delete {
+    background-image: url('../img/survey/delete.png') !important;
 }

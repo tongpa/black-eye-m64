@@ -19,7 +19,7 @@ Ext.define('survey.view.list.Project.PCreateVariable',{
     initComponent: function() {
 		
 		var main = this;
-		main.add111 = Ext.create('survey.view.list.Project.AddQuestion',{msgTarget: 'side'});
+		//main.add111 = Ext.create('survey.view.list.Project.AddQuestion',{msgTarget: 'side'});
 		
 		main.tbar =  [{
             xtype:'splitbutton',
@@ -30,7 +30,7 @@ Ext.define('survey.view.list.Project.PCreateVariable',{
 		
 		
 		
-		main.items = main.add111;
+		//main.items = main.add111;
 		
 		this.callParent();
     }
