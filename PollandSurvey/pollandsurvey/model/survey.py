@@ -16,11 +16,12 @@ from hashlib import sha256
 from sqlalchemy import Table, ForeignKey, Column,and_
 from sqlalchemy.types import Unicode, Integer, DateTime, Date, Integer, String, Text,Boolean
 
-from sqlalchemy.orm import relation, synonym
+from sqlalchemy.util import KeyedTuple;
+from sqlalchemy.orm import relation, synonym, Bundle
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.dialects.mysql import BIT
 from pollandsurvey.model import DeclarativeBase, metadata, DBSession
-__all__ = ['GroupVariables', 'QuestionType', 'QuestionProjectType' ,'BasicDataType', 'QuestionProject','LanguageLabel','Variables']
+__all__ = ['GroupVariables', 'QuestionType', 'QuestionProjectType' ,'BasicDataType', 'QuestionProject','LanguageLabel','Variables','BasicData','BasicQuestion','BasicTextData','BasicTextData']
 
 
 class LanguageLabel(DeclarativeBase):
@@ -144,6 +145,15 @@ class BasicDataType(DeclarativeBase):
         else:
             return DBSession.query(cls).all();
         
+    @classmethod
+    def getByQuestionId(cls):
+        DBSession.query(cls) .join(Member).filter(cls.active == str(act).decode('utf-8')).all();
+        pass;
+     
+
+     
+
+        
 class QuestionProject(DeclarativeBase):
 
     __tablename__ = 'sur_question_project'
@@ -212,6 +222,9 @@ class Question(DeclarativeBase):
     
     id_question_type = Column(   Integer,ForeignKey('sur_question_type.id_question_type'), nullable=False, index=True) ;
     question_type = relation('QuestionType', backref='sur_question_id_question_type');
+    
+    id_question_project = Column(   Integer,ForeignKey('sur_question_project.id_question_project'), nullable=False, index=True) ;
+    project = relation('QuestionProject', backref='sur_question_id_question_project');
     
     user_id = Column(   Integer,ForeignKey('tg_user.user_id'), nullable=False, index=True) ;
     user = relation('User', backref='sur_question_user_id');
@@ -321,7 +334,7 @@ class QuestionValidation(DeclarativeBase):
     
     
     def __init__(self):
-        self.active = 1;
+        pass;
         
     def __str__(self):
         return '"%s"' % (self.message )
@@ -332,3 +345,95 @@ class QuestionValidation(DeclarativeBase):
             return DBSession.query(cls).get(act); 
         else:
             return DBSession.query(cls).all();       
+        
+        
+class BasicQuestion(DeclarativeBase):   
+    __tablename__ = 'sur_basic_question';
+
+    id_question =  Column(Integer,ForeignKey('sur_question.id_question'), index=True, primary_key=True);
+    question = relation('Question', backref='sur_basic_question_id_question');
+    
+    id_basic_data = Column(   Integer,ForeignKey('sur_basic_data.id_basic_data'), nullable=False, index=True) ;
+    question_project_type = relation('BasicData', backref='sur_basic_data_id_basic_data');
+    
+    basicData  = relation('BasicData')  ;  
+    
+    
+    def __init__(self):
+        pass;
+        
+    def __str__(self):
+        return '"%s"' % str(self.id_question )
+    @classmethod
+    def getBasicTextById(cls,id):
+        data = [];
+        if id is not None:
+            
+            #bn = Bundle("mybundle",BasicTextData.id_basic_data,BasicTextData.value,BasicTextData.multi_line,BasicDataType.description,BasicDataType.id_basic_data_type);
+            #data = DBSession.query(bn).join(BasicData).join(BasicDataType).join(BasicTextData).filter(cls.id_question == str(id)).all(); 
+            data = DBSession.query(BasicTextData.id_basic_data,BasicTextData.value,BasicTextData.multi_line,BasicDataType.description,BasicDataType.id_basic_data_type).join(BasicData).join(BasicDataType).join(BasicTextData).filter(cls.id_question == str(id)).all(); 
+            
+            #datad = BasicQuestion()._convertBasicTextToJson( data);
+             
+        return data;
+    @classmethod
+    def convertBasicTextToJson(self,data):
+        value = [];
+        row =1;
+        for d in data:
+            i=0;
+            v = {};
+            for e in d.keys():
+                v[ str(e)] = d[i];
+                i = i+1;
+                
+            if (len (v) >0):                
+                v['row'] = str(row) ; 
+                value.append(v);   
+                row = row +1; 
+                
+        return value;
+             
+    
+     
+
+
+class BasicData(DeclarativeBase):
+
+    __tablename__ = 'sur_basic_data'
+
+    id_basic_data =  Column(Integer, autoincrement=True, primary_key=True)
+    
+    id_basic_data_type = Column(   Integer,ForeignKey('sur_basic_data_type.id_basic_data_type'), nullable=False, index=True) ;
+    basic_data_type = relation('BasicDataType', backref='sur_basic_data_id_basic_data_type');
+    
+    childenText = relation('BasicTextData')  ; 
+    
+    def __init__(self):
+        pass;
+        
+    def __str__(self):
+        return '"%s"' % str(self.id_basic_data )
+    
+    
+    
+     
+             
+class BasicTextData(DeclarativeBase):   
+    __tablename__ = 'sur_text_data';
+
+    id_basic_data =  Column(Integer,ForeignKey('sur_basic_data.id_basic_data'), index=True, primary_key=True);
+    basic_data = relation('BasicData', backref='sur_text_data_id_basic_data');
+    
+    value = Column(String(255),  nullable=False);
+    multi_line  = Column(BIT, nullable=True, default=1) 
+    
+    
+    
+    def __init__(self):
+        self.multi_line = 0;
+        
+    def __str__(self):
+        return '"%s"' % str(self.id_basic_data )
+    
+    

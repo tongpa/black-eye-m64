@@ -21,6 +21,7 @@ from tg import tmpl_context
 from pollandsurvey.widget.movie_form import create_movie_form
 
 import logging;
+#from model.survey import BasicQuestion
 log = logging.getLogger(__name__);
 
 __all__ = ['ScriptModelController']
@@ -57,6 +58,14 @@ class ScriptModelController(BaseController):
         
         return dict(survey=questiontype , total = len(questiontype));
     
+    @expose('json')
+    def getBasicData(self, *args, **kw):
+         
+        BasicQuestion = model.BasicQuestion.getBasicTextById(kw.get('questionid'));
+        BasicQuestion= model.BasicQuestion.convertBasicTextToJson(BasicQuestion);
+       
+        
+        return dict(survey=BasicQuestion , total = len(BasicQuestion));
      
             
     

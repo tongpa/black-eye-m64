@@ -55,8 +55,25 @@ class RootController(BaseController):
         tmpl_context.project_name = "pollandsurvey"
 
     @expose('pollandsurvey.templates.index')
-    def index(self):
+    def index(self, came_from=lurl('/')):
         """Handle the front-page."""
+        
+        
+        
+        if not request.identity:
+            login_counter = request.environ.get('repoze.who.logins', 0) + 1
+            redirect('/login',
+                params=dict(came_from=came_from, __logins=login_counter))
+        userid = request.identity['repoze.who.userid']
+        flash(_('Welcome back, %s!') % userid)
+        
+        groups = request.identity['groups'] 
+        
+        if 'voter' in groups:
+            
+            log.info('voter');
+            return HTTPFound(location='/survey')
+        
         return dict(page='index')
 
     @expose('pollandsurvey.templates.about')

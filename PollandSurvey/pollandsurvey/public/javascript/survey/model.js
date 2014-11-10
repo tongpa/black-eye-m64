@@ -22,6 +22,16 @@ Ext.define('Survey.model.listQuestionType', {
 });
 
 
+Ext.define('Survey.model.listAnswerData', {
+    extend: 'Ext.data.Model',
+    idProperty: 'id_basic_data',    
+    fields: ['id_basic_data',   'value','answer','row' ] 
+    
+});
+
+
+
+
 survey.listQuestionType = new Ext.data.Store({
 	model : 'Survey.model.listQuestionType',
 	storeId : 'listQuestionTypeInStore',
@@ -121,6 +131,50 @@ survey.listProject = new Ext.data.Store({
 	autoSync: true,
 	autoLoad : true
 });
+
+
+survey.listBasicData = new Ext.data.Store({
+	model : 'Survey.model.listAnswerData',
+	storeId:'listBasicDataInStore',
+	pageSize: 100,
+	proxy : {
+		 
+		type: 'ajax',
+		url : '/model/getBasicData',    	
+		api: {
+            read: '/model/getBasicData',
+            create: '/model/createBasicData',
+            update: '/model/createBasicData',
+            destroy: '/model/deleteBasicData'
+        }, 
+        reader:{
+        	type: 'json',
+    		rootProperty : 'survey',
+    		totalProperty : 'total'
+    	},
+        writer: {
+        	type: 'json' 
+        	 
+           // writeAllFields: false ,
+           // allowSingle :false 
+             
+        },
+        listeners: {
+            exception: function(proxy, response, operation){
+               /* Ext.MessageBox.show({
+                    title: 'REMOTE EXCEPTION',
+                    msg: operation.getError(),
+                    icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.Msg.OK
+                });*/
+            } 
+        }
+	},
+	autoSync: true,
+	autoLoad : false
+});
+
+
 
 /*
 Ext.define('Survey.store.listProjectid', {

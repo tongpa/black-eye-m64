@@ -24,6 +24,7 @@ Ext.define('survey.view.list.GridAnswer', {
 	extend: 'Ext.grid.Panel',
 	width : '100%',
 	height :  '100%',
+	store : survey.listBasicData,
 	bufferedRenderer: false,
 	disableSelection : true,
 	forceFit: true,
@@ -37,20 +38,43 @@ Ext.define('survey.view.list.GridAnswer', {
                'Ext.toolbar.TextItem'
            ],
     collapsible:false ,
+    setLoad : function(idquestion) {
+    	
+    	survey.listBasicData.load({
+    		params : {
+    			questionid : '1'
+    		},
+    		scope : this
+    	});
+    },
+    selType: 'cellmodel',
+   
     initComponent: function() {
     	
     	var main = this;
-    	main.editing = Ext.create('Ext.grid.plugin.CellEditing');
-    	
+    	main.editing = Ext.create('Ext.grid.plugin.CellEditing',{clicksToMoveEditor: 1});    	
     	main.plugins =  [main.editing];
-    //	main.store = survey.listProject; 
+    	var row = 1;
     	main.columns = [
-    	       	       
-    	    	    {header: 'No.',  width : '30%' , sortable: false }  ,
-    	    	    {header: 'Choose',  width : '20%',   sortable: false}  ,
-    	    	    {header: 'Answer',  width : '30%' , sortable: false }  
+    	                
+    	    	   	//{xtype: 'rownumberer', header: 'No.', width : '10%', sortable: false },//,width : '10%'},
+    	    	   	{header: 'No.', width : '9%', sortable: false, dataIndex: 'row'},
+    	         	{header: 'Choose', dataIndex: 'value', editor: 'textfield',  width : '70%',   sortable: false}  , 
+    	    	 
+    	    	    {
+        	            xtype: 'checkcolumn',
+        	            header: 'Answer?',
+        	            dataIndex: 'answer',
+        	            width: '20%',
+        	           // width: 30,
+        	             sortable: false,
+        	            editor: {
+        	                xtype: 'checkbox',
+        	                cls: 'x-grid-checkheader-editor'
+        	            }, sortable: false 
+    	    	    }
     	            
-    	        ]
+    	        ];
     	
     	main.dockedItems = [{
             xtype: 'toolbar',
@@ -60,21 +84,57 @@ Ext.define('survey.view.list.GridAnswer', {
                 scope: this,
                 handler: this.onAddClick
             }, {
+            	itemId: 'removeAnswer',
                 iconCls: 'icon-delete',
                 text: 'Delete',
-                disabled: true,
-                itemId: 'delete',
+                //disabled: true,
+                parent : main,
                 scope: this,
                 handler: this.onDeleteClick
             }]
-        }]
-    	
+        }]  	
   
     	 
-    	this.callParent(arguments);
-    	
+    	this.callParent(arguments);    	
      
-    } 
+    } ,
+    listeners: {
+    	'click' : function(){
+    		alert('test');
+    	},
+        'selectionchange': function(view, records) {
+        	alert('test');
+        	//this.down('#removeAnswer').setDisabled(!records.length);
+        }
+    },
+    onAddClick : function(bt,ev){
+    	var r = Ext.create('Survey.model.listAnswerData', {
+    		id_basic_data: '',
+    		value: 'answer',
+    		answer: true,
+    		row:   ''
+        });
+
+       // 
+    	survey.listBasicData.insert(0, r);
+        //rowEditing.startEdit(0, 0);
+    },
+    onDeleteClick : function(bt,ev){
+    	//debugger;
+    	var sm = bt.parent.getSelectionModel();
+       // rowEditing.cancelEdit();
+        bt.parent.store.remove(sm.getSelection());
+        
+        //survey.listBasicData.remove(sm.getSelection());
+        if ( bt.parent.store.getCount() > 0) {
+        	sm.select(0);
+        }
+        debugger;
+        /*
+        if (survey.listBasicData.getCount() > 0) {
+            sm.select(0);
+        }*/
+    }
 });
 
 
@@ -113,7 +173,8 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		
 		main.choose = Ext.create('survey.view.list.GridAnswer');
 		
-		
+//		
+		main.choose.setLoad();
 		main.items = [main.questionid, main.question, main.fieldSetsHelp,main.choose   ];  
 		
 		
@@ -316,7 +377,7 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
     createQuestion : function(bt,ev){
     	//debugger;
     	bt.parentForm.winAddQuestion.setTitle( 'Add Question' + '-' + bt.record.data.description);
-    	alert(bt.record.data.description);
+    	 
     	bt.parentForm.winAddQuestion.show();
     }
     
