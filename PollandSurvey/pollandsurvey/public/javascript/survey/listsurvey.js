@@ -89,6 +89,8 @@ Ext.application({
 				    		items : [manage_project,tab_manage]
 				    	});
 						
+				    	manage_question.setLoad(record);
+				    	
 						tab_project.add(panel_manage).show();
 					
 					}
@@ -120,7 +122,7 @@ Ext.application({
     	// Ext.create('Ext.container.Container', {
     		 renderTo : 'maintenance-app' ,
     		 width : '100%',
-    		 height : 600,
+    		 height : 1000,
              layout: {
                  type: 'border'
              },

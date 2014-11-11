@@ -66,6 +66,15 @@ class ScriptModelController(BaseController):
        
         
         return dict(survey=BasicQuestion , total = len(BasicQuestion));
+    
+    
+    @expose('json')
+    def getQuestionsData(self, *args, **kw):
+        pid = kw.get('projectid');
+        print pid;
+        question = model.Question.getQuestionByProjectId(pid);
+        
+        return dict(survey=question , total = len(question));
      
             
     

@@ -21,7 +21,7 @@ from sqlalchemy.orm import relation, synonym, Bundle
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.dialects.mysql import BIT
 from pollandsurvey.model import DeclarativeBase, metadata, DBSession
-__all__ = ['GroupVariables', 'QuestionType', 'QuestionProjectType' ,'BasicDataType', 'QuestionProject','LanguageLabel','Variables','BasicData','BasicQuestion','BasicTextData','BasicTextData']
+__all__ = ['GroupVariables', 'QuestionType', 'QuestionProjectType' ,'BasicDataType', 'QuestionProject','LanguageLabel','Variables','BasicData','BasicQuestion','BasicTextData','BasicTextData','Question']
 
 
 class LanguageLabel(DeclarativeBase):
@@ -232,7 +232,7 @@ class Question(DeclarativeBase):
     question = Column(String(255),  nullable=False);
     help_message = Column(String(255),  nullable=False);
     text_label = Column(String(255),  nullable=False);
-    
+    order =  Column(Integer   );
     
     active  = Column(BIT, nullable=True, default=1);
     
@@ -249,7 +249,17 @@ class Question(DeclarativeBase):
             #return DBSession.query(cls).get(act); 
         else:
             return DBSession.query(cls).all();
-    
+        
+    @classmethod
+    def getQuestionByProjectId(cls,pid):
+        datas = [];
+        if pid is not None:
+            data =  DBSession.query(cls,QuestionType).join(QuestionType).filter(cls.id_question_project == str(pid).decode('utf-8')).all();
+            for d,e in data:
+                d.question_type_name = e.description;
+                datas.append(d); 
+        
+        return datas;
 
 class Variables(DeclarativeBase):
     __tablename__ = 'sur_variables'
@@ -353,7 +363,7 @@ class BasicQuestion(DeclarativeBase):
     id_question =  Column(Integer,ForeignKey('sur_question.id_question'), index=True, primary_key=True);
     question = relation('Question', backref='sur_basic_question_id_question');
     
-    id_basic_data = Column(   Integer,ForeignKey('sur_basic_data.id_basic_data'), nullable=False, index=True) ;
+    id_basic_data = Column(   Integer,ForeignKey('sur_basic_data.id_basic_data') , index=True, primary_key=True) ;
     question_project_type = relation('BasicData', backref='sur_basic_data_id_basic_data');
     
     basicData  = relation('BasicData')  ;  
