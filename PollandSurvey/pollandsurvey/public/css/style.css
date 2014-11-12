@@ -58,7 +58,9 @@
 .icon-delete {
     background-image: url('../img/survey/delete.png') !important;
 }
-
+.icon-edit {
+    background-image: url('../img/survey/edit.png') !important;
+}
 
 /******/
 .app-header .x-panel-body {

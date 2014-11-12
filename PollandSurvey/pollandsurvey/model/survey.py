@@ -21,7 +21,7 @@ from sqlalchemy.orm import relation, synonym, Bundle
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.dialects.mysql import BIT
 from pollandsurvey.model import DeclarativeBase, metadata, DBSession
-__all__ = ['GroupVariables', 'QuestionType', 'QuestionProjectType' ,'BasicDataType', 'QuestionProject','LanguageLabel','Variables','BasicData','BasicQuestion','BasicTextData','BasicTextData','Question']
+__all__ = ['GroupVariables', 'QuestionType', 'QuestionProjectType' ,'BasicDataType', 'QuestionProject','LanguageLabel','Variables','BasicData','BasicQuestion','BasicTextData' ,'Question']
 
 
 class LanguageLabel(DeclarativeBase):
@@ -366,6 +366,7 @@ class BasicQuestion(DeclarativeBase):
     id_basic_data = Column(   Integer,ForeignKey('sur_basic_data.id_basic_data') , index=True, primary_key=True) ;
     question_project_type = relation('BasicData', backref='sur_basic_data_id_basic_data');
     
+    answer   = Column(BIT, nullable=True, default=0);
     basicData  = relation('BasicData')  ;  
     
     
@@ -381,7 +382,11 @@ class BasicQuestion(DeclarativeBase):
             
             #bn = Bundle("mybundle",BasicTextData.id_basic_data,BasicTextData.value,BasicTextData.multi_line,BasicDataType.description,BasicDataType.id_basic_data_type);
             #data = DBSession.query(bn).join(BasicData).join(BasicDataType).join(BasicTextData).filter(cls.id_question == str(id)).all(); 
-            data = DBSession.query(BasicTextData.id_basic_data,BasicTextData.value,BasicTextData.multi_line,BasicDataType.description,BasicDataType.id_basic_data_type).join(BasicData).join(BasicDataType).join(BasicTextData).filter(cls.id_question == str(id)).all(); 
+            
+            #data = DBSession.query(BasicTextData.id_basic_data,BasicTextData.value,BasicTextData.multi_line,BasicDataType.description,BasicDataType.id_basic_data_type).join(BasicData).join(BasicDataType).join(BasicTextData).filter(cls.id_question == str(id)).all(); 
+            
+            data =  DBSession.query(cls.id_question,cls.answer,BasicTextData.id_basic_data,BasicTextData.value,BasicTextData.multi_line,BasicDataType.description,BasicDataType.id_basic_data_type ).join(BasicData).join(BasicTextData).join(BasicDataType).filter(cls.id_question == str(id)).all();
+            
             
             #datad = BasicQuestion()._convertBasicTextToJson( data);
              
