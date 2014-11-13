@@ -195,9 +195,13 @@ Ext.define('survey.view.list.GridAnswer', {
            ],
     collapsible:false ,
     setLoadData : function(questionrecord) {
+    	 
+    	survey.listBasicData.removeAll();
     	this.record = questionrecord;
+    	//debugger;
     	if(questionrecord != null){
-	    	survey.listBasicData.load({
+	    
+    		survey.listBasicData.load({
 	    		params : {
 	    			questionid : questionrecord.id
 	    		},
@@ -205,6 +209,7 @@ Ext.define('survey.view.list.GridAnswer', {
 	    	});
 	    	
     	}
+    	
     },
     selType: 'cellmodel',
    
@@ -337,14 +342,14 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
     },
     setLoadData : function (questionrecord){
     	
-    	
+  
     	
     	form = this;
-    	form.record = questionrecord;
+		form.record = questionrecord;
 		form.getForm().reset();
-		form.getForm().loadRecord(questionrecord);
-		form.currentRecord = questionrecord;
-    	
+		if(questionrecord != null){
+			form.getForm().loadRecord(questionrecord);
+		}
 		//load grid question
 		form.choose.setLoadData(questionrecord);
     },
@@ -633,7 +638,7 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
 		main.items = [  main.gridQuestion];
 		
 		
-		
+		//refresh menu
 		survey.listQuestionType.load({
 			callback :  function(records, operation, success) {
 		    	
@@ -669,6 +674,8 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
     	bt.parentForm.winAddQuestion.setTitle( 'Add Question' + '-' + bt.record.data.description);
     	 
     	bt.parentForm.winAddQuestion.show();
+    	 
+    	bt.parentForm.winAddQuestion.setLoadData(null);
     }
     
     
@@ -712,7 +719,7 @@ function initializePatientDragZone(v) {
 
 
 function initializeHospitalDropZone(v) {
-	debugger;
+	//debugger;
     var gridView = v,
         grid = gridView.up('gridpanel');
 
