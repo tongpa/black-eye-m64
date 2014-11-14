@@ -180,8 +180,8 @@ Ext.define('survey.view.list.GridAnswer', {
 	width : '100%',
 	height :  '100%',
 	store : survey.listBasicData,
-	bufferedRenderer: false,
-	disableSelection : true,
+	//bufferedRenderer: false,
+	
 	forceFit: true,
 	frame: true,
 	record: null,
@@ -224,11 +224,16 @@ Ext.define('survey.view.list.GridAnswer', {
     	main.plugins =  [main.editing];
     	var row = 1;
     	main.columns = [
-    	                
-    	            {header: 'id', width : '9%', sortable: false, dataIndex: 'id_question' ,hidden : true},
-    	    	   	{header: 'No.', width : '9%', sortable: false, dataIndex: 'row'},
-    	         	{header: 'Choose', dataIndex: 'value', editor: 'textfield',  width : '70%',   sortable: false}  , 
-    	         
+    	                	{xtype: 'rownumberer'},
+    	            {header: 'id', width : '9%', sortable: false, dataIndex: 'id_question' ,hidden : true,menuDisabled: true},
+    	    	   //	{header: 'No.', width : '9%', sortable: false, dataIndex: 'seq',menuDisabled: true},
+    	         	{header: 'Choose', dataIndex: 'value', 
+    	    	   		field : {
+    	    	   			type : 'textfield'
+    	    	   		},
+    	    	   		//editor: 'textfield',  
+    	    	   		width : '70%',   sortable: false,menuDisabled: true}  , 
+    	          
     	    	    {
         	            xtype: 'checkcolumn',
         	            header: 'Answer?',
@@ -260,7 +265,7 @@ Ext.define('survey.view.list.GridAnswer', {
         	            	  
         	            	 
         	             }
-    	    	    }  
+    	    	    }   
     	            
     	        ];
     	
@@ -285,46 +290,58 @@ Ext.define('survey.view.list.GridAnswer', {
   
     	 
     	this.callParent(arguments);    	
-     
+    	//this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
     } ,
+    
     listeners: {
     	'click' : function(){
-    		alert('test');
+    		//alert('test');
     	},
         'selectionchange': function(view, records) {
-        	alert('test');
+        	//alert('test');
         	//this.down('#removeAnswer').setDisabled(!records.length);
         }
     },
     onAddClick : function(bt,ev){
-    	var r = Ext.create('Survey.model.listAnswerData', {
-    		id_basic_data: '0',
+    	
+    	bt.parent.id_question = 0;
+    	if(bt.parent.record != null){
+    		bt.parent.id_question = bt.parent.record;
+    	}
+    	console.log(this.store.data.length);
+    	 
+    	var r = new Survey.model.listAnswerData({
+    		 
     		value: 'answer',
     		answer: false,
-    		row:   '',
-    		id_question : bt.parent.record.id
-        });
+    		seq:   this.store.data.length +1
+    		,id_question : bt.parent.id_question 
+    	});
     	 
-       // 
-    	survey.listBasicData.insert(0, r);
-        //rowEditing.startEdit(0, 0);
+    	
+    	this.editing.cancelEdit();
+    	rows = this.store.insert(this.store.data.length, r);
+    	console.log(rows);
+    	 
+    	this.editing.startEditByPosition({
+            row: this.store.data.length -1 ,
+            column: 1
+        });
+        
     },
     onDeleteClick : function(bt,ev){
-    	//debugger;
-    	var sm = bt.parent.getSelectionModel();
-       // rowEditing.cancelEdit();
-        bt.parent.store.remove(sm.getSelection());
-        
-        //survey.listBasicData.remove(sm.getSelection());
-        if ( bt.parent.store.getCount() > 0) {
-        	sm.select(0);
+    	
+    	var recordSelected = this.getView().getSelectionModel().getSelection()[0];
+        if (recordSelected) {
+            this.store.remove(recordSelected);
+            
+            
+            
         }
-        debugger;
-        /*
-        if (survey.listBasicData.getCount() > 0) {
-            sm.select(0);
-        }*/
+        
+        
     }
+    
 });
 
 
@@ -341,8 +358,6 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
         labelWidth: 100
     },
     setLoadData : function (questionrecord){
-    	
-  
     	
     	form = this;
 		form.record = questionrecord;
@@ -384,6 +399,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		
 		
 		
+		
 		main.btsave = Ext.create('Ext.Button',{		 
 			text : 'Save',
 			//iconCls : 'project-add',
@@ -393,6 +409,35 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 				var form = this.up('form').getForm();
 	            if (form.isValid()) {
 	            	
+	            	var data =survey.listBasicData.getData();
+	            	/*
+	        		survey.listBasicData.each(function(record){ 
+	        	 		 
+	        			data.push(record.data);
+	        	 	});*/
+	        		console.log(data);
+	            	
+	        		
+	        		////////////////////////////////////////////////////
+	        		var dataObj = null;
+
+	        		Ext.Ajax.request({
+	        		    url:'/survey/addQuestion',
+	        		    params: { foo: data },
+	        		    failure: function(response, options) {},
+	        		    success: function(response, options) {
+	        		        //assuming the response is a JSON string...
+	        		        dataObj = Ext.decode(response.responseText);
+
+	        		        //add any other logic you want here
+	        		    }
+	        		}); 
+	        		
+	        		
+	        		
+	        		////////////////////////////////////////////////////
+	        		
+	        		
 	            	
 	                form.submit({
 	                    success: function(form, action) {

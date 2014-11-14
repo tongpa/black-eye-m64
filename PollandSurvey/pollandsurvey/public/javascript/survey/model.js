@@ -25,7 +25,7 @@ Ext.define('Survey.model.listQuestionType', {
 Ext.define('Survey.model.listAnswerData', {
     extend: 'Ext.data.Model',
     idProperty: 'id_basic_data',    
-    fields: ['id_basic_data',   'value','answer','row','id_question' ] 
+    fields: ['id_basic_data',   'value','answer','seq','id_question' ] 
     
 });
 
@@ -89,7 +89,7 @@ survey.listBasicData = new Ext.data.Store({
 		url : '/model/getBasicData',    	
 		api: {
             read: '/model/getBasicData',
-            create: '/model/createBasicData',
+            create: '/survey/createBasicData',
             update: '/model/createBasicData',
             destroy: '/model/deleteBasicData'
         }, 
@@ -159,7 +159,7 @@ survey.listQuestionsData = new Ext.data.Store({
         }
 	},
 	autoSync: true,
-	autoLoad : false
+	autoLoad : true
 });
 
 
