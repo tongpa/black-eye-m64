@@ -151,7 +151,23 @@ class SurveyController(BaseController):
         sys.setdefaultencoding("utf-8");
         self.success = True;
         self.message = "5555";
+        log.info(request);
+        log.info(args);
+        log.info(kw);
         
         return dict(success=self.success, message = self.message);
+    
+    @expose('json')
+    def createBasicData(self, came_from=lurl('/'), *args, **kw):
+        reload(sys);
+        sys.setdefaultencoding("utf-8");
+        self.success = True;
+        self.message = "5555";
+        log.info(request);
+        log.info(args);
+        log.info(kw);
+        
+        return dict(success=self.success, message = self.message);
+    
         
     

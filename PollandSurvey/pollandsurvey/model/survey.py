@@ -403,7 +403,7 @@ class BasicQuestion(DeclarativeBase):
                 i = i+1;
                 
             if (len (v) >0):                
-                v['row'] = str(row) ; 
+                v['seq'] = str(row) ; 
                 value.append(v);   
                 row = row +1; 
                 
