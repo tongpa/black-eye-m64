@@ -151,9 +151,17 @@ class SurveyController(BaseController):
         sys.setdefaultencoding("utf-8");
         self.success = True;
         self.message = "5555";
-        log.info(request);
-        log.info(args);
-        log.info(kw);
+        
+        self.dataValue = kw;
+        
+        if not request.identity:
+            login_counter = request.environ.get('repoze.who.logins', 0) + 1
+            redirect('/login',
+                params=dict(came_from=came_from, __logins=login_counter))
+        
+        user =  request.identity['user']; 
+        
+        model.Question.createQuestion(self.dataValue,user.user_id);
         
         return dict(success=self.success, message = self.message);
     

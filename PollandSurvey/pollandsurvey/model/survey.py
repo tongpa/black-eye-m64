@@ -260,6 +260,23 @@ class Question(DeclarativeBase):
                 datas.append(d); 
         
         return datas;
+    
+    @classmethod
+    def createQuestion(cls, values,user_id):
+        
+        question = Question();
+         
+        question.question = values.get('question');
+        question.help_message = values.get('help_message');
+        question.id_project = values.get('id_project');
+        question.id_question_type = values.get('id_question_type');
+        question.text_label = '';
+        question.user_id = user_id;
+        
+        print "save object";
+        
+        
+        
 
 class Variables(DeclarativeBase):
     __tablename__ = 'sur_variables'

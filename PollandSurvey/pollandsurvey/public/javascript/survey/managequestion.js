@@ -4,6 +4,16 @@ Ext.define('survey.view.list.Project.fieldQuestionId',{
 	name : 'id_question'
 });
 
+Ext.define('survey.view.list.Project.fieldProjectId',{
+	extend: 'Ext.form.field.Hidden',
+	name : 'id_project'
+});
+
+Ext.define('survey.view.list.Project.fieldQuestionTypeId',{
+	extend: 'Ext.form.field.Hidden',
+	name : 'id_question_type'
+});
+
 Ext.define('survey.view.list.Project.fieldQuestion',{
 	extend: 'Ext.form.field.TextArea',
 	name : 'question',
@@ -357,14 +367,31 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
         anchor: '100%',
         labelWidth: 100
     },
-    setLoadData : function (questionrecord){
+    setLoadData : function (projectrecord,questionrecord, questiontyperecord){
     	
     	form = this;
+    	form.projectrecord = projectrecord;
 		form.record = questionrecord;
 		form.getForm().reset();
+		
 		if(questionrecord != null){
 			form.getForm().loadRecord(questionrecord);
 		}
+		
+		if(projectrecord != null){
+			 	
+			form.projectid.setValue(projectrecord.id);
+		}
+		
+		
+		if(questiontyperecord != null){
+		 	
+			form.questiontypeid.setValue(questiontyperecord.id);
+		}
+		
+		debugger;
+		console.log("set data add question");
+		console.log(questionrecord);
 		//load grid question
 		form.choose.setLoadData(questionrecord);
     },
@@ -375,6 +402,12 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		main.question = Ext.create('survey.view.list.Project.fieldQuestion',{msgTarget: 'side'});
 		main.help = Ext.create('survey.view.list.Project.fieldHelp',{msgTarget: 'side'});
 		
+		main.projectid = Ext.create('survey.view.list.Project.fieldProjectId',{msgTarget: 'side'});
+		
+		
+		main.questiontypeid  = Ext.create('survey.view.list.Project.fieldQuestionTypeId');
+		
+		main.dataGrid = Ext.create('Ext.form.field.Hidden',{name : 'datagrid'});
 		main.fieldSetsHelp = Ext.create('Ext.form.FieldSet',{
 			title: 'help',
 	        collapsible: true,
@@ -393,7 +426,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		
 //		
 		 
-		main.items = [main.questionid, main.question, main.fieldSetsHelp,main.choose   ];  
+		main.items = [main.questionid,main.projectid,main.questiontypeid ,main.dataGrid, main.question, main.fieldSetsHelp,main.choose   ];  
 		
 		
 		
@@ -409,18 +442,19 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 				var form = this.up('form').getForm();
 	            if (form.isValid()) {
 	            	
-	            	var data =survey.listBasicData.getData();
-	            	/*
+	            	//var data =survey.listBasicData.getData();
+	            	var data = [];
 	        		survey.listBasicData.each(function(record){ 
 	        	 		 
 	        			data.push(record.data);
-	        	 	});*/
+	        	 	});
 	        		console.log(data);
 	            	
+	        		main.dataGrid.setValue(Ext.encode(data ));
 	        		
 	        		////////////////////////////////////////////////////
-	        		var dataObj = null;
-
+	    /*    		var dataObj = null;
+ 
 	        		Ext.Ajax.request({
 	        		    url:'/survey/addQuestion',
 	        		    params: { foo: data },
@@ -432,8 +466,8 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 	        		        //add any other logic you want here
 	        		    }
 	        		}); 
-	        		
-	        		
+	        	
+	      */  		
 	        		
 	        		////////////////////////////////////////////////////
 	        		
@@ -448,7 +482,8 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 	                    	    record.dirty = false;
 	                    	  }
 	                    	});*/
-	                    	survey.listBasicData.sync();
+	                    	//it is ok.
+	                    	//survey.listBasicData.sync();
 	                    	
 	                    	main.closeWindow(main,bt);
 	                    	
@@ -523,8 +558,9 @@ Ext.define('survey.view.list.Project.winAddQuestion',{
         titlePosition: 2,
         titleAlign: 'center' 
     },
-    setLoadData : function(questionrecord){
-    	this.panelQuestion.setLoadData(questionrecord);
+    
+    setLoadData : function(projectrecord,questionrecord, questiontyperecord){
+    	this.panelQuestion.setLoadData(projectrecord,questionrecord, questiontyperecord);
     },
     
 	initComponent: function() {
@@ -575,7 +611,12 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
     isCreate : true,
     parentForm : null,
     setLoad : function (projectRecord){
+    	
+    	this.projectid = '';
+    	this.record = projectRecord;
     	if (projectRecord != null && projectRecord.id != null) {
+    		
+    		this.projectid = projectRecord.id;
 	    	survey.listQuestionsData.load({
 				params : {
 	    			projectid : projectRecord.id
@@ -588,6 +629,9 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
 		
 		var main = this;
 		//main.add111 = Ext.create('survey.view.list.Project.AddQuestion',{msgTarget: 'side'});
+		
+		main.projectid = Ext.create('survey.view.list.Project.fieldProjectId');
+		
 		
 		main.winAddQuestion = Ext.create('survey.view.list.Project.winAddQuestion',{
 			url : '/survey/addQuestion',
@@ -639,7 +683,8 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
 					
 					
 					main.winAddQuestion.show();
-					main.winAddQuestion.setLoadData(record);
+					console.log(record);
+					main.winAddQuestion.setLoadData(main.record,  record, null);
 					//survey.listProject.reload();
 		        }
 			}
@@ -680,7 +725,7 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
 		
 		
 		
-		main.items = [  main.gridQuestion];
+		main.items = [main.projectid,  main.gridQuestion];
 		
 		
 		//refresh menu
@@ -715,12 +760,14 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
 		this.callParent();
     } ,
     createQuestion : function(bt,ev){
-    	//debugger;
+    	 
     	bt.parentForm.winAddQuestion.setTitle( 'Add Question' + '-' + bt.record.data.description);
     	 
     	bt.parentForm.winAddQuestion.show();
+    	
+    	console.log('Add Question');
     	 
-    	bt.parentForm.winAddQuestion.setLoadData(null);
+    	bt.parentForm.winAddQuestion.setLoadData(bt.parentForm.record, null, bt.record);
     }
     
     
