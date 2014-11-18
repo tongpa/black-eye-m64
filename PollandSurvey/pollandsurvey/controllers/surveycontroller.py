@@ -219,14 +219,17 @@ class SurveyController(BaseController):
         return dict(success=self.success, message = self.message);
     
     @expose()
-    def updateQuestionData(self ,_dc,endswith, **kw):
+    def updateQuestionData(self  , **kw):
         reload(sys);
         sys.setdefaultencoding("utf-8");
         self.success = True;
         self.message = "5555";
-        log.info('-----------------------');
-       # log.info(request.method );
+        log.info('---------1--------------');
+        #log.info(request.method );
         #log.info(request.params );
+        
+        for d in request:
+            log.info(d);
         log.info('-----------------------');
        
         log.info(kw);
