@@ -131,9 +131,9 @@ survey.listQuestionsData = new Ext.data.Store({
 		url : '/model/getQuestionsData',    	
 		api: {
             read: '/model/getQuestionsData',
-            create: '/model/createQuestionData',
-            update: '/model/createQuestionData',
-            destroy: '/model/deleteQuestionData'
+            create: '/survey/createQuestionData',
+            update: '/survey/updateQuestionData',
+            destroy: '/survey/deleteQuestionData'
         }, 
         reader:{
         	type: 'json',
@@ -158,7 +158,7 @@ survey.listQuestionsData = new Ext.data.Store({
             } 
         }
 	},
-	autoSync: true,
+	autoSync: false,
 	autoLoad : true
 });
 

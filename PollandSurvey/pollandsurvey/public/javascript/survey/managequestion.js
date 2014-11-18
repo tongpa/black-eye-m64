@@ -56,27 +56,48 @@ Ext.define ('survey.view.list.GridQuestions',{
 			        enableDrop: true,
 			          enableDrag: true,
 			        dragGroup: 'groupQuestion1',
-			        dropGroup: 'groupQuestion1',
-			        dragText: '<tpl for=".">' +
+			        dropGroup: 'groupQuestion1' 
+			       /*, dragText: '<tpl for=".">' +
 				                '<div class="patient-source"><table><tbody>' +
-			                    '<tr><td class="patient-label">Question</td><td class="patient-name">{0}</td></tr>' +
-			                    '<tr><td class="patient-label">Question Type</td><td class="patient-name">{1}</td></tr>' + 
+			                    '<tr><td class="patient-label">Question</td><td class="patient-name">test</td></tr>' +
+			                    '<tr><td class="patient-label">Question Type</td><td class="patient-name">Single Choice</td></tr>' + 
 			                 
 				                '</tbody></table></div>' +
-				             '</tpl>'
+				             '</tpl>'*/
 			        	//'Drag and drop to reorganize'
 			    },
 		           
 	             listeners: {
 	                 drop: function(node, data, overModel, dropPosition, eOpts) {
 	                	 console.log('drop');
-	                	// debugger;
+	                	
+	                	
+	                	if(dropPosition == 'before'){
+	                		console.log('before');
+	                	}
+	                	else {
+	                		if (dropPosition == 'after'){
+	                			console.log('after');
+	                		}
+	                	}
+	                	count_order =1;
+	                	this.store.each(function(record){ 
+	           			 
+	            			 
+	            			record.set('order', count_order);
+	            			count_order =count_order+1;
+	            			
+	            		});
+	            		
+	                	
+	                	
+	                	 
 	                	 
 	                	 //if(data.records[0].isLeaf()){ 	                		 if(data.records[0].parentNode.data.id!=overModel.parentNode.data.id) 	                		              return false;}
 	                	 
 	                     //var dropOn = dropRec ? ' ' + dropPosition + ' ' + dropRec.get('question') : ' on empty view';
 	                     //Ext.example.msg("Drag from left to right", 'Dropped ' + data.records[0].get('question') + dropOn);
-	                 }
+	                 } 
 	             }
 		
 		};
@@ -174,7 +195,13 @@ Ext.define ('survey.view.list.GridQuestions',{
     	render: function(c,m){
     		initializePatientDragZone(c);
         	console.log('render');
-        }  
+        },
+        beforeselect : function(c,record,index,eOpts){
+        	console.log('beforeselect');
+        	//debugger;
+        	
+        	
+        }
          
     }
 });
