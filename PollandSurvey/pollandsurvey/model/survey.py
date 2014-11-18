@@ -242,6 +242,10 @@ class Question(DeclarativeBase):
     def __str__(self):
         return '"%s"' % (self.question )
     
+    def save (self):
+        DBSession.add(self); 
+        DBSession.flush() ;
+        
     @classmethod
     def getAll(cls,act):
         if act is not None:
@@ -268,11 +272,35 @@ class Question(DeclarativeBase):
          
         question.question = values.get('question');
         question.help_message = values.get('help_message');
-        question.id_project = values.get('id_project');
+        question.id_question_project = values.get('id_project');
         question.id_question_type = values.get('id_question_type');
         question.text_label = '';
         question.user_id = user_id;
+        question.order = 3;
+        #question.save();
         
+        
+        for basic_datas in values.get('datagrid'):
+            print basic_datas;
+            """"
+            basicData = BasicData();
+            basicData.id_basic_data_type = 1;
+            basicData.save();
+            
+            basicText = BasicTextData();
+            basicText.id_basic_data = basicData.id_basic_data;
+            basicText.value = basic_datas.get('value');
+            basicText.save();
+            
+            basicQuestion = BasicQuestion();
+            basicQuestion.id_question = question.id_question;
+            basicQuestion.id_basic_data = basicData.id_basic_data;
+            basicQuestion.answer =    ({True: True, False: False}[ basic_datas.get('value') in 'true']);
+            basicQuestion.order = basic_datas.get('seq');
+            
+            basicQuestion.save();
+            """
+            
         print "save object";
         
         
@@ -384,6 +412,7 @@ class BasicQuestion(DeclarativeBase):
     question_project_type = relation('BasicData', backref='sur_basic_data_id_basic_data');
     
     answer   = Column(BIT, nullable=True, default=0);
+    order =  Column(Integer   ); 
     basicData  = relation('BasicData')  ;  
     
     
@@ -392,6 +421,10 @@ class BasicQuestion(DeclarativeBase):
         
     def __str__(self):
         return '"%s"' % str(self.id_question )
+    
+    def save (self):
+        DBSession.add(self); 
+        DBSession.flush() ;
     @classmethod
     def getBasicTextById(cls,id):
         data = [];
@@ -447,7 +480,9 @@ class BasicData(DeclarativeBase):
     def __str__(self):
         return '"%s"' % str(self.id_basic_data )
     
-    
+    def save (self):
+        DBSession.add(self); 
+        DBSession.flush() ;
     
      
              
@@ -467,5 +502,9 @@ class BasicTextData(DeclarativeBase):
         
     def __str__(self):
         return '"%s"' % str(self.id_basic_data )
+    
+    def save (self):
+        DBSession.add(self); 
+        DBSession.flush() ;
     
     

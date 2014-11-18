@@ -389,7 +389,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 			form.questiontypeid.setValue(questiontyperecord.id);
 		}
 		
-		debugger;
+//		debugger;
 		console.log("set data add question");
 		console.log(questionrecord);
 		//load grid question
