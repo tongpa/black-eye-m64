@@ -13,9 +13,9 @@ Ext.define('company.form.fieldCompanyName',{
 
 Ext.define('company.form.fieldBusinessType',{
 	extend: 'Ext.form.field.Text',
-	name : 'busines_type',
-	fieldLabel: 'Business Type',
-	allowBlank: false 
+	name : 'business_type',
+	fieldLabel: 'Business Type' 
+	
 });
 
 Ext.define('company.form.fieldTelephone',{
@@ -53,8 +53,8 @@ Ext.define('company.form.fieldPersonalContact',{
 	extend: 'Ext.form.field.TextArea',
 	name : 'personal_contact',
 	fieldLabel: 'Personal Contact',
-	grow      : true,
-	allowBlank: false 
+	grow      : true 
+	
 }); 
 
 Ext.define('company.form.fieldPhoneContact',{
@@ -276,6 +276,18 @@ Ext.define('company.listCompany',{
 			handler : function(bt,ev){
 				var form = this.up('form').getForm();
 	            if (form.isValid()) {
+	             
+	            	var values = form.getValues();
+	            	Ext.Ajax.request({
+	              		url		: '/WebCompanys/company/addCompany',
+	                	method  : 'POST',
+	                	jsonData: values,	
+	                	success: function(response){
+	                	    	//store.load();
+	                		}
+	                	});
+	             
+	           /*
 	                form.submit({
 	                    success: function(form, action) {
 	                    	
@@ -297,7 +309,9 @@ Ext.define('company.listCompany',{
 	                        
 	                    }
 	                });
+	                */
 	            }
+	            
 			}
 		});
 		

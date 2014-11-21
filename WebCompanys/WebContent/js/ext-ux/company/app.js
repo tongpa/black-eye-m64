@@ -29,7 +29,7 @@ Ext.application({
     	
     	console.log('app company');
      
-    	var listCompany = Ext.create('company.listCompany',{url : '../company/create'});
+    	var listCompany = Ext.create('company.listCompany',{url : '/WebCompanys/company/addCompany'});
     	
     	
     	Ext.create('Ext.container.Viewport', {
