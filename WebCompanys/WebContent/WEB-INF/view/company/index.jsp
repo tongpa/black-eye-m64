@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 
-<script type="text/javascript" src="../js/ext-ux/include-ext.js"></script>
+<script type="text/javascript" src="/WebCompanys/js/ext-ux/include-ext.js"></script>
 <!--<script type="text/javascript" src="../js/ext-ux/company/app.js"></script>   --> 
 
 
@@ -26,5 +26,5 @@
 <div id = 'view-port'></div>
 </body>
 
-<script type="text/javascript" src="../js/ext-ux/include-ux.js"></script>
+<script type="text/javascript" src="/WebCompanys/js/ext-ux/include-ux.js"></script>
 </html>
