@@ -28,11 +28,11 @@ import com.jobsmatcher.company.model.Position;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Controller
-@RequestMapping(value = "position")
+@RequestMapping(value = "job")
 public class PositionController {
 	
 	@Autowired
-	private PositionDao positionDao;
+	public PositionDao positionDao;
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView index() {
@@ -49,10 +49,14 @@ public class PositionController {
 	
 	@RequestMapping(value = "search", method = RequestMethod.GET)
 	@ResponseBody
-    public Map<String, List<Position>> search() {
-		Map<String, List<Position>> books = new HashMap<String, List<Position>>();
+    public Map<String, Object> search() {
+		//Map<String, List<Position>> books = new HashMap<String, List<Position>>();
 		
-		books.put("books", positionDao.findAll());
+		Map<String, Object> books = new HashMap<String, Object>();
+		List<Position> listPosition = positionDao.findAll();
+		
+		books.put("company", listPosition);
+		books.put("total", listPosition.size());
 		//books.put("books", companyDao.listCompanyByName("%test%"));
 		return books;
     }
@@ -64,7 +68,7 @@ public class PositionController {
 		System.out.println(position);
 		try {
 	         
-			positionDao.saveOrUpdate(position);
+			//positionDao.saveOrUpdate(position);
 	         response.put("success", true);
 	         response.put("msg", "Welcome tong"  );
 	        } catch(Exception e) {

@@ -18,10 +18,9 @@ import javax.annotation.Resource;
 @Repository
 @Transactional
 public  abstract class AbstractDaoImpl<E, I extends Serializable> implements AbstractDao<E,I>  {
-private Class<E> entityClass;
+	
+	private Class<E> entityClass;
     
-	 
- 
     protected AbstractDaoImpl(SessionFactory sessionFactory, Class<E> entityClass) {
     	this.sessionFactory = sessionFactory;
         this.entityClass = entityClass;
@@ -49,6 +48,7 @@ private Class<E> entityClass;
     }
     
     @SuppressWarnings("unchecked")
+    @Transactional(readOnly=true)
     @Override
     public E findById(I id) {
         return (E) getCurrentSession().get(entityClass, id);
@@ -58,13 +58,18 @@ private Class<E> entityClass;
     public void saveOrUpdate(E e) {
         getCurrentSession().saveOrUpdate(e);
     }
- 
+    
+    
+    
+    
+    
     @Override
     public void delete(E e) {
         getCurrentSession().delete(e);
     }
  
     @SuppressWarnings("unchecked")
+    @Transactional(readOnly=true)
 	@Override
     public List<E> findByCriteria(Criterion criterion) {
         Criteria criteria = getCurrentSession().createCriteria(entityClass);
