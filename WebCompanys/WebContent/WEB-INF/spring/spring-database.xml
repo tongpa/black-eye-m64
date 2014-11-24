@@ -25,7 +25,7 @@
         </property>
          <property name="hibernate.current_session_context_class" value="thread"/> 
            -->
-         
+        
         <property name="hibernateProperties">
             <props>
             	
@@ -36,6 +36,7 @@
                 <prop key="hibernate.jdbc.use_streams_for_binary">true</prop> 
                 <prop key="hibernate.format_sql">true</prop>
                 <prop key="hibernate.generate_statistics">true</prop>
+                
             </props>
 
         </property>

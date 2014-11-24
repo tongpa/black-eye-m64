@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-
+<link rel="stylesheet" type="text/css" media="screen" href="/WebCompanys/css/mystyle.css" />
 <script type="text/javascript" src="/WebCompanys/js/ext-ux/include-ext.js"></script>
 <!--<script type="text/javascript" src="../js/ext-ux/company/app.js"></script>   --> 
 
