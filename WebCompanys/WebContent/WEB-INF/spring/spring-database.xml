@@ -12,20 +12,23 @@
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
  
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://localhost:3306/jpa_schema" />
+		<property name="url" value="jdbc:mysql://localhost:3306/sample" />
 		<property name="username" value="sa" />
 		<property name="password" value="sa" />
 	</bean>
  	
  	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
-        <property name="packagesToScan" value="com.lucense.model" />
+        <property name="packagesToScan" value="com.jobsmatcher.company.model" />
         <!--  <property name="configurationClass">
             <value>org.hibernate.cfg.AnnotationConfiguration</value>
         </property>
+         <property name="hibernate.current_session_context_class" value="thread"/> 
            -->
+         
         <property name="hibernateProperties">
             <props>
+            	
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
                 <prop key="hibernate.show_sql">true</prop>
                 <!-- option -->
@@ -52,5 +55,7 @@
 	class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
 	<property name="targetUrlParameter" value="targetUrl" />
   </bean>
-
+	
+	
+	
 </beans>
