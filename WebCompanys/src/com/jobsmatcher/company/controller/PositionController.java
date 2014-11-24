@@ -28,7 +28,7 @@ import com.jobsmatcher.company.model.Position;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Controller
-@RequestMapping(value = "job")
+@RequestMapping(value = "jobs")
 public class PositionController {
 	
 	@Autowired
