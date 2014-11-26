@@ -2,3 +2,15 @@
 .img-add {
     background-image: url('../images/custom/image_add.png') !important;
 }
+
+.img-delete {
+    background-image: url('../images/custom/delete.png') !important;
+}
+
+.img-edit {
+    background-image: url('../images/custom/edit.png') !important;
+}
+
+.img-edit {
+    background-image: url('../images/custom/save.gif') !important;
+}
