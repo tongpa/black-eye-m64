@@ -12,6 +12,7 @@ import java.util.List;
 
 
 
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.MatchMode;
@@ -127,6 +128,18 @@ public class CompanyDaoImpl extends AbstractDaoImpl<Company, String> implements 
 		//System.out.println(serial);
 		 sb = null;
 		return true;
+	}
+
+	@Override
+	public void deleteById(Company company) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("delete from company_data where id_company_data = ").append(company.getId_company());
+		
+		int v = getCurrentSession().createSQLQuery(sb.toString()).executeUpdate(); 
+		System.out.println(v); 
+		 
+		System.out.println("Delete Company");
+		
 	}
 
 }

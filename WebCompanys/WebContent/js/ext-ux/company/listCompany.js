@@ -496,7 +496,7 @@ Ext.define('company.listCompany',{
 	             
 	            	var values = form.getValues();
 	            	Ext.Ajax.request({
-	              		url		: '/WebCompanys/company/addCompany',
+	              		url		: './company/addCompany',
 	                	method  : 'POST',
 	                	jsonData: values,	
 	                	success: function(response){
@@ -532,10 +532,25 @@ Ext.define('company.listCompany',{
 		this.btdelete = Ext.create('Ext.Button',{		 
 			text : 'Delete',
 			iconCls : 'img-delete',
+			disabled: true,
+			formBind: true,
 			hidden : !main.showClose,
 			handler: function (bt,ev){
 				 
-				main.resetData();
+				var form = this.up('form').getForm(); 
+				var values = form.getValues();
+				
+            	Ext.Ajax.request({
+              		url		: './company/delCompany',
+                	method  : 'POST',
+                	jsonData: values,	
+                	success: function(response){
+                	    	 
+                			main.resetData();
+                			
+                			 
+                		}
+                	});
 				
 			}
 		});

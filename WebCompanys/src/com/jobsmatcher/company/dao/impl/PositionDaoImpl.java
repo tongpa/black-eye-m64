@@ -14,10 +14,12 @@ import java.util.List;
 
 
 
+
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jobsmatcher.company.dao.PositionDao; 
+import com.jobsmatcher.company.model.Company;
 import com.jobsmatcher.company.model.Position;
 @Repository
 public  class PositionDaoImpl extends AbstractDaoImpl<Position, String> implements
@@ -103,6 +105,19 @@ public  class PositionDaoImpl extends AbstractDaoImpl<Position, String> implemen
 		//System.out.println(serial);
 		 sb = null;
 		return true;
+	}
+
+	 
+
+	@Override
+	public void deleteByCompany(int id) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("delete from job_position where id_company_data = ").append(id );
+		
+		int v = getCurrentSession().createSQLQuery(sb.toString()).executeUpdate(); 
+		System.out.println(v); 
+		 
+		System.out.println("Delete Positon");
 	}
 	
 	

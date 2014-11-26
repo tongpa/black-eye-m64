@@ -34,7 +34,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 
+
 import com.jobsmatcher.company.dao.CompanyDao;
+import com.jobsmatcher.company.dao.PositionDao;
 import com.jobsmatcher.company.model.Company;
 import com.jobsmatcher.company.model.Student;
 
@@ -45,6 +47,8 @@ public class CompanyController {
 	
 	@Autowired
 	private CompanyDao companyDao;
+	@Autowired
+	private PositionDao positionDao;
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView index(HttpServletRequest request, HttpServletResponse response) {
@@ -110,5 +114,23 @@ public class CompanyController {
 		return response;
 	}
 	
+	
+	@RequestMapping(value = "delCompany", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Comparable> delCompany(@RequestBody Company company, HttpSession sec){
+		Map<String, Comparable> response = new HashMap<String, Comparable>();
+		System.out.println(company);
+		try {
+	        
+			positionDao.deleteByCompany(company.getId_company());
+			companyDao.deleteById(company);
+	         response.put("success", true);
+	         response.put("msg", "Welcome tong"  );
+	        } catch(Exception e) {
+	         response.put("success", false);
+	         response.put("msg", e.getMessage());
+	        }
+		
+		return response;
+	}
 	
 }
