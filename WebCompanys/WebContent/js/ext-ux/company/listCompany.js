@@ -248,8 +248,8 @@ Ext.define('company.listSearchCompany',{
     	main.store = company.searchCompany; 
     	main.columns = [
     	       	       
-    	    	    {header: 'company', dataIndex: 'company_name',width : '60%' , sortable: false }  ,
-    	    	    {header: 'business type', dataIndex: 'business_type',width : '30%',   sortable: false }  
+    	    	    {header: 'company', dataIndex: 'company_name',width : '65%' , sortable: false }  ,
+    	    	    {header: 'business type', dataIndex: 'business_type',width : '25%',   sortable: false }  
     	            
     	        ];
     	 
@@ -487,7 +487,7 @@ Ext.define('company.listCompany',{
 		
 		this.btsave = Ext.create('Ext.Button',{		 
 			text : 'Save',
-			iconCls : 'project-add',
+			iconCls : 'img-edit',
 			formBind: true,  
 	        disabled: true,
 			handler : function(bt,ev){
@@ -528,8 +528,23 @@ Ext.define('company.listCompany',{
 				
 			}
 		});
-		main.buttons = [ main.btsave,main.btclose];
 		
+		this.btdelete = Ext.create('Ext.Button',{		 
+			text : 'Delete',
+			iconCls : 'img-delete',
+			hidden : !main.showClose,
+			handler: function (bt,ev){
+				 
+				main.resetData();
+				
+			}
+		});
+	 
+		main.buttons = [main.btdelete, {
+	        xtype: 'tbspacer',
+	        border: 0,
+	        flex: 1
+	    }, main.btsave,main.btclose];
 		this.callParent();
     }
     

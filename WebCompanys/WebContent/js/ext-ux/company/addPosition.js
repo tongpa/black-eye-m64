@@ -65,7 +65,10 @@ Ext.define('company.form.fieldExperience',{
 Ext.define('company.form.fieldPostDate',{
 	extend: 'Ext.form.field.Date',
 	name : 'post_date',
-	fieldLabel: 'Post Date' 
+	fieldLabel: 'Post Date' ,
+	format: 'd/m/Y',
+    submitFormat: 'Y-m-d',
+    value: new Date()
 	
 }); 
 
@@ -89,6 +92,15 @@ Ext.define('company.addPosition',{
     parentForm : null,
     closeWindow : function(main,bt){
     	main.parentForm.hide(bt);
+    },
+    loadDataRecord : function(position){
+    	console.log(position);
+    	this.getForm().loadRecord(position);
+    	
+    }, 
+    initValue : function(company){
+    	this.storeCompany = company;
+    	this.idcompany.setValue(company.id);
     },
     initComponent: function() {
 		
@@ -124,37 +136,19 @@ Ext.define('company.addPosition',{
 	             
 	            	var values = form.getValues();
 	            	Ext.Ajax.request({
-	              		url		: '/WebCompanys/job/addPosition',
+	              		url		: './jobs/addJobs',
 	                	method  : 'POST',
 	                	jsonData: values,	
 	                	success: function(response){
 	                	    	//store.load();
+	                			//company.listPosition();
+	                		 main.fireEvent('refreshOther', this);
+	                		 
+	                		 main.closeWindow(main,bt);
 	                		}
 	                	});
 	             
-	           /*
-	                form.submit({
-	                    success: function(form, action) {
-	                    	
-	                    	main.closeWindow(main,bt);
-	                    	//form.reset();
-	                    	Ext.Msg.alert('Success', action.result.message);
-	                    	main.refreshOther();
-	                    },
-	                    failure: function(form, action) {
-	                    	 
-	                    	if (action.response.status = '404'){
-	                    		
-	                    		Ext.Msg.alert('Failed', action.response.statusText);
-	                    		 
-	                    	}
-	                    	else{
-	                    		Ext.Msg.alert('Success', action.result.message);
-	                    	}
-	                        
-	                    }
-	                });
-	                */
+	          
 	            }
 	            
 			}
@@ -198,11 +192,16 @@ Ext.define('company.winAddPosition',{
         titlePosition: 2,
         titleAlign: 'center' 
     },
-     
+    loadDataRecord : function(position){
+    	this.panelPosition.loadDataRecord(position);
+    }, 
+    initValue : function(company){
+    	this.panelPosition.initValue(company);
+    },
 	initComponent: function() {
 		 
 		var main = this;
-		main.panelProject = Ext.create('company.addPosition' ,{
+		main.panelPosition = Ext.create('company.addPosition' ,{
 			url : main.url,
 			showClose : main.showClose,
 			parentForm : main,
@@ -213,7 +212,7 @@ Ext.define('company.winAddPosition',{
 		    }});
 	 	 
 		 
-		main.items = main.panelProject; 
+		main.items = main.panelPosition; 
 		 
 		this.callParent();
 		

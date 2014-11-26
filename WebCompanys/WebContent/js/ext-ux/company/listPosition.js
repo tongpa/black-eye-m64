@@ -5,7 +5,12 @@ Ext.define('company.form.btAddPosition',{
 	disabled : true
 });
 
-
+Ext.define('company.form.btDeletePosition',{
+	extend: 'Ext.Button',
+	text : 'Delete Position',
+	iconCls : 'img-delete',
+	disabled : true
+});
 
 
 Ext.define('company.listPosition',{
@@ -28,7 +33,10 @@ Ext.define('company.listPosition',{
     	this.addPosition.setDisabled(true);
     	this.store.removeAll();
     },
+    
     loadPosition : function(company){
+    	
+    	this.storeCompany = company;
     	this.store.load({
     		params : {
     			'keysearch' : company.id
@@ -51,24 +59,73 @@ Ext.define('company.listPosition',{
     	main.store = company.listPosition; 
     	main.columns = [
     	       	       
-    	    	    {header: 'position', dataIndex: 'position',width : '80%' , sortable: false }  ,
-    	    	    {header: 'post date', dataIndex: 'post_date',width : '10%',   sortable: false }  
+    	    	    {header: 'position', dataIndex: 'position',width : '70%' , sortable: false }  ,
+    	    	    {header: 'post date', dataIndex: 'post_date',width : '10%',   sortable: false }  ,
+    	    	    {
+    	                xtype:'actioncolumn',
+    	                
+    	                width:'10%',
+    	                items: [{
+    	                   
+    	                	iconCls :'img-edit',
+    	                	tooltip: 'Edit',
+    	                    handler: function(grid, rowIndex, colIndex) {
+    	                        var rec = grid.getStore().getAt(rowIndex);
+    	                         
+    	                         
+    	                        main.winAddPosition.show();
+    	           			 	main.winAddPosition.loadDataRecord(rec);
+    	                    }
+    	                } ]
+    	            }
     	            
     	        ];
     	        
-    	main.winAddPosition = Ext.create('company.winAddPosition');
+    	main.winAddPosition = Ext.create('company.winAddPosition',{
+    		
+			listeners : {
+				refreshOther : function(cmp) {
+		             main.loadPosition(main.storeCompany);
+		        }
+		    }
+    		
+    	});
     	
     	main.addPosition = Ext.create('company.form.btAddPosition',{
     		parent : main,
     		handler: function () { 
     			 main.winAddPosition.show();
-    			 
+    			 main.winAddPosition.initValue(main.storeCompany);
     			 
     			
     		}
     	} );
-    	main.tbar = [main.addPosition ] ;
+    	
+    	main.deletePosition = Ext.create('company.form.btDeletePosition',{
+    		parent : main,
+    		handler: main.onDeleteClick,
+    		itemId: 'delete',
+            scope: this
+    	});
+    	main.tbar = [main.addPosition,main.deletePosition ] ;
     	this.callParent();
-    }
+    	
+    	this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
+    	
+    },
+    onSelectChange: function(selModel, selections){
+        
+       // this.fireEvent('showCompany', selections[0]);
+    	console.log(selections);
+    	this.deletePosition.setDisabled(selections.length === 0);
+		 
+    },
+    onDeleteClick: function(){
+        var selection = this.getView().getSelectionModel().getSelection()[0];
+        if (selection) {
+            this.store.remove(selection);
+            this.store.sync();
+        }
+    },
     
 });   

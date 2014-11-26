@@ -8,7 +8,7 @@ Ext.define('company.model.position', {
              , 'job_popose' 
              , 'job_description' 
              , 'experience' 
-             , 'post_date' 
+             , {name: 'post_date', dateFormat:'d/m/Y', type: 'date'} 
              , 'id_company_data' ] 
     
 });
@@ -47,13 +47,20 @@ company.listPosition = new Ext.data.Store({
 			type : 'json',
 			rootProperty : 'company'
 		},
+		api: {
+            read: './jobs/search',
+            create: './jobs/addJobs',
+            update: './jobs/addJobs',
+            destroy: './jobs/delJobs'
+        }, 
 		actionMethods:{
 			create : 'POST',
 			read   : 'POST',
-			update : 'PUT',
-			destroy : 'DELETE'
+			update : 'POST',
+			destroy : 'POST'
 		}
 	},
+	autoSync: false,
 	autoLoad : false
 });
 
