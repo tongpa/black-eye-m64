@@ -84,9 +84,12 @@ Ext.define('company.addPosition',{
 	height : 200,
 	bodyPadding: 10,
 	showClose : true,
-    
+    autoScroll : true,
     isCreate : true,
     parentForm : null,
+    closeWindow : function(main,bt){
+    	main.parentForm.hide(bt);
+    },
     initComponent: function() {
 		
 		var main = this;
@@ -172,3 +175,54 @@ Ext.define('company.addPosition',{
     }
     
 });   
+
+
+
+
+Ext.define('company.winAddPosition',{
+	extend: 'Ext.window.Window',
+	text : 'Add Position',
+	layout: 'fit',
+	id : 'test-1',
+	modal : true,
+	width : 400,
+	height : 490,
+	closable: true,
+    closeAction: 'hide',
+    showClose : true,
+    maximizable: true,
+    constrain: true,
+    url : '',
+    //animateTarget: button,
+	header: {
+        titlePosition: 2,
+        titleAlign: 'center' 
+    },
+     
+	initComponent: function() {
+		 
+		var main = this;
+		main.panelProject = Ext.create('company.addPosition' ,{
+			url : main.url,
+			showClose : main.showClose,
+			parentForm : main,
+			listeners : {
+				refreshOther : function(cmp) {
+		            this.parentForm.refreshOther();
+		        }
+		    }});
+	 	 
+		 
+		main.items = main.panelProject; 
+		 
+		this.callParent();
+		
+		 
+		 
+	},
+	refreshOther : function( ) {
+        //do some stuff here
+
+        this.fireEvent('refreshOther', this);
+    } 
+});

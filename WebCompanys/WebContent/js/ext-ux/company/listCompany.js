@@ -224,10 +224,54 @@ Ext.define('company.form.fieldAddress',{
 });
 
 
+
+
+Ext.define('company.listSearchCompany',{
+	//extend : 'Ext.panel.Panel', 	 
+	
+	extend: 'Ext.grid.Panel',
+	width : '100%',
+	height :  '100%',	 
+	frame: false,	
+	//title: 'Find Company', 
+	bodyPadding: 10,
+	showClose : true,
+	viewConfig: {
+        emptyText: 'No images to display'
+    },
+    isCreate : true,
+    parentForm : null,
+    collapsible:false ,
+    initComponent: function() {
+		
+    	var main = this;
+    	main.store = company.searchCompany; 
+    	main.columns = [
+    	       	       
+    	    	    {header: 'company', dataIndex: 'company_name',width : '60%' , sortable: false }  ,
+    	    	    {header: 'business type', dataIndex: 'business_type',width : '30%',   sortable: false }  
+    	            
+    	        ];
+    	 
+     
+		this.callParent();
+		 
+		this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
+    },
+    onSelectChange: function(selModel, selections){
+        
+        this.fireEvent('showCompany', selections[0]);
+		 
+    }
+    
+}); 
+
+
+
 Ext.define('company.listCompany',{
 	//extend : 'Ext.panel.Panel', 	 
 	extend : 'Ext.form.Panel',
- 
+ 	autoScroll : true,
 	defaults: {
         anchor: '100%',
         labelWidth: 120
@@ -240,19 +284,155 @@ Ext.define('company.listCompany',{
     
     isCreate : true,
     parentForm : null,
+    
+    loadDataRecord : function(company){
+    	this.getForm().loadRecord(company);
+    	this.listPosition.loadPosition(company);
+		this.fireEvent('showCompanyName', this,company);
+		if (!this.groupSetField.collapsed)// opened already
+		{
+		 	 this.groupSetField.toggle();
+		}
+    },
+    resetData : function(){
+    	this.getForm().reset();
+		this.listPosition.resetData();
+		this.fireEvent('resetDataAll', this); 
+		if (!this.groupSetField.collapsed)// opened already
+		{
+		 	 this.groupSetField.toggle();
+		}
+    },
+    searchCompanyByName : function(companyName){
+    	
+    	var main = this;
+    	company.searchCompany.load({
+			params: {
+        		'keysearch' : companyName//Ext.urlEncode(t.getValue())
+        	},
+        	scope:this,
+        	callback : function(records, operation, success){
+        		if(success){ 
+        			console.log('success');
+        			//debugger;
+        			if( records.length > 0){
+        				if (records.length == 1){
+        					
+        					main.loadDataRecord(records[0]);
+        					 
+        				}
+        				else{	
+        					main.showSearchCompany.show();
+        				}
+        			}
+        			else{
+        				main.resetData();
+        				 
+        				main.companyname.setValue(search);
+        				
+        				if (main.groupSetField.collapsed)// opened already
+						{
+						 	 main.groupSetField.toggle();
+						}
+        				 
+        			}
+        		}
+        	}
+		});
+    },
+    searchCompany : function(t,e){
+    	search = t.getValue();
+					
+		var main = this;	 
+		console.log('key up : ' + search);
+		console.log('ctrl key : ' + e.ctrlKey);
+		console.log('key code : ' + e.keyCode);
+		console.log('char code : ' + e.charCode);
+		
+		//if(search.length < 3 || e.keyCode <47 || e.keyCode> 105 ){ return; }
+		
+		
+		main.searchCompanyByName(search);
+		 
+		 
+    },
     initComponent: function() {
 		
 		var main = this;
 		 
 		console.log('list Company');
 		
+		this.resultSearchConpany = Ext.create('company.listSearchCompany' ,{
+			listeners : {
+				showCompany : function(company){
+					console.log(company);
+					main.loadDataRecord(company);
+					
+				}
+			}
+		});
+		this.showSearchCompany = Ext.create('Ext.window.Window',{
+			title : 'Result Search',
+			height : 300,
+			width : 500,
+			layout : 'fit',
+			plain : true,
+			closeAction : 'hide'
+			,items : [
+			          {
+			        	  xtype : 'panel',
+			        	  items : [this.resultSearchConpany]
+			          }
+			]
+			,buttons : [
+				{
+					xtype : 'button',
+					text : 'Close',
+					handler : function (bt,ev){
+						main.showSearchCompany.hide(bt);
+					}
+				}
+			]
+		});
+		
+		 
+		main.buttons = [ main.btsave,main.btclose];
+		
+		
 		this.idcompany  = Ext.create('company.form.fieldIdCompany' );
 		this.companyname  = Ext.create('company.form.fieldCompanyName' ,{
 			enableKeyEvents : true ,
 			listeners : {
+				'blur' : {
+					fn : function(t,e){
+						//key lost focus 
+						//main.searchCompany(t,e);
+					}
+				},
 				'keyup' : {
 					fn : function(t,e){
-						console.log('key up : ' + t);
+						
+						if(e.keyCode == 13) {
+							main.searchCompany(t,e);
+						}
+						 
+					/* 
+						Ext.Ajax.request({
+		              		url		: '/WebCompanys/company/search', 
+		                	//method  : 'POST',
+		                	 
+		                	waitTitle: 'Connection',
+		                	params: {
+		                		'keysearch' : t.getValue()
+		                	},
+		                	
+		                	scope:this,	
+		                	success: function(response){
+		                	    	//store.load();
+		                		console.log("sucess");
+		                		}
+		                	});
+		                	*/
 					}
 				}
 			}
@@ -282,6 +462,8 @@ Ext.define('company.listCompany',{
 		
 		
 		this.groupSetField = Ext.create('Ext.form.FieldSet',{
+			
+			title : 'detail',
 			defaults: {
 		        anchor: '100%',
 		        labelWidth: 110,
@@ -292,7 +474,7 @@ Ext.define('company.listCompany',{
 		    items : [this.bussinesstype,
 		              this.address,
 		              this.telephone,
-		              this.telephone,this.mobile,this.fax,this.email,this.website,
+		              this.telephone,this.fax,this.mobile,this.email,this.website,
 		              this.personalcontact,this.phonecontact]
 		});
 		
@@ -319,44 +501,31 @@ Ext.define('company.listCompany',{
 	                	jsonData: values,	
 	                	success: function(response){
 	                	    	//store.load();
+	                		
+	                		//main.getForm().reset();
+	                		//main.groupSetField.toggle();
+	                			
+	                			main.valueSearch = main.companyname.getValue();
+	                			main.resetData();
+	                			
+	                			main.searchCompanyByName(main.valueSearch);
 	                		}
 	                	});
 	             
-	           /*
-	                form.submit({
-	                    success: function(form, action) {
-	                    	
-	                    	main.closeWindow(main,bt);
-	                    	//form.reset();
-	                    	Ext.Msg.alert('Success', action.result.message);
-	                    	main.refreshOther();
-	                    },
-	                    failure: function(form, action) {
-	                    	 
-	                    	if (action.response.status = '404'){
-	                    		
-	                    		Ext.Msg.alert('Failed', action.response.statusText);
-	                    		 
-	                    	}
-	                    	else{
-	                    		Ext.Msg.alert('Success', action.result.message);
-	                    	}
-	                        
-	                    }
-	                });
-	                */
+	            
 	            }
 	            
 			}
 		});
 		
 		this.btclose = Ext.create('Ext.Button',{		 
-			text : 'Close',
+			text : 'Clear',
 			
 			hidden : !main.showClose,
 			handler: function (bt,ev){
-				main.closeWindow(main,bt);
 				 
+				main.resetData();
+				
 			}
 		});
 		main.buttons = [ main.btsave,main.btclose];

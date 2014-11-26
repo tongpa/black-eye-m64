@@ -29,13 +29,51 @@ Ext.application({
     	
     	console.log('app company');
      
-    	var listCompany = Ext.create('company.listCompany',{url : '/WebCompanys/company/addCompany',title:'Company'});
+    	var listCompany = Ext.create('company.listCompany',{url : '/WebCompanys/company/addCompany',title:'Company',
+    		listeners : {
+    			showCompanyName : function(cmp,company){
+    				labelCompany.setText(company.get('company_name') );
+    				
+    			},
+    			resetDataAll : function(cmp){
+    				labelCompany.setText('');
+    			}
+    		}
+    	});
     	var addPosition = Ext.create('company.addPosition',{url : '/WebCompanys/job/addPosition'});
     	
     	var tabMain = Ext.create('Ext.tab.Panel',{
     		width: '100%',   	
    	     
     	    items: [listCompany ]
+    	});
+    	
+    	var north_label =  Ext.create('Ext.form.Label',{
+           	
+           	 height : 100,
+           	 labelStyle : 'font-weight:bold;',
+           	 margins: '30 0 0 5',
+           	 style: { 'font-size':'20px' },
+           	 text : 'Company : '
+             
+    	});
+    	
+    	var labelCompany =  Ext.create('Ext.form.Label',{
+          	 height : 100,
+          	 labelStyle : 'font-weight:bold;',
+          	 margins: '30 0 0 5',
+          	 style: { 'font-size':'20px' },
+          	 
+          	 text : ' '
+            
+   	});
+    	
+    	var north = Ext.create('Ext.panel.Panel',{
+    		region: 'north',
+	        height : 25,
+	        margins: '5 0 0 5',
+	        items : [  north_label,labelCompany
+	                 ]
     	});
     	
     	Ext.create('Ext.container.Viewport', {
@@ -48,13 +86,7 @@ Ext.application({
                 split: true 
             },
             
-            items: [{
-    	        region: 'north',
-    	        html: '<h1 class="x-panel-header">Company</h1>',
-    	        autoHeight: true,
-    	        border: false,
-    	        margins: '0 0 5 0'
-    	    }, {
+            items: [north, {
     	        region: 'west',
     	         
     	        title: 'Navigation',
