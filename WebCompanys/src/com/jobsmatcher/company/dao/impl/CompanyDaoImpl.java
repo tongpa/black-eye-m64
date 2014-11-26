@@ -93,7 +93,7 @@ public class CompanyDaoImpl extends AbstractDaoImpl<Company, String> implements 
 		System.out.println("update company");
 		
 		
-		Company newCom = new Company();
+		 
 		
 		StringBuffer sb = new StringBuffer();
 		sb.append("update company_data set ");
@@ -125,6 +125,7 @@ public class CompanyDaoImpl extends AbstractDaoImpl<Company, String> implements 
 		//getCurrentSession().update(newCom);
 		 
 		//System.out.println(serial);
+		 sb = null;
 		return true;
 	}
 

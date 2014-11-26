@@ -57,11 +57,13 @@ private Class<E> entityClass;
     }
     
     @Override
+    @Transactional(readOnly=false)
     public void saveOrUpdate(E e) {
         getCurrentSession().saveOrUpdate(e);
     }
  
     @Override
+    @Transactional(readOnly=false)
     public void delete(E e) {
         getCurrentSession().delete(e);
     }

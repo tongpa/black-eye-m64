@@ -24,9 +24,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 
+
 import com.jobsmatcher.company.dao.PositionDao;
  
 
+import com.jobsmatcher.company.model.Company;
 import com.jobsmatcher.company.model.Position;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -76,22 +78,47 @@ public class PositionController {
 		return books;
     }
 	 
-	
-	@RequestMapping(value = "addPosition", method = RequestMethod.POST)
-	public @ResponseBody Map<String, Comparable> addPosition(@RequestBody Position position, HttpSession sec){
+	@RequestMapping(value = "addJobs", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Comparable> addJobs(@RequestBody Position position, HttpSession sec) {
 		Map<String, Comparable> response = new HashMap<String, Comparable>();
-		System.out.println(position);
+		try {
+			
+			 
+			if(position.getId_position() ==0){
+				System.out.println(position.getPost_date());
+				positionDao.saveOrUpdate(position);
+			}
+			else{
+				positionDao.updatePosition(position);
+			}
+	        response.put("success", true);
+	        response.put("msg", "Welcome tong"  );
+	    } catch(Exception e) {
+	        response.put("success", false);
+	        response.put("msg", e.getMessage());
+	    }
+		return response;
+ 
+		}
+	
+	
+	@RequestMapping(value = "delJobs", method = RequestMethod.POST)
+	public @ResponseBody Map<String, Comparable> delJobs(@RequestBody Position position,HttpSession sec){
+		Map<String, Comparable> responses = new HashMap<String, Comparable>();
+		
+		System.out.println(position.getId_position());
+//		System.out.println(id_position);
 		try {
 	         
-			positionDao.saveOrUpdate(position);
-	         response.put("success", true);
-	         response.put("msg", "Welcome tong"  );
+			positionDao.deleteById(position);
+	         responses.put("success", true);
+	         responses.put("msg", "Welcome tong"  );
 	        } catch(Exception e) {
-	         response.put("success", false);
-	         response.put("msg", e.getMessage());
+	         responses.put("success", false);
+	         responses.put("msg", e.getMessage());
 	        }
-		
-		return response;
+//		
+		return responses;
 	}
 	
 	

@@ -1,11 +1,15 @@
 package com.jobsmatcher.company.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
 
 
 @Entity
@@ -36,20 +40,22 @@ public class Position {
 	private String experience;
 	
 	@Column(name = "post_date")
-	private String post_date;
+	@Type(type="date")
+	private Date post_date;
 	
 	@Column(name = "id_company_data")
-	private int id_company_data;
+	private int id_company;
 	
 	@Column(name = "create_date")
-	private String create_date;
+	@Type(type="date")
+	private Date create_date;
 	
 	 
 	
 	@Override
 	public String toString() {
-		return String.format("Company [position = %s, id_company_data = %i]",
-				position, id_company_data);
+		return String.format("Company [position = %s, id_company_data = %d]",
+				position, id_company);
 	}
 	
 	
@@ -95,22 +101,22 @@ public class Position {
 	public void setExperience(String experience) {
 		this.experience = experience;
 	}
-	public String getPost_date() {
+	public Date getPost_date() {
 		return post_date;
 	}
-	public void setPost_date(String post_date) {
+	public void setPost_date(Date post_date) {
 		this.post_date = post_date;
 	}
-	public int getId_company_data() {
-		return id_company_data;
+	public int getId_company() {
+		return id_company;
 	}
-	public void setId_company_data(int id_company_data) {
-		this.id_company_data = id_company_data;
+	public void setId_company(int id_company) {
+		this.id_company = id_company;
 	}
-	public String getCreate_date() {
+	public Date getCreate_date() {
 		return create_date;
 	}
-	public void setCreate_date(String create_date) {
+	public void setCreate_date(Date create_date) {
 		this.create_date = create_date;
 	} 
 	
