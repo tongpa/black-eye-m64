@@ -1,5 +1,6 @@
 package com.jobsmatcher.company.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
   
 
+
+
 import com.jobsmatcher.company.dao.PositionDao;
  
 
@@ -40,23 +43,36 @@ public class PositionController {
 		  model.addObject("title", "Spring Security Login Form - Database Authentication");
 		  model.addObject("message", "This page is for ROLE_ADMIN only!");
 		  model.setViewName("position/index");
-		  
-		 // model.setViewName("company/sample");
+		   
 		  System.out.println("load");
 		  return model;
 	 
 		}
 	
-	@RequestMapping(value = "search", method = RequestMethod.GET)
+	@RequestMapping(value = "search", method = RequestMethod.POST)
 	@ResponseBody
-    public Map<String, Object> search() {
+    public Map<String, Object> search( @RequestParam(value = "keysearch", required=true ) Integer keysearch,HttpServletRequest request, HttpServletResponse response,HttpSession sec) {
 		Map<String, Object> books = new HashMap<String, Object>();
+		List<Position> listposition = new ArrayList<Position>();
 		
-		List<Position> listposition = positionDao.findAll();
+		
+		
+		
+		listposition = positionDao.getPositionByCompany( keysearch.toString() );
 		books.put("company", listposition);
-		books.put("total", listposition.size());
+		/* 
+		keysearch = keysearch.trim(); 
 		
-		//books.put("books", companyDao.listCompanyByName("%test%"));
+		if(keysearch.length() > 0){
+			  
+			listposition = positionDao.getPositionByCompany( keysearch  );
+		 	books.put("company", listposition);
+		}
+		
+	
+		
+		 */
+	 	books.put("total", listposition.size());
 		return books;
     }
 	 

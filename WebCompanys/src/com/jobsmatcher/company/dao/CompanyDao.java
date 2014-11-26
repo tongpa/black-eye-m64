@@ -6,6 +6,8 @@ import com.jobsmatcher.company.model.Company;
 
 public interface CompanyDao extends AbstractDao<Company, String> {
 	public boolean saveCompany(Company company);
+	public boolean updateCompany(Company company);
+	
 	
 	public List<Company> listCompanyByName(String name);
 	

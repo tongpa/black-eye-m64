@@ -42,8 +42,10 @@ private Class<E> entityClass;
     	Session session = null;
         try { 
             session = sessionFactory.getCurrentSession();
+            System.out.println("current session");
         } catch ( HibernateException he ) {
             session = sessionFactory.openSession();
+            System.out.println("open session");
         }
         return session;
     }

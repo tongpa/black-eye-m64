@@ -1,8 +1,10 @@
 package com.jobsmatcher.company.controller;
 
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +31,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 
+
+
+
 import com.jobsmatcher.company.dao.CompanyDao;
 import com.jobsmatcher.company.model.Company;
 import com.jobsmatcher.company.model.Student;
@@ -42,8 +47,16 @@ public class CompanyController {
 	private CompanyDao companyDao;
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public ModelAndView index() {
+	public ModelAndView index(HttpServletRequest request, HttpServletResponse response) {
+		try{
+			request.setCharacterEncoding("UTF-8");
+			response.setContentType("text/html; charset=UTF-8");
+			}
+		catch(Exception ex){
+			ex.printStackTrace();
+		}
 		ModelAndView model = new ModelAndView( );
+		
 		  model.addObject("title", "Spring Security Login Form - Database Authentication");
 		  model.addObject("message", "This page is for ROLE_ADMIN only!");
 		  model.setViewName("company/index");
@@ -54,13 +67,23 @@ public class CompanyController {
 	 
 		}
 	
-	@RequestMapping(value = "search", method = RequestMethod.GET)
+	@RequestMapping(value = "search", method = RequestMethod.POST)
 	@ResponseBody
-    public Map<String, List<Company>> search() {
-		Map<String, List<Company>> books = new HashMap<String, List<Company>>();
+    public Map<String, List<Company>> search( @RequestParam(value = "keysearch", required=true,defaultValue= "") String keysearch,HttpServletRequest request, HttpServletResponse response,HttpSession sec ) {
 		
-		books.put("books", companyDao.findAll());
-		//books.put("books", companyDao.listCompanyByName("%test%"));
+		Map<String, List<Company>> books = new HashMap<String, List<Company>>();
+		 
+		
+		
+		keysearch = keysearch.trim();
+		 
+		
+		if(keysearch.length() > 0){
+			  
+			books.put("company", companyDao.listCompanyByName(  keysearch  ));
+			 
+		}
+		
 		return books;
     }
 	 
@@ -70,8 +93,13 @@ public class CompanyController {
 		Map<String, Comparable> response = new HashMap<String, Comparable>();
 		System.out.println(company);
 		try {
-	         
-			companyDao.saveCompany(company);
+	        
+			if (company.getId_company() == 0){
+				companyDao.saveCompany(company);
+			}
+			else {
+				companyDao.updateCompany(company);
+			}
 	         response.put("success", true);
 	         response.put("msg", "Welcome tong"  );
 	        } catch(Exception e) {

@@ -2,13 +2,13 @@ package com.jobsmatcher.company.dao.impl;
 
 
 
+import java.util.ArrayList;
 import java.util.List;
-
-import org.hibernate.criterion.Restrictions;
+ 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jobsmatcher.company.dao.PositionDao;
+import com.jobsmatcher.company.dao.PositionDao; 
 import com.jobsmatcher.company.model.Position;
 @Repository
 public  class PositionDaoImpl extends AbstractDaoImpl<Position, String> implements
@@ -34,6 +34,22 @@ public  class PositionDaoImpl extends AbstractDaoImpl<Position, String> implemen
 	public Position findByName(String name) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	@SuppressWarnings("unchecked")
+	public List<Position> getPositionByCompany(String id) {
+		List<Position> users = new ArrayList<Position>();
+		System.out.println("company id :" + id); 
+		
+		String sql = "from Position where id_company_data = " + id;
+		users = getCurrentSession()
+			.createQuery(sql)
+			//.setParameter(0, id)
+			.list();
+ 	
+		 return users;
 	}
 	
 	

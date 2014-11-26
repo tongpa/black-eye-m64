@@ -78,8 +78,8 @@ public class Company {
 	
 	@Override
 	public String toString() {
-		return String.format("Company [company_name = %s, business_type = %s]",
-				company_name, business_type);
+		return String.format("Company [company_name = %s, business_type = %s, id = %d]",
+				company_name, business_type,id_company);
 	}
 	
 	
