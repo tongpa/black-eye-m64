@@ -1,4 +1,9 @@
 @CHARSET "UTF-8";
+
+.img-btadd {
+    background-image: url('../images/custom/add.png') !important;
+}
+
 .img-add {
     background-image: url('../images/custom/image_add.png') !important;
 }
@@ -11,6 +16,6 @@
     background-image: url('../images/custom/edit.png') !important;
 }
 
-.img-edit {
+.img-save {
     background-image: url('../images/custom/save.gif') !important;
 }

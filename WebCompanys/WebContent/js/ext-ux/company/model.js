@@ -1,4 +1,4 @@
-console.log('model.js');
+//console.log('model.js');
 
 
 Ext.define('company.model.position', {
@@ -42,16 +42,16 @@ company.listPosition = new Ext.data.Store({
 	pageSize: 50,
 	proxy : {
 		type : 'ajax',
-		url : './jobs/search',
+		url : '/WebCompanys/jobs/search',
 		reader : {
 			type : 'json',
 			rootProperty : 'company'
 		},
 		api: {
-            read: './jobs/search',
-            create: './jobs/addJobs',
-            update: './jobs/addJobs',
-            destroy: './jobs/delJobs'
+            read: '/WebCompanys/jobs/search',
+            create: '/WebCompanys/jobs/addJobs',
+            update: '/WebCompanys/jobs/addJobs',
+            destroy: '/WebCompanys/jobs/delJobs'
         }, 
 		actionMethods:{
 			create : 'POST',
@@ -70,7 +70,7 @@ company.searchCompany = new Ext.data.Store({
 	pageSize: 50,
 	proxy : {
 		type : 'ajax',
-		url : './company/search',
+		url : '/WebCompanys/company/search',
 		reader : {
 			type : 'json',
 			rootProperty : 'company'

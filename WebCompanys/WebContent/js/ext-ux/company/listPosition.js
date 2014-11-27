@@ -44,7 +44,7 @@ Ext.define('company.listPosition',{
     		scope:this,
     		callback : function(records,operation,success){
 	    		if(success){
-	    			console.log('success');
+	    			//console.log('success');
 	    		}
     		}
     	});
@@ -60,7 +60,7 @@ Ext.define('company.listPosition',{
     	main.columns = [
     	       	       
     	    	    {header: 'position', dataIndex: 'position',width : '70%' , sortable: false }  ,
-    	    	    {header: 'post date', dataIndex: 'post_date',width : '10%',   sortable: false }  ,
+    	    	    {header: 'post date', dataIndex: 'post_date',width : '10%',   sortable: false,renderer:Ext.util.Format.dateRenderer('d-m-Y') }  ,
     	    	    {
     	                xtype:'actioncolumn',
     	                
@@ -116,16 +116,36 @@ Ext.define('company.listPosition',{
     onSelectChange: function(selModel, selections){
         
        // this.fireEvent('showCompany', selections[0]);
-    	console.log(selections);
+    	//console.log(selections);
     	this.deletePosition.setDisabled(selections.length === 0);
 		 
     },
     onDeleteClick: function(){
-        var selection = this.getView().getSelectionModel().getSelection()[0];
+    	var selection = this.getView().getSelectionModel().getSelection()[0];
+    	main = this;
         if (selection) {
-            this.store.remove(selection);
-            this.store.sync();
+        	Ext.Msg.show({
+    		    title:'Confirm Delete?',
+    		    message: 'Do you delete : ' + selection.get('position'),
+    		    buttons: Ext.Msg.YESNO,
+    		    icon: Ext.Msg.QUESTION,
+    		    fn: function(btn) {
+    		        if (btn === 'yes') {
+    		        	
+    		        	 
+    		        	main.store.remove(selection);
+    		        	main.store.sync();
+    		          
+    		            selection = null;
+    		        }  
+    		    }
+    		});
         }
-    },
+    	
+    	
+    	
+    	
+        
+    }
     
 });   

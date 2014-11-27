@@ -80,7 +80,7 @@
     
     document.write('<script type="text/javascript" src="' + path + extPrefix +
                             (rtl ? '-rtl' : '') + '.js"></script>');
-    console.log( path + extPrefix);
+    //console.log( path + extPrefix);
     if (hasOverrides) {
         // since document.write('<script>') does not block execution in IE, we need to 
         // makes sure we prevent ext-theme-neptune.js from executing before ext-all.js

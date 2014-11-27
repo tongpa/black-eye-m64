@@ -27,9 +27,9 @@ Ext.application({
     launch: function() {
     	Ext.tip.QuickTipManager.init();
     	
-    	console.log('app company');
+    	//console.log('app company');
      
-    	var listCompany = Ext.create('company.listCompany',{url : '/WebCompanys/company/addCompany',title:'Company',
+    	var listCompany = Ext.create('company.listCompany',{url : '/WebCompanys/company/addCompany', 
     		listeners : {
     			showCompanyName : function(cmp,company){
     				labelCompany.setText(company.get('company_name') );
@@ -40,11 +40,16 @@ Ext.application({
     			}
     		}
     	});
+    	
+    	
+    	
+    	
     	var addPosition = Ext.create('company.addPosition',{url : '/WebCompanys/job/addPosition'});
     	
-    	var tabMain = Ext.create('Ext.tab.Panel',{
+    	//var tabMain = Ext.create('Ext.tab.Panel',{
+    	var tabMain = Ext.create('Ext.panel.Panel',{
     		width: '100%',   	
-   	     
+    		layout: 'fit',
     	    items: [listCompany ]
     	});
     	
@@ -89,7 +94,7 @@ Ext.application({
             items: [north, {
     	        region: 'west',
     	         
-    	        title: 'Navigation',
+    	       // title: 'Navigation',
     	        width: 150
     	        // could use a TreePanel or AccordionLayout for navigational items
     	    },  {
@@ -102,7 +107,7 @@ Ext.application({
     	    }]
         });
     	 
-    	
+    	listCompany.resetData();
     	
     	
     	 

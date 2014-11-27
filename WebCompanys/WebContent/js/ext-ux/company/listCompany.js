@@ -1,4 +1,4 @@
-Ext.define('company.form.fieldIdCompany',{
+﻿Ext.define('company.form.fieldIdCompany',{
 	extend: 'Ext.form.field.Hidden',
 	name : 'id_company'
 });
@@ -97,7 +97,8 @@ Ext.define('company.form.fieldRoadAddress',{
 Ext.define('company.form.fieldCountryAddress',{
 	extend: 'Ext.form.field.Text',
 	name : 'country',
-	fieldLabel: 'Country' 
+	fieldLabel: 'Country' ,
+	value : 'ไทย'
 });
 
 Ext.define('company.form.fieldProvinceAddress',{
@@ -123,6 +124,14 @@ Ext.define('company.form.fieldZipCodeAddress',{
 	name : 'zip_code',
 	fieldLabel: 'Zip Code' 
 });
+
+
+Ext.define('company.form.btAddCompany',{
+	extend: 'Ext.Button',
+	text : 'Add Company',
+	iconCls : 'img-btadd' 
+});
+
 
 Ext.define('company.form.GeographyAddress',{
 	extend : 'Ext.form.Panel',
@@ -302,6 +311,8 @@ Ext.define('company.listCompany',{
 		{
 		 	 this.groupSetField.toggle();
 		}
+		
+		this.companyname.focus();
     },
     searchCompanyByName : function(companyName){
     	
@@ -313,7 +324,7 @@ Ext.define('company.listCompany',{
         	scope:this,
         	callback : function(records, operation, success){
         		if(success){ 
-        			console.log('success');
+        			//console.log('success');
         			//debugger;
         			if( records.length > 0){
         				if (records.length == 1){
@@ -344,10 +355,10 @@ Ext.define('company.listCompany',{
     	search = t.getValue();
 					
 		var main = this;	 
-		console.log('key up : ' + search);
-		console.log('ctrl key : ' + e.ctrlKey);
-		console.log('key code : ' + e.keyCode);
-		console.log('char code : ' + e.charCode);
+		//console.log('key up : ' + search);
+		//console.log('ctrl key : ' + e.ctrlKey);
+		//console.log('key code : ' + e.keyCode);
+		//console.log('char code : ' + e.charCode);
 		
 		//if(search.length < 3 || e.keyCode <47 || e.keyCode> 105 ){ return; }
 		
@@ -360,12 +371,12 @@ Ext.define('company.listCompany',{
 		
 		var main = this;
 		 
-		console.log('list Company');
+		//console.log('list Company');
 		
 		this.resultSearchConpany = Ext.create('company.listSearchCompany' ,{
 			listeners : {
 				showCompany : function(company){
-					console.log(company);
+					//console.log(company);
 					main.loadDataRecord(company);
 					
 				}
@@ -437,6 +448,8 @@ Ext.define('company.listCompany',{
 				}
 			}
 		});
+		
+		
 		/*
 		this.houseno.on('keyup',function(t,e){
 			console.log('keyup ' + t);
@@ -487,7 +500,7 @@ Ext.define('company.listCompany',{
 		
 		this.btsave = Ext.create('Ext.Button',{		 
 			text : 'Save',
-			iconCls : 'img-edit',
+			iconCls : 'img-save',
 			formBind: true,  
 	        disabled: true,
 			handler : function(bt,ev){
@@ -496,7 +509,7 @@ Ext.define('company.listCompany',{
 	             
 	            	var values = form.getValues();
 	            	Ext.Ajax.request({
-	              		url		: './company/addCompany',
+	              		url		: '/WebCompanys/company/addCompany',
 	                	method  : 'POST',
 	                	jsonData: values,	
 	                	success: function(response){
@@ -540,17 +553,35 @@ Ext.define('company.listCompany',{
 				var form = this.up('form').getForm(); 
 				var values = form.getValues();
 				
-            	Ext.Ajax.request({
-              		url		: './company/delCompany',
-                	method  : 'POST',
-                	jsonData: values,	
-                	success: function(response){
-                	    	 
-                			main.resetData();
-                			
-                			 
-                		}
-                	});
+				Ext.Msg.show({
+				    title:'Confirm Delete?',
+				    message: 'Do you delete : ' + main.companyname.getValue(),
+				    buttons: Ext.Msg.YESNO,
+				    icon: Ext.Msg.QUESTION,
+				    fn: function(btn) {
+				        if (btn === 'yes') {
+				        	Ext.Ajax.request({
+			              		url		: '/WebCompanys/company/delCompany',
+			                	method  : 'POST',
+			                	jsonData: values,	
+			                	success: function(response){
+			                	    	 
+			                			main.resetData();
+			                			
+			                			 
+			                		}
+			                	});
+				        	
+				        	form = null;
+			            	values = null;
+				        }  
+				    }
+				});
+				
+				
+            	
+            	
+            	
 				
 			}
 		});
@@ -560,7 +591,25 @@ Ext.define('company.listCompany',{
 	        border: 0,
 	        flex: 1
 	    }, main.btsave,main.btclose];
+		
+		
+		main.AddCompany = Ext.create('company.form.btAddCompany',{
+    		parent : main,
+    		handler: main.onAddClick,
+    		itemId: 'AddCompany',
+            scope: this
+    	});
+    	main.tbar = [main.AddCompany ] ;
+		
+		
 		this.callParent();
+		
+		this.companyname.focus();
+    },
+    onAddClick: function(){
+    	this.resetData();
+    	this.groupSetField.toggle();
+    	
     }
     
 });    

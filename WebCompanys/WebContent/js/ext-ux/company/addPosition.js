@@ -94,19 +94,21 @@ Ext.define('company.addPosition',{
     	main.parentForm.hide(bt);
     },
     loadDataRecord : function(position){
-    	console.log(position);
+    	//console.log(position);
     	this.getForm().loadRecord(position);
-    	
+    	this.position.focus();
     }, 
     initValue : function(company){
     	this.storeCompany = company;
+    	this.getForm().reset();
     	this.idcompany.setValue(company.id);
+    	this.position.focus();
     },
     initComponent: function() {
 		
 		var main = this;
 		 
-		console.log('list Position');
+		//console.log('list Position');
 		
 		this.idposition  = Ext.create('company.form.fieldIdPosition' );		
 		this.idcompany  = Ext.create('company.form.fieldIdCompany' );		
@@ -127,7 +129,8 @@ Ext.define('company.addPosition',{
 		
 		this.btsave = Ext.create('Ext.Button',{		 
 			text : 'Save',
-			iconCls : 'project-add',
+			 
+			iconCls : 'img-save',
 			formBind: true,  
 	        disabled: true,
 			handler : function(bt,ev){
@@ -136,7 +139,7 @@ Ext.define('company.addPosition',{
 	             
 	            	var values = form.getValues();
 	            	Ext.Ajax.request({
-	              		url		: './jobs/addJobs',
+	              		url		: '/WebCompanys/jobs/addJobs',
 	                	method  : 'POST',
 	                	jsonData: values,	
 	                	success: function(response){
