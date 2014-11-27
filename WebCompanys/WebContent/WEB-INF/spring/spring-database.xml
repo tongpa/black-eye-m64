@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 		">
  
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
  
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://localhost:3306/sample?characterEncoding=utf8" />
-		<property name="username" value="sa" />
-		<property name="password" value="sa" />
+		<property name="url" value="jdbc:mysql://mysql.jobmatcher.poweredbyclear.com:3306/company_data?characterEncoding=utf8" />
+		<property name="username" value="tong" />
+		<property name="password" value="tong" />
 	</bean>
  	
  	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
@@ -54,11 +58,34 @@
     	class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
  	
  	
- 	  <bean id="savedRequestAwareAuthenticationSuccessHandler"
+ 	<bean id="savedRequestAwareAuthenticationSuccessHandler"
 	class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">
-	<property name="targetUrlParameter" value="targetUrl" />
-  </bean>
+		<property name="targetUrlParameter" value="targetUrl" />
+  	</bean>
+  	
+  <!-- 
+  	<bean id="userDao" class="com.jobsmatcher.company.dao.impl.UserDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+  
+  
+	<bean id="customUserDetailsService" class="com.jobsmatcher.company.service.impl.CustomUserDetailsServiceImpl">
+		<property name="userDao" ref="userDao" />
+	</bean>	 
+  
+  	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
+ 
+ 	<aop:config>
+		<aop:pointcut id="userServicePointCut"
+			expression="execution(* com.jobsmatcher.company.service.impl.*Service.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="userServicePointCut" />
+	</aop:config>
 	
-	
-	
+	 -->
 </beans>

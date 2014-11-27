@@ -4,9 +4,9 @@
 <hibernate-configuration>
  <session-factory name="sessionfactory">
   <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-  <property name="hibernate.connection.password">sa</property>
-  <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/sample</property>
-  <property name="hibernate.connection.username">sa</property>
+  <property name="hibernate.connection.password">tong</property>
+  <property name="hibernate.connection.url">jdbc:mysql://mysql.jobmatcher.poweredbyclear.com:3306/company_data</property>
+  <property name="hibernate.connection.username">tong</property>
   <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
  </session-factory>
 </hibernate-configuration>
