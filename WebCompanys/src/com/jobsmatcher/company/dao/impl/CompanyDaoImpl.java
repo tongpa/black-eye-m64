@@ -45,13 +45,13 @@ public class CompanyDaoImpl extends AbstractDaoImpl<Company, String> implements 
 	@Transactional
 	public boolean saveCompany(Company company) {
 		// TODO Auto-generated method stub
-		System.out.println("save company");
+		//System.out.println("save company");
 		 
 		//Session session = getCurrentSession();
 		 
 		//Serializable serial = session.save(company);
 		getCurrentSession().save(company); 
-		//System.out.println(serial);
+		////System.out.println(serial);
 		return true;
 	}
 
@@ -91,7 +91,7 @@ public class CompanyDaoImpl extends AbstractDaoImpl<Company, String> implements 
 	@Override
 	@Transactional
 	public boolean updateCompany(Company company) {
-		System.out.println("update company");
+		//System.out.println("update company");
 		
 		
 		 
@@ -122,7 +122,7 @@ public class CompanyDaoImpl extends AbstractDaoImpl<Company, String> implements 
 		sb.append(" where id_company_data = '" +company.getId_company()+ "'");
 		
 		int v = getCurrentSession().createSQLQuery(sb.toString()).executeUpdate(); 
-		 System.out.println(v);
+		 //System.out.println(v);
 		//getCurrentSession().update(newCom);
 		 
 		//System.out.println(serial);
@@ -136,9 +136,9 @@ public class CompanyDaoImpl extends AbstractDaoImpl<Company, String> implements 
 		sb.append("delete from company_data where id_company_data = ").append(company.getId_company());
 		
 		int v = getCurrentSession().createSQLQuery(sb.toString()).executeUpdate(); 
-		System.out.println(v); 
+		//System.out.println(v); 
 		 
-		System.out.println("Delete Company");
+		//System.out.println("Delete Company");
 		
 	}
 

@@ -33,7 +33,7 @@ public class MainController {
 		  model.setViewName("company/index");
 		  
 		 // model.setViewName("company/sample");
-		  System.out.println("load");
+		  //System.out.println("load");
 		  return model;
 	 
 		}
@@ -45,7 +45,7 @@ public class MainController {
 		  model.setViewName("sample");
 		  
 		 // model.setViewName("company/sample");
-		  System.out.println("load");
+		  //System.out.println("load");
 		  return model;
 	 
 		}
@@ -56,12 +56,12 @@ public class MainController {
 		ModelAndView model = new ModelAndView();
 		   
 		  model.setViewName("sample");
-		  System.out.println(keysearch);
+		  //System.out.println(keysearch);
 		  List<Company> listc = companyDao.listCompanyByName(  keysearch  );
 		  
-		  System.out.println("load : " + listc.size());
+		  //System.out.println("load : " + listc.size());
 		  for(Company c : listc){
-			  System.out.println(c);
+			  //System.out.println(c);
 		  }
 		  return model;
 	 

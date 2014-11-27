@@ -1,8 +1,12 @@
 package com.jobsmatcher.company.controller;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,16 +29,23 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 
+
+
+
+
 import com.jobsmatcher.company.dao.PositionDao;
  
 
 import com.jobsmatcher.company.model.Company;
 import com.jobsmatcher.company.model.Position;
+import com.jobsmatcher.company.utility.Util;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Controller
 @RequestMapping(value = "jobs")
 public class PositionController {
+	
+	private Util util = new Util(); ;
 	
 	@Autowired
 	private PositionDao positionDao;
@@ -46,7 +57,7 @@ public class PositionController {
 		  model.addObject("message", "This page is for ROLE_ADMIN only!");
 		  model.setViewName("position/index");
 		   
-		  System.out.println("load");
+		  //System.out.println("load");
 		  return model;
 	 
 		}
@@ -85,10 +96,18 @@ public class PositionController {
 			
 			 
 			if(position.getId_position() ==0){
-				System.out.println(position.getPost_date());
+				
+				
+				 
+				position.setPost_date(util.convertDate(position.getPost_date()));
+				 
+  
+				
 				positionDao.saveOrUpdate(position);
+				 
 			}
 			else{
+				
 				positionDao.updatePosition(position);
 			}
 	        response.put("success", true);
@@ -106,7 +125,7 @@ public class PositionController {
 	public @ResponseBody Map<String, Comparable> delJobs(@RequestBody Position position,HttpSession sec){
 		Map<String, Comparable> responses = new HashMap<String, Comparable>();
 		
-		System.out.println(position.getId_position());
+		//System.out.println(position.getId_position());
 //		System.out.println(id_position);
 		try {
 	         

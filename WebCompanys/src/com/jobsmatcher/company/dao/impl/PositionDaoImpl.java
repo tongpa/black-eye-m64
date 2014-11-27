@@ -18,15 +18,19 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jobsmatcher.company.dao.PositionDao; 
-import com.jobsmatcher.company.model.Company;
+import com.jobsmatcher.company.dao.PositionDao;  
 import com.jobsmatcher.company.model.Position;
+import com.jobsmatcher.company.utility.Util;
 @Repository
 public  class PositionDaoImpl extends AbstractDaoImpl<Position, String> implements
 		PositionDao {
 
+	
 	protected PositionDaoImpl() {
+		
         super(Position.class);
+        
+        
     }
 	
 	protected PositionDaoImpl(Class<Position> entityClass) {
@@ -52,7 +56,7 @@ public  class PositionDaoImpl extends AbstractDaoImpl<Position, String> implemen
 	@SuppressWarnings("unchecked")
 	public List<Position> getPositionByCompany(String id) {
 		List<Position> users = new ArrayList<Position>();
-		System.out.println("company id :" + id); 
+		//System.out.println("company id :" + id); 
 		
 		String sql = "from Position where id_company_data = " + id;
 		users = getCurrentSession()
@@ -69,15 +73,15 @@ public  class PositionDaoImpl extends AbstractDaoImpl<Position, String> implemen
 		sb.append("delete from job_position where id_position = ").append(id.getId_position());
 		
 		int v = getCurrentSession().createSQLQuery(sb.toString()).executeUpdate(); 
-		System.out.println(v); 
+		//System.out.println(v); 
 		 
-		System.out.println("Delete Positon");
+		//System.out.println("Delete Positon");
 	}
 
 	@Override
 	@Transactional
 	public boolean updatePosition(Position position) {
-		System.out.println("update company");
+		//System.out.println("update company");
 		
 		
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -99,11 +103,12 @@ public  class PositionDaoImpl extends AbstractDaoImpl<Position, String> implemen
 		sb.append(" where id_position = '" + position.getId_position() + "'");
 		
 		int v = getCurrentSession().createSQLQuery(sb.toString()).executeUpdate(); 
-		 System.out.println(v);
+		 //System.out.println(v);
 		//getCurrentSession().update(newCom);
 		 
 		//System.out.println(serial);
 		 sb = null;
+		 df = null;
 		return true;
 	}
 
@@ -115,9 +120,9 @@ public  class PositionDaoImpl extends AbstractDaoImpl<Position, String> implemen
 		sb.append("delete from job_position where id_company_data = ").append(id );
 		
 		int v = getCurrentSession().createSQLQuery(sb.toString()).executeUpdate(); 
-		System.out.println(v); 
+		//System.out.println(v); 
 		 
-		System.out.println("Delete Positon");
+		//System.out.println("Delete Positon");
 	}
 	
 	

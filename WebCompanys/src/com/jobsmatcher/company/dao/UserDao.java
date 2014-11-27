@@ -1,7 +1,7 @@
 package com.jobsmatcher.company.dao;
 
-import com.jobsmatcher.company.model.User;
+import com.jobsmatcher.company.model.Users;
 
 public interface UserDao {
-	User findByUserName(String username);
+	Users findByUserName(String username);
 }

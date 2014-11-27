@@ -66,7 +66,7 @@ public class CompanyController {
 		  model.setViewName("company/index");
 		  
 		 // model.setViewName("company/sample");
-		  System.out.println("load");
+		  //System.out.println("load");
 		  return model;
 	 
 		}
@@ -95,7 +95,7 @@ public class CompanyController {
 	@RequestMapping(value = "addCompany", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Comparable> addCompany(@RequestBody Company company, HttpSession sec){
 		Map<String, Comparable> response = new HashMap<String, Comparable>();
-		System.out.println(company);
+		//System.out.println(company);
 		try {
 	        
 			if (company.getId_company() == 0){
@@ -118,7 +118,7 @@ public class CompanyController {
 	@RequestMapping(value = "delCompany", method = RequestMethod.POST)
 	public @ResponseBody Map<String, Comparable> delCompany(@RequestBody Company company, HttpSession sec){
 		Map<String, Comparable> response = new HashMap<String, Comparable>();
-		System.out.println(company);
+		//System.out.println(company);
 		try {
 	        
 			positionDao.deleteByCompany(company.getId_company());
