@@ -164,40 +164,58 @@ class SurveyController(BaseController):
         #model.Question.createQuestion(self.dataValue,user.user_id);
         
         
-        question = model.Question();
+        if(self.dataValue.get('id_question') is None or ( len(self.dataValue.get('id_question')) == 0 )  ):
          
-        question.question = self.dataValue.get('question');
-        question.help_message = self.dataValue.get('help_message');
-        question.id_question_project = self.dataValue.get('id_project');
-        question.id_question_type = self.dataValue.get('id_question_type');
-        question.text_label = '';
-        question.user_id = user.user_id;
-        question.order = 3;
-        question.save();
-        datagrid  = json.loads(self.dataValue.get('datagrid'));
+            question = model.Question();
+         
+            question.question = self.dataValue.get('question');
+            question.help_message = self.dataValue.get('help_message');
+            question.id_question_project = self.dataValue.get('id_project');
+            question.id_question_type = self.dataValue.get('id_question_type');
+            question.text_label = '';
+            question.user_id = user.user_id;
+            question.order = 3;
+            question.save();
+            datagrid  = json.loads(self.dataValue.get('datagrid'));
+            
+            for basic_datas in datagrid:    
+                basicData = model.BasicData();
+                basicData.id_basic_data_type = 1;
+                basicData.save();
+                
+                basicText = model.BasicTextData();
+                basicText.id_basic_data = basicData.id_basic_data;
+                basicText.value = basic_datas.get('value');
+                basicText.save();
+                
+                basicQuestion = model.BasicQuestion();
+                basicQuestion.id_question = question.id_question;
+                basicQuestion.id_basic_data = basicData.id_basic_data;
+                basicQuestion.answer =    ({True: True, False: False}[ basic_datas.get('value') in 'true']);
+                basicQuestion.order = basic_datas.get('seq');
+                
+                basicQuestion.save();
         
+        else:
+            log.info("-----update--------");
+            log.info(self.dataValue.get('id_question'));
+            
+            question = model.Question.getById(self.dataValue.get('id_question'));
+            question.help_message = self.dataValue.get('help_message');
+            question.text_label = '';
+            question.question = self.dataValue.get('question');
+            
+            datagrid  = json.loads(self.dataValue.get('datagrid'));
+            
+            
+            for basic_datas in datagrid:   
+                log.info(basic_datas.get('id_question')  );
+                
+            pass;
         
          
   
-        for basic_datas in datagrid:
         
-            
-            basicData = model.BasicData();
-            basicData.id_basic_data_type = 1;
-            basicData.save();
-            
-            basicText = model.BasicTextData();
-            basicText.id_basic_data = basicData.id_basic_data;
-            basicText.value = basic_datas.get('value');
-            basicText.save();
-            
-            basicQuestion = model.BasicQuestion();
-            basicQuestion.id_question = question.id_question;
-            basicQuestion.id_basic_data = basicData.id_basic_data;
-            basicQuestion.answer =    ({True: True, False: False}[ basic_datas.get('value') in 'true']);
-            basicQuestion.order = basic_datas.get('seq');
-            
-            basicQuestion.save();
          
             
         print "save object";
