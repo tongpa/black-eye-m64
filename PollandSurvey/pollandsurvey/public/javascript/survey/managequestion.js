@@ -472,34 +472,18 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 	            	//var data =survey.listBasicData.getData();
 	            	var data = [];
 	        		survey.listBasicData.each(function(record){ 
-	        	 		 
-	        			data.push(record.data);
+	        	 		var d = record.data;
+	        			idQuestion = record.data.id_question.data;
+	        			d.id_question = idQuestion;
+	        			data.push(d);
+	        			d = null; 
 	        	 	});
 	        		console.log(data);
 	            	
-	        		main.dataGrid.setValue(Ext.encode(data ));
-	        		
-	        		////////////////////////////////////////////////////
-	    /*    		var dataObj = null;
- 
-	        		Ext.Ajax.request({
-	        		    url:'/survey/addQuestion',
-	        		    params: { foo: data },
-	        		    failure: function(response, options) {},
-	        		    success: function(response, options) {
-	        		        //assuming the response is a JSON string...
-	        		        dataObj = Ext.decode(response.responseText);
-
-	        		        //add any other logic you want here
-	        		    }
-	        		}); 
-	        	
-	      */  		
-	        		
-	        		////////////////////////////////////////////////////
-	        		
-	        		
-	            	
+	        		main.dataGrid.setValue( Ext.encode(data));
+	        	 
+	        	 
+	             
 	                form.submit({
 	                    success: function(form, action) {
 	                    	//save all question
@@ -530,7 +514,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 	                    	}
 	                        
 	                    }
-	                });
+	                });  
 	            }
 			}
 		});
@@ -667,6 +651,7 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
 			listeners : {
 				refreshOther : function(cmp) {
 					//survey.listProject.reload();
+					main.setLoad(main.record);
 		        }
 			}
 			

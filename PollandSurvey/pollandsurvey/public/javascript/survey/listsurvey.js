@@ -74,10 +74,15 @@ Ext.application({
 				    		title : 'Create variable'
 				    	});
 				    	
+				    	var manage_option = Ext.create('survey.view.list.Project.PManagePublication',{
+				    		width: '100%',   		
+				    		title : 'Options'
+				    	});
+				    	
 				    	
 				    	var tab_manage = Ext.create('Ext.tab.Panel', {
 				    	    width: '100%',   	
-				    	    items: [manage_question,manage_variable ]
+				    	    items: [manage_question,manage_variable,manage_option ]
 				    	});
 				    	
 				    	var panel_manage = Ext.create('Ext.panel.Panel',{
@@ -95,7 +100,7 @@ Ext.application({
 					
 					}
 
-					//tab_project.setActiveTab(tab);
+				//	tab_project.setActiveTab(tab);
 					
 					
 					

@@ -247,6 +247,9 @@ class Question(DeclarativeBase):
         DBSession.flush() ;
         
     @classmethod
+    def getById(cls,id):
+        return DBSession.query(cls).get(id); 
+    @classmethod
     def getAll(cls,act):
         if act is not None:
             return DBSession.query(cls).filter(cls.active == str(act).decode('utf-8')).all();
@@ -264,6 +267,11 @@ class Question(DeclarativeBase):
                 datas.append(d); 
         
         return datas;
+    
+    
+    @classmethod
+    def updateQuestion(cls):
+        pass;
     
     @classmethod
     def createQuestion(cls, values,user_id):
