@@ -21,6 +21,7 @@ from sqlalchemy.orm import relation, synonym, Bundle
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.dialects.mysql import BIT
 from pollandsurvey.model import DeclarativeBase, metadata, DBSession
+import transaction
 __all__ = ['GroupVariables', 'QuestionType', 'QuestionProjectType' ,'BasicDataType', 'QuestionProject','LanguageLabel','Variables','BasicData','BasicQuestion','BasicTextData' ,'Question']
 
 
@@ -234,6 +235,10 @@ class Question(DeclarativeBase):
     text_label = Column(String(255),  nullable=False);
     order =  Column(Integer   );
     
+    """ relation   """
+    child = relation('BasicQuestion');
+    validate = relation('QuestionValidation');
+    
     active  = Column(BIT, nullable=True, default=1);
     
     def __init__(self):
@@ -245,6 +250,94 @@ class Question(DeclarativeBase):
     def save (self):
         DBSession.add(self); 
         DBSession.flush() ;
+    
+    def delete(self):
+       
+        for basicq in self.child:
+            
+            for childen in basicq.basicData.childenText:
+                print "delete : BasicTextData : " + str(childen.id_basic_data);
+                
+                BasicTextData.deleteById(str(childen.id_basic_data));
+                 
+            print "delete : BasicQuestion : " + str(basicq.id_question) + " , " +  str(basicq.id_basic_data);
+            basicq.delete();
+            
+            print "delete : BasicData : " + str(basicq.basicData.id_basic_data);
+            basicq.basicData.delete();
+        
+        for val in self.validate:
+            val.delete();
+        DBSession.delete(self); 
+        DBSession.flush() ;
+        
+        
+    
+    @classmethod
+    def deleteBy(cls,question):    
+        id_question = question.id_question;
+        basicQuestion = BasicQuestion.getByQuestionId(question.id_question);
+        
+        sql = """ delete sur_text_data.* from 
+                    sur_text_data    LEFT JOIN sur_basic_question on sur_text_data.id_basic_data = sur_basic_question.id_basic_data
+                    where 
+                         sur_basic_question.id_question = '"""  + str(id_question) + """' """;
+        result = DBSession.execute(sql);
+        DBSession.flush() ;
+        
+        sql = """ delete sur_basic_question.* from 
+                    sur_basic_question     
+                    where 
+                 sur_basic_question.id_question = '"""  + str(id_question) + """'   """;
+        result = DBSession.execute(sql);
+        DBSession.flush() ;
+        
+        """
+        sql = "DELETE FROM sur_basic_question WHERE sur_basic_question.id_question = '"+str(id_question)  + "'"; # AND sur_basic_question.id_basic_data = '"+ str(bq.id_basic_data) + "'" ;
+        result = DBSession.execute(sql);
+        DBSession.flush() ;
+            
+        for bq in basicQuestion:
+            sql = "delete from sur_text_data where id_basic_data =" +str(bq.id_basic_data) ;
+            DBSession.execute(sql);
+            DBSession.flush() ;
+            
+            sql = "DELETE FROM sur_basic_data WHERE sur_basic_data.id_basic_data = '"+ str(bq.id_basic_data)  + "'" ;
+            result = DBSession.execute(sql);
+            DBSession.flush() ;
+            
+            transaction.commit();
+        sql = "DELETE FROM sur_question_validation WHERE sur_question_validation.id_question = '"+ str(id_question) + "'" ;
+        result = DBSession.execute(sql);
+        DBSession.flush() ;
+        
+        sql = "DELETE FROM sur_question WHERE sur_question.id_question = '"+ str(id_question) + "'" ;
+        result = DBSession.execute(sql);
+        DBSession.flush() ;
+        transaction.commit();
+        """
+        """"
+        for basicq in question.child:
+            for childen in basicq.basicData.childenText:
+                sql = "delete from sur_text_data where id_basic_data =" +str(childen.id_basic_data) ;
+                result = DBSession.execute(sql);
+            DBSession.flush() ;
+            sql = "DELETE FROM sur_basic_question WHERE sur_basic_question.id_question = '"+str(basicq.id_question) + "' AND sur_basic_question.id_basic_data = '"+ str(basicq.id_basic_data) + "'" ;
+            result = DBSession.execute(sql);
+            DBSession.flush() ;
+            
+            sql = "DELETE FROM sur_basic_data WHERE sur_basic_data.id_basic_data = '"+ str(basicq.basicData.id_basic_data) + "'" ;
+            result = DBSession.execute(sql);
+            DBSession.flush() ;
+            
+            sql = "DELETE FROM sur_question_validation WHERE sur_question_validation.id_question = '"+ str(question.id_question) + "'" ;
+            result = DBSession.execute(sql);
+            DBSession.flush() ;
+            
+            sql = "DELETE FROM sur_question WHERE sur_question.id_question = '"+ str(question.id_question) + "'" ;
+            result = DBSession.execute(sql);
+            DBSession.flush() ;
+        """
         
     @classmethod
     def getById(cls,id):
@@ -256,6 +349,21 @@ class Question(DeclarativeBase):
             #return DBSession.query(cls).get(act); 
         else:
             return DBSession.query(cls).all();
+        
+    @classmethod
+    def loadJson(cls,parsed_dict):
+        question = Question();
+         
+        question.id_question = parsed_dict.get('id_question');
+        question.id_question_type = parsed_dict.get('id_question_type');
+        question.id_question_project = parsed_dict.get('id_question_project');
+        question.user_id = parsed_dict.get('user_id');
+        question.question = parsed_dict.get('question');
+        question.help_message = parsed_dict.get('help_message');
+        question.text_label = parsed_dict.get('text_label');
+        question.order = parsed_dict.get('order');
+        question.active = parsed_dict.get('active');
+        return question;
         
     @classmethod
     def getQuestionByProjectId(cls,pid):
@@ -388,7 +496,7 @@ class QuestionValidation(DeclarativeBase):
     id_question =  Column(Integer,ForeignKey('sur_question.id_question'), index=True, primary_key=True);
     quest = relation('Question', backref='sur_question_validation_id_question');
     
-    enable_validate  = Column(BIT, nullable=True, default=1);
+    enable_validation  = Column(BIT, nullable=True, default=1);
     message = Column(String(255),  nullable=True);
      
     
@@ -408,6 +516,10 @@ class QuestionValidation(DeclarativeBase):
             return DBSession.query(cls).get(act); 
         else:
             return DBSession.query(cls).all();       
+        
+    def delete(self):
+        DBSession.delete(self); 
+        DBSession.flush() ;
         
         
 class BasicQuestion(DeclarativeBase):   
@@ -430,9 +542,26 @@ class BasicQuestion(DeclarativeBase):
     def __str__(self):
         return '"%s"' % str(self.id_question )
     
+    @classmethod
+    def getId(cls,act):
+        return DBSession.query(cls).get(act);
+    
+    @classmethod
+    def getByQuestionAndBasic(cls,idQuestion,idBasicData):
+        return DBSession.query(cls).filter(cls.id_question == str(idQuestion), cls.id_basic_data == str(idBasicData) ).first();
+    
+    
+    def delete(self):
+        DBSession.delete(self); 
+        DBSession.flush() ;
+        
     def save (self):
         DBSession.add(self); 
         DBSession.flush() ;
+        
+    @classmethod
+    def getByQuestionId(cls,idQuestion):
+        return DBSession.query(cls).filter(cls.id_question == str(idQuestion)  ).all();
     @classmethod
     def getBasicTextById(cls,id):
         data = [];
@@ -480,6 +609,7 @@ class BasicData(DeclarativeBase):
     id_basic_data_type = Column(   Integer,ForeignKey('sur_basic_data_type.id_basic_data_type'), nullable=False, index=True) ;
     basic_data_type = relation('BasicDataType', backref='sur_basic_data_id_basic_data_type');
     
+    """list childen link """
     childenText = relation('BasicTextData')  ; 
     
     def __init__(self):
@@ -490,6 +620,10 @@ class BasicData(DeclarativeBase):
     
     def save (self):
         DBSession.add(self); 
+        DBSession.flush() ;
+        
+    def delete(self):
+        DBSession.delete(self); 
         DBSession.flush() ;
     
      
@@ -514,5 +648,19 @@ class BasicTextData(DeclarativeBase):
     def save (self):
         DBSession.add(self); 
         DBSession.flush() ;
+        
+    def remove(self):
+        DBSession.delete(self); 
+        DBSession.flush() ;
+    
+    @classmethod
+    def deleteById(cls,id):  
+        sql = "delete from sur_text_data where id_basic_data =" +str(id) ;
+        result = DBSession.execute(sql);
+        
+    @classmethod
+    def getId(cls,act):
+        return DBSession.query(cls).get(act); 
+        
     
     

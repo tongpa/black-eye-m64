@@ -15,8 +15,7 @@ from pollandsurvey.lib.base import BaseController
 from pollandsurvey.controllers.error import ErrorController
 
 import sys
-import json
-
+import json 
 from tg import tmpl_context
 from pollandsurvey.widget.movie_form import create_movie_form
 
@@ -103,6 +102,7 @@ class SurveyController(BaseController):
         print kw;
         
         return dict(success=self.success, message = self.message);
+    
     @expose('json')
     def saveProject(self, came_from=lurl('/'), *args, **kw):
         reload(sys);
@@ -207,9 +207,44 @@ class SurveyController(BaseController):
             
             datagrid  = json.loads(self.dataValue.get('datagrid'));
             
+            log.info("show data in grid" );
             
             for basic_datas in datagrid:   
                 log.info(basic_datas.get('id_question')  );
+                log.info(basic_datas );
+                if (basic_datas.get('id_question') is None):
+                    #update
+                    basicText = model.BasicTextData.getId(basic_datas.get('id_basic_data'));
+                    basicText.value = basic_datas.get('value');
+                    
+                    basicQuestion = model.BasicQuestion.getByQuestionAndBasic( self.dataValue.get('id_question'), basic_datas.get('id_basic_data'));
+                    basicQuestion.answer =  ({True: 1, False: 0}[ str(basic_datas.get('answer')).lower() in 'true']);
+                    basicQuestion.order = basic_datas.get('seq');
+                    
+                     
+                else:
+                    #insert
+                    basicData = model.BasicData();
+                    basicData.id_basic_data_type = 1;
+                    basicData.save();
+                    
+                    basicText = model.BasicTextData();
+                    basicText.id_basic_data = basicData.id_basic_data;
+                    basicText.value = basic_datas.get('value');
+                    basicText.save();
+                    
+                    basicQuestion = model.BasicQuestion();
+                    basicQuestion.id_question = question.id_question;
+                    basicQuestion.id_basic_data = basicData.id_basic_data;
+                    basicQuestion.answer =    ({True: 1, False: 0}[ str(basic_datas.get('answer')).lower() in 'true']);
+                    basicQuestion.order = basic_datas.get('seq');
+                    
+                    basicQuestion.save();
+                    
+                    pass;
+                
+                
+            
                 
             pass;
         
@@ -225,9 +260,35 @@ class SurveyController(BaseController):
         return dict(success=self.success, message = self.message);
     
     @expose('json')
+    def deleteQuestion(self, came_from=lurl('/'), *args, **kw):
+        reload(sys);
+        sys.setdefaultencoding("utf-8");
+        
+        df = json.loads(request.body, encoding=request.charset);
+        
+        print df;
+        print df.get('id_question');
+        
+        #question = model.Question.loadJson(df);
+        
+        question = model.Question.getById(df.get('id_question'));
+        
+        model.Question.deleteBy(question);
+        #question.delete();
+            
+        self.success = True;
+        self.message = "5555";
+        
+        print args;
+        print kw;
+        
+        return dict(success=self.success, message = self.message);
+    
+    @expose('json')
     def createBasicData(self, came_from=lurl('/'), *args, **kw):
         reload(sys);
         sys.setdefaultencoding("utf-8");
+        
         self.success = True;
         self.message = "5555";
         log.info(request);
