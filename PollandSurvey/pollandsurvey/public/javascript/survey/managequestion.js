@@ -45,6 +45,10 @@ Ext.define ('survey.view.list.GridQuestions',{
      selectedItemClass: 'patient-selected',
      enableDragDrop: true,
      selType: 'rowmodel',
+    reloadGrid : function(){
+    	var main = this;
+    	
+    },
 	initComponent: function() {
 		var main = this;
 		
@@ -155,8 +159,36 @@ Ext.define ('survey.view.list.GridQuestions',{
 					                    var record = grid.getStore().getAt(rowIndex);
 					                    
 					                    
+					                    var datajson = Ext.encode(record.data);
 					                    
-					                    Ext.Msg.alert('Delete', 'Delete user: ' + record.data.question);
+					                    console.log(record);
+					                    Ext.Msg.show({
+					    				    title:'Confirm Delete?',
+					    				    message: 'Do you delete : ' + record.data.question,
+					    				    buttons: Ext.Msg.YESNO,
+					    				    icon: Ext.Msg.QUESTION,
+					    				    fn: function(btn) {
+					    				        if (btn === 'yes') {
+					    				        	 
+					    				        	Ext.Ajax.request({
+					    			              		url		: '/survey/deleteQuestion',
+					    			                	method  : 'POST',
+					    			                	jsonData: datajson,	
+					    			                	success: function(response){
+					    			                	    	
+					    			                		grid.getStore().remove(record);
+					    			                			//main.resetData();
+					    			                			
+					    			                			 
+					    			                		}
+					    			                	});
+					    				        	 
+					    				        	 
+					    				        }  
+					    				    }
+					    				});
+					                    
+					                     
 					                } 
 					            },
 					            '->',
