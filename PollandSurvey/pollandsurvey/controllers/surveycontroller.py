@@ -103,10 +103,11 @@ class SurveyController(BaseController):
          
         self.idProject = self.df.get('id_question_project');
         
-        self.question = model.Question.getByProjectId(self.idProject);
-        if(self.question):
-            self.idQuestion = self.question.id_question;
-            model.Question.deleteQuestoin(self.idQuestion);
+        self.listQuestion = model.Question.getByProjectId(self.idProject);
+        for self.question in self.listQuestion:
+            if(self.question):
+                self.idQuestion = self.question.id_question;
+                model.Question.deleteQuestoin(self.idQuestion);
             
         model.QuestionProject.deleteById(self.idProject);
         
