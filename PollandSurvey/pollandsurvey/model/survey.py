@@ -379,7 +379,7 @@ class Question(DeclarativeBase):
     
     @classmethod
     def getByProjectId(cls,id):
-        return DBSession.query(cls).filter(cls.id_question_project == str(id).decode('utf-8')).first(); 
+        return DBSession.query(cls).filter(cls.id_question_project == str(id).decode('utf-8')).all(); 
     
     @classmethod
     def getAll(cls,act):
