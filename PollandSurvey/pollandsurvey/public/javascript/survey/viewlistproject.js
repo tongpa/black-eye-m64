@@ -35,8 +35,9 @@ Ext.define('survey.view.list.Project', {
     	    	    {header: 'name', dataIndex: 'name',width : '30%' , sortable: false }  ,
     	    	    {header: 'type', dataIndex: 'question_project_type',width : '20%', renderer :main.showprojecttype , sortable: false }  ,
     	    	    {header: 'create', dataIndex: 'start_date',width : '30%' , sortable: false }   ,
-    	    	    {header: 'Manage',  width : '10%', renderer :main.showbuttonManage,  sortable: false  }    ,
-    	    	    {header: 'Delete',  width : '10%', renderer :main.deleteButton, sortable: false  }  
+    	    	    {header: 'Delete',  width : '10%', renderer :main.deleteButton, sortable: false  } ,
+    	    	    {header: 'Manage',  width : '10%',  renderer :main.showbuttonManage,  sortable: false  }   
+    	    	     
     	            
     	        ]
     	
@@ -58,7 +59,7 @@ Ext.define('survey.view.list.Project', {
     			 
     			 
     			this.parent.showWin.show(this);
-    			
+    			this.parent.showWin.resetData();
     		}
     	} );
     	
@@ -91,9 +92,10 @@ Ext.define('survey.view.list.Project', {
    
     } ,
     deleteButton : function(value,m,r){
+    	var main = this;
     	var id = Ext.id();
-    	//console.log(m);
-    	console.log(r);
+    	 
+    	 
         Ext.defer(function () {
             Ext.widget('button', {
                 renderTo: id,
@@ -105,8 +107,8 @@ Ext.define('survey.view.list.Project', {
                 handler: function (bt,ev) { 
                 	//debugger;
                 	 
-                	survey.listProject.remove(bt.record);
-                	Ext.Msg.alert('Info', r.get('name'));  
+                	main.removeProject(r);
+                	 
                 	
                 }
             });
@@ -122,7 +124,45 @@ Ext.define('survey.view.list.Project', {
         //do some stuff here
 
         this.fireEvent('showManage', this,record);
-    },/*,
+    },
+    removeProject : function(record){
+    	 
+    	
+    	var main= this;
+    	//survey.listProject.remove(r);
+    	var datajson =  Ext.encode(record.data);
+    	
+    	console.log(datajson);
+    	
+    	Ext.Msg.show({
+		    title:'Confirm Delete?',
+		    message: 'Do you delete : ' + record.data.name,
+		    buttons: Ext.Msg.YESNO,
+		    icon: Ext.Msg.QUESTION,
+		    fn: function(btn) {
+		        if (btn === 'yes') {
+		        	 
+		        	Ext.Ajax.request({
+	              		url		: '/survey/deleteProject',
+	                	method  : 'POST',
+	                	jsonData: datajson,	
+	                	success: function(response){
+	                	    	
+	                		main.getStore().remove(record);
+	                		 
+	                			
+	                			 
+	                		}
+	                	});
+		        	 
+		        	 
+		        }  
+		    }
+		});
+    	
+    	
+    }
+    /*,
     onSelectionChange: function(selmodel, selection) {
         var selected = selection[0],
             button = this.down('button[action=remove]');

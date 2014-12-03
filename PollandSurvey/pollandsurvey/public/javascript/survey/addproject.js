@@ -22,14 +22,14 @@ Ext.define('survey.view.list.Project.fieldHeaderMessage',{
 	extend: 'Ext.form.field.Text',
 	name : 'header_message',
 	fieldLabel: 'Header Message', 
-	allowBlank: false 
+	allowBlank: true 
 });
  
 Ext.define('survey.view.list.Project.fieldFooterMessage',{
 	extend: 'Ext.form.field.Text',
 	name : 'footer_message',
 	fieldLabel: 'Footer Message', 
-	allowBlank: false 
+	allowBlank: true 
 }); 
 
 Ext.define('survey.view.list.Project.fieldWelcomeText',{
@@ -37,7 +37,7 @@ Ext.define('survey.view.list.Project.fieldWelcomeText',{
 	name : 'welcome_text',
 	fieldLabel: 'Welcome Text',
 	grow      : true,
-	allowBlank: false 
+	allowBlank: true 
 }); 
 
 Ext.define('survey.view.list.Project.fieldEndText',{
@@ -45,7 +45,7 @@ Ext.define('survey.view.list.Project.fieldEndText',{
 	name : 'end_text',
 	fieldLabel: 'End Text', 
 	grow      : true,
-	allowBlank: false 
+	allowBlank: true 
 }); 
 
 
@@ -80,8 +80,10 @@ Ext.define('survey.view.list.Project.PProject',{
     setDefaultField : function(){
     	var main = this;
     	 
+    	console.log('setDefaultField');
     	 
-    	 main.fieldSet.setHidden(true);
+    	 main.fieldSets.setHidden(true);
+    	 main.btsave.setDisabled(false);
     	 /*
          main.fieldHeaderMessage.setHidden(true);
          main.fieldFooterMessage.setHidden(true);
@@ -91,13 +93,16 @@ Ext.define('survey.view.list.Project.PProject',{
     setEditField : function(){
     	var main = this;
     	
-    	 main.fieldSet.setVisible(true);
+    	 main.fieldSets.setVisible(true);
     	 
     	 /*
         main.fieldHeaderMessage.setVisible(true);
         main.fieldFooterMessage.setVisible(true);
         main.fieldWelcomeText.setVisible(true);
         main.fieldEndText.setVisible(true);*/
+    },
+    resetData :function(){
+    	this.getForm().reset();
     },
 	initComponent: function() {
 		
@@ -194,34 +199,38 @@ Ext.define('survey.view.list.Project.PProject',{
 		if(main.parentForm != null){
 			main.form.reset();
 			main.parentForm.hide(bt);
+			 
 		}
 	}
 });
 
 
-Ext.define('survey.view.list.Project.winAddProject',{
+Ext.define('survey.view.list.Project.winAddProject1',{
+	//extend: 'widget.window',
 	extend: 'Ext.window.Window',
-	text : 'Add Project',
-	layout: 'fit',
-	id : 'test-1',
-	modal : true,
-	width : 300,
-	height : 400,
-	closable: true,
+	width: 600,
+    minWidth: 350,
+    height: 350,
+    closable: true,
     closeAction: 'hide',
-    showClose : true,
     maximizable: true,
-    constrain: true,
-    url : '',
-    //animateTarget: button,
-	header: {
+    text : 'Add Project',
+	
+    header: {
         titlePosition: 2,
         titleAlign: 'center' 
     },
-     
+    layout: {
+        type: 'fit',
+        padding: 5
+    },
+    resetData : function(){
+   	 
+    }, 
 	initComponent: function() {
-		 
+		
 		var main = this;
+		
 		main.panelProject = Ext.create('survey.view.list.Project.PProject' ,{
 			url : main.url,
 			showClose : main.showClose,
@@ -234,7 +243,61 @@ Ext.define('survey.view.list.Project.winAddProject',{
 	 	 
 		 
 		main.items = main.panelProject; 
+		main.panelProject.setDefaultField();
+		
+	
 		 
+		this.callParent();
+	}
+});
+
+
+Ext.define('survey.view.list.Project.winAddProject',{
+	extend: 'Ext.window.Window',
+	text : 'Add Project',
+	layout: {
+        type: 'fit',
+        padding: 5
+    },
+	
+	modal : true,
+	width: 600,
+    minWidth: 350,
+    height: 350,
+	closable: true,
+    closeAction: 'hide',
+    showClose : true,
+    maximizable: true,
+    constrain: true,
+    url : '',
+    //animateTarget: button,
+	header: {
+        titlePosition: 2,
+        titleAlign: 'center' 
+    },
+    resetData : function(){
+    	this.panelProject.resetData();
+    	this.panelProject.setDefaultField();
+    }, 
+	initComponent: function() {
+		 
+		var main = this;
+	
+		main.panelProject = Ext.create('survey.view.list.Project.PProject' ,{
+			url : main.url,
+			showClose : main.showClose,
+			parentForm : main,
+			listeners : {
+				refreshOther : function(cmp) {
+		            this.parentForm.refreshOther();
+		        }
+		    }});
+	 	 
+		 
+		main.items = main.panelProject; 
+		main.panelProject.setDefaultField();
+		
+	
 		this.callParent();
 		
 		 

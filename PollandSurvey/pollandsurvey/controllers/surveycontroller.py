@@ -98,8 +98,17 @@ class SurveyController(BaseController):
         self.success = True;
         self.message = "5555";
         
-        print args;
-        print kw;
+        self.df = json.loads(request.body, encoding=request.charset);
+        
+         
+        self.idProject = self.df.get('id_question_project');
+        
+        self.question = model.Question.getByProjectId(self.idProject);
+        if(self.question):
+            self.idQuestion = self.question.id_question;
+            model.Question.deleteQuestoin(self.idQuestion);
+            
+        model.QuestionProject.deleteById(self.idProject);
         
         return dict(success=self.success, message = self.message);
     
@@ -122,6 +131,9 @@ class SurveyController(BaseController):
         
         user =  request.identity['user']; 
         project.user_id =  user.user_id;
+        
+        print kw;
+        
         
         if 'description' in kw:
             project.description = kw.get('description');
@@ -170,7 +182,7 @@ class SurveyController(BaseController):
          
             question.question = self.dataValue.get('question');
             question.help_message = self.dataValue.get('help_message');
-            question.id_question_project = self.dataValue.get('id_project');
+            question.id_question_project = self.dataValue.get('id_question_project');
             question.id_question_type = self.dataValue.get('id_question_type');
             question.text_label = '';
             question.user_id = user.user_id;
@@ -271,13 +283,29 @@ class SurveyController(BaseController):
         
         #question = model.Question.loadJson(df);
         
-        question = model.Question.getById(df.get('id_question'));
+        #question = model.Question.getById(df.get('id_question'));
         
-        model.Question.deleteBy(question);
-        #question.delete();
+        idQuestion = df.get('id_question');
+        
+        model.Question.deleteQuestoin(idQuestion);
+        """
+        listBasicQuestion = model.BasicQuestion.getByQuestionId(idQuestion);
+        
+        model.BasicQuestion.deleteByQuestion(idQuestion);
+        
+        for basicQuestion in listBasicQuestion:
+            idBasicData = basicQuestion.id_basic_data;
+            model.BasicTextData.deleteById(idBasicData);            
+            model.BasicData.deleteById(idBasicData);
+            
+        
+        model.QuestionValidation.deleteByQuestion(idQuestion);
+        model.Question.deleteByQuestion(idQuestion);
+        """
+         
             
         self.success = True;
-        self.message = "5555";
+        self.message = "Save Success";
         
         print args;
         print kw;

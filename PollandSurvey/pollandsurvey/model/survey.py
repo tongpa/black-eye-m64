@@ -197,10 +197,8 @@ class QuestionProject(DeclarativeBase):
     
     @classmethod
     def getId(cls,act):
-        if act is not None:
-            return DBSession.query(cls).get(act); 
-        else:
-            return DBSession.query(cls).all();   
+        return DBSession.query(cls).get(act); 
+           
     @classmethod
     def getAll(cls,act):
         list =[];
@@ -213,6 +211,12 @@ class QuestionProject(DeclarativeBase):
         for i in list:
             i.question_project_type;
         return list;
+   
+    @classmethod
+    def deleteById(cls,id):
+        quest = DBSession.query(cls).filter(cls.id_question_project == str(id) ).delete();
+        #DBSession.delete(quest); 
+        DBSession.flush() ;
         
 
 class Question(DeclarativeBase):
@@ -251,25 +255,55 @@ class Question(DeclarativeBase):
         DBSession.add(self); 
         DBSession.flush() ;
     
+    @classmethod
+    def deleteQuestoin(cls,idQuestion):
+        
+        
+        listBasicQuestion = BasicQuestion.getByQuestionId(idQuestion);
+        
+        BasicQuestion.deleteByQuestion(idQuestion);
+        
+        for basicQuestion in listBasicQuestion:
+            idBasicData = basicQuestion.id_basic_data;
+            BasicTextData.deleteById(idBasicData);            
+            BasicData.deleteById(idBasicData);
+            
+        
+        QuestionValidation.deleteByQuestion(idQuestion);
+        Question.deleteByQuestion(idQuestion);
+        
+    
+    
+    
+    @classmethod
+    def deleteByQuestion(cls,idQuestion):
+        quest = DBSession.query(cls).filter(cls.id_question == str(idQuestion) ).delete();
+        #DBSession.delete(quest); 
+        DBSession.flush() ;
+        
+        #sql = "delete from sur_question where id_question = '" +str(idQuestion) + "'" ;
+        #DBSession.execute(sql);
+        #DBSession.flush() ;
+    
     def delete(self):
        
         for basicq in self.child:
             
-            for childen in basicq.basicData.childenText:
-                print "delete : BasicTextData : " + str(childen.id_basic_data);
-                
-                BasicTextData.deleteById(str(childen.id_basic_data));
+            #for childen in basicq.basicData.childenText:
+            #    print "delete : BasicTextData : " + str(childen.id_basic_data);                
+            #    BasicTextData.deleteById(str(childen.id_basic_data));
                  
             print "delete : BasicQuestion : " + str(basicq.id_question) + " , " +  str(basicq.id_basic_data);
             basicq.delete();
             
-            print "delete : BasicData : " + str(basicq.basicData.id_basic_data);
-            basicq.basicData.delete();
+            #print "delete : BasicData : " + str(basicq.basicData.id_basic_data);
+            #basicq.basicData.delete();
         
         for val in self.validate:
             val.delete();
-        DBSession.delete(self); 
-        DBSession.flush() ;
+            
+        #DBSession.delete(self); 
+        #DBSession.flush() ;
         
         
     
@@ -342,6 +376,11 @@ class Question(DeclarativeBase):
     @classmethod
     def getById(cls,id):
         return DBSession.query(cls).get(id); 
+    
+    @classmethod
+    def getByProjectId(cls,id):
+        return DBSession.query(cls).filter(cls.id_question_project == str(id).decode('utf-8')).first(); 
+    
     @classmethod
     def getAll(cls,act):
         if act is not None:
@@ -516,7 +555,14 @@ class QuestionValidation(DeclarativeBase):
             return DBSession.query(cls).get(act); 
         else:
             return DBSession.query(cls).all();       
-        
+    
+    @classmethod
+    def deleteByQuestion(cls,idQuestion):
+        DBSession.query(cls).filter(cls.id_question == str(idQuestion) ).delete();
+        #sql = "delete from sur_question_validation where id_question =" +str(idQuestion) ;
+        #DBSession.execute(sql);
+        DBSession.flush() ;    
+    
     def delete(self):
         DBSession.delete(self); 
         DBSession.flush() ;
@@ -550,7 +596,16 @@ class BasicQuestion(DeclarativeBase):
     def getByQuestionAndBasic(cls,idQuestion,idBasicData):
         return DBSession.query(cls).filter(cls.id_question == str(idQuestion), cls.id_basic_data == str(idBasicData) ).first();
     
-    
+    @classmethod
+    def deleteByQuestion(cls,idQuestion,idBasicData=None):
+        if(idBasicData is not None):
+            DBSession.query(cls).filter(cls.id_question == str(idQuestion) , cls.id_basic_data == str(idBasicData)).delete();
+        else:
+            DBSession.query(cls).filter(cls.id_question == str(idQuestion)  ).delete();
+        #sql = "delete from sur_basic_question where id_question =" +str(idQuestion) ;
+        #DBSession.execute(sql);
+        DBSession.flush() ;
+        
     def delete(self):
         DBSession.delete(self); 
         DBSession.flush() ;
@@ -626,7 +681,20 @@ class BasicData(DeclarativeBase):
         DBSession.delete(self); 
         DBSession.flush() ;
     
-     
+    @classmethod
+    def deleteById(cls,idBasicData):
+        
+        DBSession.query(cls).filter(  cls.id_basic_data == str(idBasicData) ).delete();        
+        DBSession.flush() ;
+        #DBSession.query(BasicTextData).join(cls).join(BasicQuestion).filter(BasicQuestion.id_question == str(idQuestion) ).delete();
+        
+        
+        #DBSession.query(BasicTextData).filter(  BasicTextData.id_basic_data == str(idQuestion) ).delete();
+        
+        #DBSession.query(cls).join(BasicData).filter(cls.id_question == str(idQuestion) ).delete();
+        #sql = "delete from sur_basic_question where id_question =" +str(idQuestion) ;
+        #DBSession.execute(sql);
+        #DBSession.flush() ; 
              
 class BasicTextData(DeclarativeBase):   
     __tablename__ = 'sur_text_data';
@@ -654,9 +722,16 @@ class BasicTextData(DeclarativeBase):
         DBSession.flush() ;
     
     @classmethod
-    def deleteById(cls,id):  
-        sql = "delete from sur_text_data where id_basic_data =" +str(id) ;
-        result = DBSession.execute(sql);
+    def getByBasicDataId(cls,idBasicData):
+        return DBSession.query(cls).filter(cls.id_basic_data == str(idBasicData)  ).all();
+    
+    @classmethod
+    def deleteById(cls,idBasicData):
+        
+        DBSession.query(cls).filter(  cls.id_basic_data == str(idBasicData) ).delete();        
+        DBSession.flush() ;
+    
+     
         
     @classmethod
     def getId(cls,act):

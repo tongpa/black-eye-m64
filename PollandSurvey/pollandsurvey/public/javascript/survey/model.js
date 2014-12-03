@@ -74,7 +74,7 @@ survey.listProject = new Ext.data.Store({
             } 
         }
 	},
-	autoSync: true,
+	autoSync: false,
 	autoLoad : true
 });
 

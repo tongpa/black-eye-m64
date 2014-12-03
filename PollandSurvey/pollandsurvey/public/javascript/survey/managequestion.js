@@ -6,7 +6,7 @@ Ext.define('survey.view.list.Project.fieldQuestionId',{
 
 Ext.define('survey.view.list.Project.fieldProjectId',{
 	extend: 'Ext.form.field.Hidden',
-	name : 'id_project'
+	name : 'id_question_project'
 });
 
 Ext.define('survey.view.list.Project.fieldQuestionTypeId',{
@@ -225,7 +225,7 @@ Ext.define ('survey.view.list.GridQuestions',{
 	},
     listeners: {
     	render: function(c,m){
-    		initializePatientDragZone(c);
+    	//	initializePatientDragZone(c);
         	console.log('render');
         },
         beforeselect : function(c,record,index,eOpts){
@@ -264,7 +264,7 @@ Ext.define('survey.view.list.GridAnswer', {
            ],
     collapsible:false ,
     setLoadData : function(questionrecord) {
-    	 
+    	console.log('survey.view.list.GridAnswer'); 
     	survey.listBasicData.removeAll();
     	this.record = questionrecord;
     	//debugger;
@@ -428,6 +428,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
     },
     setLoadData : function (projectrecord,questionrecord, questiontyperecord){
     	
+    	console.log('survey.view.list.Project.PAddQuestion');
     	form = this;
     	form.projectrecord = projectrecord;
 		form.record = questionrecord;
@@ -539,6 +540,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 	                    	if (action.response.status = '404'){
 	                    		
 	                    		Ext.Msg.alert('Failed', action.response.statusText);
+	                    		main.closeWindow(main,bt);
 	                    		 
 	                    	}
 	                    	else{
@@ -576,6 +578,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		if(main.parentForm != null){
 			main.form.reset();
 			main.parentForm.hide(bt);
+			 
 		}
 	}
 });
@@ -586,11 +589,12 @@ Ext.define('survey.view.list.Project.winAddQuestion',{
 	extend: 'Ext.window.Window',
 	text : 'Add Question',
 	layout: 'fit',
-	id : 'test-1',
+	 
 	modal : true,
 	width : 400,
 	height : 400,
 	closable: true,
+	 
     closeAction: 'hide',
     showClose : true,
     maximizable: true,
@@ -603,6 +607,7 @@ Ext.define('survey.view.list.Project.winAddQuestion',{
     },
     
     setLoadData : function(projectrecord,questionrecord, questiontyperecord){
+    	console.log('survey.view.list.Project.winAddQuestion');
     	this.panelQuestion.setLoadData(projectrecord,questionrecord, questiontyperecord);
     },
     
@@ -700,30 +705,13 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
 		main.tbar = [main.SplitBt];
 		
 		
-		 
-	    /****************************/
-		var patientView = Ext.create('Ext.view.View', {
-	        cls: 'patient-view',
-	        tpl: '<tpl for=".">' +
-	                '<div class="patient-source"><table><tbody>' +
-	                    '<tr><td class="patient-label">Question</td><td class="patient-name">{question}</td></tr>' +
-	                    '<tr><td class="patient-label">Question Type</td><td class="patient-name">{question_type_name}</td></tr>' + 
-	                '</tbody></table></div>' +
-	             '</tpl>',
-	        itemSelector: 'div.patient-source',
-	        overItemCls: 'patient-over',
-	        selectedItemClass: 'patient-selected',
-	        singleSelect: true,
-	        store:  survey.listQuestionsData, 
-	        listeners:initializePatientDragZone
-	        
-	    });
-		/***********************************/
-		
+ 
 		
 		main.gridQuestion = Ext.create('survey.view.list.GridQuestions',{
 			listeners : {
 				showEditQuestion : function(cmp,record) {
+					
+					 
 					
 					
 					main.winAddQuestion.show();
@@ -734,38 +722,6 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
 			}
 		}); 
 	 
-		/*
-		 var group1 = this.id + 'group1';
-		 
-		 gridG = Ext.create('Ext.grid.Panel',{
-			 	itemId: 'grid1',
-	            flex: 1,
-	             
-	            multiSelect: true,
-	                viewConfig: {
-	                plugins: {
-	                    ptype: 'gridviewdragdrop',
-	                    containerScroll: true,
-	                    dragGroup: group1,
-	                    dropGroup: group1
-	                },
-	                listeners: {
-	                    drop: function(node, data, dropRec, dropPosition) {
-	                        //var dropOn = dropRec ? ' ' + dropPosition + ' ' + dropRec.get('name') : ' on empty view';
-	                       // Ext.example.msg('Drag from right to left', 'Dropped ' + data.records[0].get('name') + dropOn);
-	                    }
-	                }
-	            },
-	            store: survey.listQuestionsData, 
-	            columns:  [
-							{header: "Question", dataIndex: 'question'  , sortable: true},
-							{header: "Question Type", dataIndex: 'question_type_name' } 
-		    	            
-		    	        ],
-	            title: 'First Grid' 
-			 
-		 });
-		*/
 		
 		
 		
@@ -811,6 +767,7 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
     	
     	console.log('Add Question');
     	 
+    	 
     	bt.parentForm.winAddQuestion.setLoadData(bt.parentForm.record, null, bt.record);
     }
     
@@ -818,96 +775,4 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
 });  
 
 
-
-/*****************************************/
-
-function initializePatientDragZone(v) {
-	console.log('initializePatientDragZone');
-	
-    v.dragZone = Ext.create('Ext.dd.DragZone', v.getEl(), {
-
-//      On receipt of a mousedown event, see if it is within a draggable element.
-//      Return a drag data object if so. The data object can contain arbitrary application
-//      data, but it should also contain a DOM element in the ddel property to provide
-//      a proxy to drag.
-        getDragData: function(e) {
-            var sourceEl = e.getTarget(v.itemSelector, 10), d;
-          //  debugger;
-            if (sourceEl) {
-                d = sourceEl.cloneNode(true);
-                d.id = Ext.id();
-                return (v.dragData = {
-                    sourceEl: sourceEl,
-                    repairXY: Ext.fly(sourceEl).getXY(),
-                    ddel: d,
-                    patientData: v.getRecord(sourceEl).data
-                });
-            }
-        },
-
-//      Provide coordinates for the proxy to slide back to on failed drag.
-//      This is the original XY coordinates of the draggable element.
-        getRepairXY: function() {
-            return this.dragData.repairXY;
-        }
-    });
-}
-
-
-function initializeHospitalDropZone(v) {
-	//debugger;
-    var gridView = v,
-        grid = gridView.up('gridpanel');
-
-    grid.dropZone = Ext.create('Ext.dd.DropZone', v.el, {
-
-//      If the mouse is over a target node, return that node. This is
-//      provided as the "target" parameter in all "onNodeXXXX" node event handling functions
-        getTargetFromEvent: function(e) {
-            return e.getTarget('.hospital-target');
-        },
-
-//      On entry into a target node, highlight that node.
-        onNodeEnter : function(target, dd, e, data){
-            Ext.fly(target).addCls('hospital-target-hover');
-        },
-
-//      On exit from a target node, unhighlight that node.
-        onNodeOut : function(target, dd, e, data){
-            Ext.fly(target).removeCls('hospital-target-hover');
-        },
-
-//      While over a target node, return the default drop allowed class which
-//      places a "tick" icon into the drag proxy.
-        onNodeOver : function(target, dd, e, data){
-            return Ext.dd.DropZone.prototype.dropAllowed;
-        },
-
-//      On node drop, we can interrogate the target node to find the underlying
-//      application object that is the real target of the dragged data.
-//      In this case, it is a Record in the GridPanel's Store.
-//      We can use the data set up by the DragZone's getDragData method to read
-//      any data we decided to attach.
-        onNodeDrop : function(target, dd, e, data){
-            var rowBody = Ext.fly(target).findParent('.x-grid-rowbody-tr', null, false),
-                mainRow = rowBody.previousSibling,
-                hospital = gridView.getRecord(mainRow),
-                targetEl = Ext.get(target),
-                html = targetEl.dom.innerHTML,
-                patients = hospital.get('patients');
-                
-            if (!patients) {
-                patients = [];
-                hospital.set('patients', patients);
-            }
-            patients.push(data.patientData.name);
-            html = patients.join(', ');
-            targetEl.update(html);
-            Ext.Msg.alert('Drop gesture', 'Dropped patient ' + data.patientData.name +
-                ' on hospital ' + hospital.get('name'));
-                
-            return true;
-        }
-    });
-}
-/*****************************************/
+ 
