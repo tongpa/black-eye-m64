@@ -584,7 +584,6 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 });
 
 
-
 Ext.define('survey.view.list.Project.winAddQuestion',{
 	extend: 'Ext.window.Window',
 	text : 'Add Question',
