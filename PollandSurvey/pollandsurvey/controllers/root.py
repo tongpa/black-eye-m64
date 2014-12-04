@@ -18,6 +18,8 @@ from pollandsurvey.controllers.register.registercontrol import RegisterControlle
 from pollandsurvey.controllers.surveycontroller import SurveyController;
 from pollandsurvey.controllers.script.loadscriptcontroller import  ScriptController;
 from pollandsurvey.controllers.script.loadmodelcontroller import  ScriptModelController;
+from pollandsurvey.controllers.script.previewcontroller import  PreviewController;
+
 
 from tg import tmpl_context
 from pollandsurvey.widget.movie_form import create_movie_form 
@@ -50,6 +52,8 @@ class RootController(BaseController):
     survey = SurveyController();
     script = ScriptController();
     model = ScriptModelController();
+    
+    preview =PreviewController();
     
     def _before(self, *args, **kw):
         tmpl_context.project_name = "pollandsurvey"

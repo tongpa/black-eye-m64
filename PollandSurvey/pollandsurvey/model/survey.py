@@ -22,7 +22,8 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.dialects.mysql import BIT
 from pollandsurvey.model import DeclarativeBase, metadata, DBSession
 import transaction
-__all__ = ['GroupVariables', 'QuestionType', 'QuestionProjectType' ,'BasicDataType', 'QuestionProject','LanguageLabel','Variables','BasicData','BasicQuestion','BasicTextData' ,'Question']
+__all__ = ['GroupVariables', 'QuestionType', 'QuestionProjectType' ,'BasicDataType', 'QuestionProject','LanguageLabel','Variables','BasicData','BasicQuestion','BasicTextData' 
+           ,'Question', 'QuestionOption']
 
 
 class LanguageLabel(DeclarativeBase):
@@ -729,6 +730,59 @@ class BasicTextData(DeclarativeBase):
     def deleteById(cls,idBasicData):
         
         DBSession.query(cls).filter(  cls.id_basic_data == str(idBasicData) ).delete();        
+        DBSession.flush() ;
+    
+     
+        
+    @classmethod
+    def getId(cls,act):
+        return DBSession.query(cls).get(act); 
+    
+    
+class QuestionOption(DeclarativeBase):   
+    __tablename__ = 'sur_question_option';
+
+    id_question_option =  Column(Integer, autoincrement=True, primary_key=True);    
+    
+    
+    id_question_project = Column(   Integer,ForeignKey('sur_question_project.id_question_project'), nullable=False, index=True) ;
+    project = relation('QuestionProject', backref='sur_question_option_id_question_project');
+    
+    activate_date =  Column(DateTime, nullable=True );
+    expire_date =  Column(DateTime, nullable=True );
+    
+    header_message  =  Column(Text, nullable=True );
+    footer_message  =  Column(Text, nullable=True );
+    welcome_message  =  Column(Text, nullable=True );
+    end_message  =  Column(Text, nullable=True );
+    
+    create_date =  Column(DateTime, nullable=False, default=datetime.now);
+    
+    
+    def __init__(self):
+        #self.create_date  =datetime.now;
+        pass;
+        
+    def __str__(self):
+        return '"%s"' % str(self.id_question_option )
+    
+    def save (self):
+        DBSession.add(self); 
+        DBSession.flush() ;
+        
+    def remove(self):
+        DBSession.delete(self); 
+        DBSession.flush() ;
+    
+    
+    @classmethod
+    def getByProject(cls,idProject):
+        return DBSession.query(cls).filter(cls.id_question_project == str(idProject)  ).all();
+    
+    @classmethod
+    def deleteById(cls,id):
+        
+        DBSession.query(cls).filter(  cls.id_question_option == str(id) ).delete();        
         DBSession.flush() ;
     
      
