@@ -9,24 +9,25 @@ Ext.define('survey.view.list.OptionProject', {
 	disableSelection : true,
 	forceFit: true,
 	frame: true,
-	
-	title : 'Project poll and survey',
 	viewConfig: {
         emptyText: 'No images to display'
     },
     collapsible:false ,
+    
     initComponent: function() {
     	
     	var main = this;
-    	//main.store = survey.listProject; 
+    	main.store = survey.listOptions; 
     	main.columns = [
     	       	       
-    	    	    {header: 'name', dataIndex: 'name',width : '30%' , sortable: false }  ,
-					{header: 'start', dataIndex: 'name',width : '30%' , sortable: false }  ,
-					{header: 'stop', dataIndex: 'name',width : '30%' , sortable: false }  ,
-					{header: 'public', dataIndex: 'name',width : '30%' , sortable: false }  ,
-					{header: 'view', dataIndex: 'name',width : '30%' , sortable: false }  ,
-					{header: 'name', dataIndex: 'name',width : '30%' , sortable: false }  	
+    	    	   // {header: 'name', dataIndex: 'name',width : '30%' , sortable: false }  ,
+					{header: 'Activate Date', dataIndex: 'activate_date',width : '30%' , sortable: false }  ,
+					{header: 'Expiration Date', dataIndex: 'expire_date',width : '30%' , sortable: false }  ,
+					{header: 'View',  width : '10%',  renderer :main.showbuttonView,  sortable: false  } ,
+					{header: 'Manage',  width : '10%',  renderer :main.showbuttonManage,  sortable: false  } 
+				//	{header: 'State', dataIndex: 'name',width : '30%' , sortable: false } 
+					//{header: 'view', dataIndex: 'name',width : '30%' , sortable: false }  ,
+					//{header: 'Edit', dataIndex: 'name',width : '30%' , sortable: false }  	
     	        ]
       
     	 
@@ -38,7 +39,45 @@ Ext.define('survey.view.list.OptionProject', {
         'selectionchange': function(view, records) {
             grid.down('#removeEmployee').setDisabled(!records.length);
         }
-    }  
+    } ,
+    showbuttonManage : function (value,m,r){
+    	var main = this;
+    	var id = Ext.id();
+        Ext.defer(function () {
+            Ext.widget('button', {
+                renderTo: id,
+                text: 'Manage',// + r.get('name'),
+                width: 75,
+                handler: function () {
+                	//Ext.Msg.alert('Info', r.get('name'));  
+                	//main.showManage(r);
+                }
+            });
+        }, 50);
+        return Ext.String.format('<div id="{0}"></div>', id);
+   
+    },
+    showbuttonView : function(value,m,r){
+    	
+    	var main = this;
+    	var id = Ext.id();
+        Ext.defer(function () {
+            Ext.widget('button', {
+                renderTo: id,
+                text: 'View',// + r.get('name'),
+                width: 75,
+                handler: function () {
+                	debugger;
+                	main.openUrl =  window.location.origin +"/";// window.location.protocol + window.location.host + "/"; 
+                	console.log(main.openUrl);	
+                	 
+                	window.open(main.openUrl + "preview?id=" + r.data.id_question_option,"_blank");
+                	 
+                }
+            });
+        }, 50);
+        return Ext.String.format('<div id="{0}"></div>', id);
+    }
 });
  
  
@@ -59,6 +98,21 @@ Ext.define('survey.view.list.Project.PManagePublication',{
     
     isCreate : true,
     parentForm : null,
+    setLoad : function (projectRecord){
+    	
+    	this.projectid = '';
+    	this.record = projectRecord;
+    	if (projectRecord != null && projectRecord.id != null) {
+    		
+    		this.projectid = projectRecord.id;
+	    	survey.listOptions.load({
+				params : {
+	    			projectid : projectRecord.id
+	    		},
+	    		scope : this
+			});
+    	}
+    },
     initComponent: function() {
 		
 		var main = this;

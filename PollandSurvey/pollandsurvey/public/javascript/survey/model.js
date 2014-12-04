@@ -35,6 +35,13 @@ Ext.define('Survey.model.listQuestions',{
     fields: ['id_question',   'question','id_qustion_type','help_message','text_label','id_question_project','order','question_type_name' ] 
 });
 
+Ext.define('Survey.model.listOptions',{
+	extend: 'Ext.data.Model',
+    idProperty: 'id_question_option',    
+    fields: ['id_question_option','id_question_project',   'header_message','footer_message','welcome_message','end_message','activate_date', 'expire_date',	'create_date' ] 
+});
+
+
 
  
 survey.listProject = new Ext.data.Store({
@@ -180,6 +187,48 @@ survey.listQuestionType = new Ext.data.Store({
 });
 
 
+
+survey.listOptions = new Ext.data.Store({
+	model : 'Survey.model.listOptions',
+	storeId:'listOptionsInStore',
+	pageSize: 100,
+	proxy : {
+		 
+		type: 'ajax',
+		url : 'model/getOptionsProject',    	
+		api: {
+            read: 'model/getOptionsProject'
+            //,create: '/survey/createBasicData'
+            //,update: '/model/createBasicData'
+            //,destroy: '/model/deleteBasicData'
+        }, 
+        reader:{
+        	type: 'json',
+    		rootProperty : 'survey',
+    		totalProperty : 'total'
+    	},
+        writer: {
+        	type: 'json' ,
+        	writeAllFields: true
+        	 
+           // writeAllFields: false ,
+           // allowSingle :false 
+             
+        },
+        listeners: {
+            exception: function(proxy, response, operation){
+               /* Ext.MessageBox.show({
+                    title: 'REMOTE EXCEPTION',
+                    msg: operation.getError(),
+                    icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.Msg.OK
+                });*/
+            } 
+        }
+	},
+	autoSync: false,
+	autoLoad : false
+});
 
 /*
 Ext.define('Survey.store.listProjectid', {

@@ -1,0 +1,18 @@
+@CHARSET "UTF-8";
+
+main {
+	margin: 0 50px 0 50px;
+}
+.row {
+  margin-right:  15px;
+  margin-left:  15px;
+  margin-top: 5px;
+}
+
+.container {
+  padding-right: 0px;
+  padding-left: 0px;
+  margin-right: auto;
+  margin-left: auto;  
+  width: auto;
+}

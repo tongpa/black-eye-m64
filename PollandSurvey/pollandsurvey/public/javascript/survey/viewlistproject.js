@@ -14,14 +14,13 @@ Ext.define('survey.view.list.Project.btAddProject',{
 
 Ext.define('survey.view.list.Project', {	
 	extend: 'Ext.grid.Panel',
-	width : '100%',
-	height :  '100%',
+	 
 	bufferedRenderer: false,
 	disableSelection : true,
 	forceFit: true,
 	frame: true,
 	
-	title : 'Project poll and survey',
+	//title : 'Project poll and survey',
 	viewConfig: {
         emptyText: 'No images to display'
     },

@@ -7,8 +7,10 @@
   <meta charset="${response.charset}" />
   <title py:if="False">Your generic title goes here</title>
   <meta py:replace="select('*')"/>
-  <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/css/bootstrap.min.css')}" />
+   <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/css/bootstrap.min.css')}" /> 
+  <!--  <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/javascript/bootstrap/css/bootstrap.min.css')}" />-->
   <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/css/style.css')}" />
+    <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/css/viewsurvey.css')}" /> 
 </head>
 
 <body py:match="body" py:attrs="select('@*')">
@@ -53,11 +55,12 @@
         </div>
       </div>
     </py:with>
-
+ 
     <!-- Main included content -->
     <div py:replace="select('*|text()')"/>
+ 
   </div>
-
+ 
 
   <!-- Footer -->
   <footer class="footer hidden-xs hidden-sm">
@@ -66,6 +69,7 @@
   </footer>
 
  <!--  <script src="http://code.jquery.com/jquery.js"></script> -->
-  <script src="${tg.url('/javascript/bootstrap.min.js')}"></script>
+  <script src="${tg.url('/javascript/bootstrap/js/bootstrap.min.js')}"></script>
+ 
 </body>
 </html>

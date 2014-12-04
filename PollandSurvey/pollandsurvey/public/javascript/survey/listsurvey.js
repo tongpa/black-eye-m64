@@ -30,9 +30,10 @@ Ext.application({
     	Ext.tip.QuickTipManager.init();
    	 
     	var project_view = Ext.create('survey.view.list.Project',{   		 
-    		width: '100%',
+    		
     	    hidden : false,
-    	    title : 'Poll and Survey',
+    	   // width  : '50%',
+    	    //height : 400,
 			listeners : {
 				showManage : function(current,record) {
 					
@@ -93,6 +94,7 @@ Ext.application({
 				    	});
 						
 				    	manage_question.setLoad(record);
+				    	manage_option.setLoad(record);
 				    	
 						tab_project.add(panel_manage).show();
 					
@@ -109,11 +111,24 @@ Ext.application({
 			}
     	} );
     	
+    	var mainPanelTab = Ext.create('Ext.form.Panel',{
+    		extend : 'Ext.form.Panel',
+    		title : 'Poll and Survey',
+    		width: '100%',
+    		height : 800,
+    		bodyPadding: 10,
+    		//frame : true,
+    		 
+    	    items :  [project_view ]
+    	});
     	
     	var tab_project = Ext.create('Ext.tab.Panel', {
-    	    width: '100%',   	
-    	     
-    	    items: [project_view ]
+    	    width: '100%',  
+    	    height : 800,
+    	    layout: {
+                type: 'fix'
+            }, 
+    	    items: [mainPanelTab ]
     	});
     	
     	
