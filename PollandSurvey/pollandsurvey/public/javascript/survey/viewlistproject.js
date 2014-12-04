@@ -36,11 +36,9 @@ Ext.define('survey.view.list.Project', {
     	    	    {header: 'type', dataIndex: 'question_project_type',width : '20%', renderer :main.showprojecttype , sortable: false }  ,
     	    	    {header: 'create', dataIndex: 'start_date',width : '30%' , sortable: false }   ,
     	    	    {header: 'Delete',  width : '10%', renderer :main.deleteButton, sortable: false  } ,
-    	    	    {header: 'Manage',  width : '10%',  renderer :main.showbuttonManage,  sortable: false  }   
-    	    	     
+    	    	    {header: 'Manage',  width : '10%',  renderer :main.showbuttonManage,  sortable: false  }       	    	     
     	            
-    	        ]
-    	
+    	        ]   	
     
 		 
     	
