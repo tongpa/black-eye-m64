@@ -80,6 +80,14 @@ class AngularController(BaseController):
         
         question.append({'id':2 ,'question': 'What do you not like a color?','type': 'check', 'answer': answer});
         
+        
+        answer = [];       
+        answer.append({'id' : 1 , 'label': 'Yes'});
+        answer.append({'id' : 2 , 'label': 'No'}); 
+        
+        question.append({'id':3 ,'question': 'Do you like a color?','type': 'radio', 'answer': answer});
+        
+        
         questions.append({'id': 1, 'question' : question});
         
         return dict(questions = questions);
