@@ -1,0 +1,4 @@
+recursive-include angularjs/public *
+include angularjs/public/favicon.ico
+recursive-include angularjs/i18n *
+recursive-include angularjs/templates *
