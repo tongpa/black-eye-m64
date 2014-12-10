@@ -68,7 +68,7 @@ class AngularController(BaseController):
         answer.append({'id' : 2 , 'label': 'green'});
         answer.append({'id' : 3 , 'label': 'blue'});
         answer.append({'id' : 4 , 'label': 'orange'});        
-        question.append({'id':1 ,'question': 'What do you like a color?','type': 'radio', 'answer': answer});
+        question.append({'id':1 ,'seq':1,'question': 'What do you like a color?','type': 'radio', 'answer': answer});
         
         
         
@@ -78,14 +78,20 @@ class AngularController(BaseController):
         answer.append({'id' : 3 , 'label': 'blue'});
         answer.append({'id' : 4 , 'label': 'orange'});
         
-        question.append({'id':2 ,'question': 'What do you not like a color?','type': 'check', 'answer': answer});
+        question.append({'id':2 ,'seq':2,'question': 'What do you not like a color?','type': 'check', 'answer': answer});
         
         
         answer = [];       
         answer.append({'id' : 1 , 'label': 'Yes'});
         answer.append({'id' : 2 , 'label': 'No'}); 
+        question.append({'id':3 ,'seq':3,'question': 'Do you like a color?','type': 'radio', 'answer': answer});
         
-        question.append({'id':3 ,'question': 'Do you like a color?','type': 'radio', 'answer': answer});
+        answer = [];       
+        answer.append({'id' : 1 , 'label': 'http://localhost:8080/images/user_1/project_1/question_3/answer_1.png'});
+        answer.append({'id' : 2 , 'label': 'http://localhost:8080/images/user_1/project_1/question_3/answer_2.png'}); 
+        answer.append({'id' : 3 , 'label': 'http://localhost:8080/images/user_1/project_1/question_3/answer_3.png'}); 
+        answer.append({'id' : 4 , 'label': 'http://localhost:8080/images/user_1/project_1/question_3/answer_4.png'}); 
+        question.append({'id':4 ,'seq':4,'question': 'http://localhost:8080/images/user_1/project_1/question_3/question_3.png', 'type': 'image', 'answer': answer});
         
         
         questions.append({'id': 1, 'question' : question});
