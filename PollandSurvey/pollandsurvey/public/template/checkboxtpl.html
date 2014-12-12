@@ -1,0 +1,36 @@
+ 
+
+<div class="highlight"> 
+	<h2><span>{{content.seq}}. </span>{{content.question}} 
+	<button type="button" class="btn btn-default btn-xs"  aria-label="Center Align" id="right_{{content.id}}" data-placement="right" title="Tooltip on right">
+<span class="glyphicon glyphicon-info-sign"  aria-hidden="true"> </span> 
+</button></h2> 
+	
+	 
+	 
+	
+	<input type="hidden" name="question_{{content.id}}" value="{{content.id}}"/>
+	<ul class="unstyled">
+	<!-- <label data-ng-repeat="answer in content.answer"> -->
+		<li data-ng-repeat="answer in content.answer">
+			 <input type="checkbox" name="checkbox_{{answer.id}}"   value="{{answer.id}}" />
+ 			<span >{{answer.label}}</span> 
+		</li>
+	</ul>
+		<!--<input type="checkbox" name="checkbox_{{answer.id}}"    checklist-value="{{answer.id}}"/> {{answer.label}}-->
+	 <!--  </label> -->
+</div>
+
+
+
+<script>
+$(document).ready(function(){
+ 	 
+    
+    $("#right").tooltip({
+        placement : 'right'
+    });
+});
+</script>
+
+ 

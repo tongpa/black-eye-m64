@@ -1,0 +1,15 @@
+<div  class="highlight" > 
+	<h2><span>{{content.seq}}. </span>{{content.question}}</h2>
+	<input type="hidden" name="question_{{content.id}}" value="{{content.id}}"/>
+	<ul class="unstyled">
+	<!-- <label data-ng-repeat="answer in content.answer">  -->
+	<li data-ng-repeat="answer in content.answer">
+	
+		<input type="radio" name="radio_{{content.id}}" ng-model="$parent.id"  value="{{answer.id}}" required="required"/>
+		 <span >{{answer.label}}</span>
+		 
+	 </li>
+	 <!-- </label> -->
+	 
+	 </ul>
+</div>

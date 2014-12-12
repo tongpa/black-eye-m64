@@ -1,0 +1,38 @@
+
+<div class="zero-clipboard">
+	<span class="btn-clipboard">Copy</span>
+</div> 
+
+<div class="highlight"> 
+<pre>
+	<h2><span>{{content.seq}}. </span>  <img ng-src="{{content.question}}"/>
+	<button type="button" class="btn btn-default btn-xs"  aria-label="Center Align" id="right_{{content.id}}" data-placement="right" title="Tooltip on right">
+<span class="glyphicon glyphicon-info-sign"  aria-hidden="true"> </span> 
+</button></h2> 
+	
+	<input type="hidden" name="question_{{content.id}}" value="{{content.id}}"/>
+	<ul class="unstyled">
+	<!-- <label data-ng-repeat="answer in content.answer"> -->
+		<li data-ng-repeat="answer in content.answer">
+			
+			<input type="radio" name="image_{{content.id}}" ng-model="$parent.id"  value="{{answer.id}}" required="required"/>
+		 
+ 			<span > <img ng-src="{{answer.label}}" alt="{{answer.id}}"  /> </span> 
+		</li>
+	</ul>
+</pre>
+</div>
+
+
+
+<script>
+$(document).ready(function(){
+ 	 
+   
+    $("#right").tooltip({
+        placement : 'right'
+    });
+});
+</script>
+
+ 
