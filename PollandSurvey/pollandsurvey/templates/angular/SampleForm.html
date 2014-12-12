@@ -1,0 +1,50 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:ng="http://angularjs.org">
+
+  <xi:include href="master.html" />
+
+<head>
+  <title>Welcome to TurboGears 2.3, standing on the shoulders of giants, since 2007</title>
+  <script type="text/javascript">
+	//<![CDATA[
+	//	floor = (!floor && floor !== 0)? 20 : floor;
+	// ]]>
+
+  </script>
+  <style>
+table, th , td {
+  border: 1px solid grey;
+  border-collapse: collapse;
+  padding: 5px;
+}
+table tr:nth-child(odd) {
+  background-color: #f1f1f1;
+}
+table tr:nth-child(even) {
+  background-color: #ffffff;
+}
+</style> 
+  
+</head>
+
+<body >
+	
+	<div data-ng-app="poll" >
+		<div id="container" ng-controller="pollController">
+			<form name="myForm" action="/ang/saveQuestion" method ="POST">
+			 <content-item ng-repeat="item in content" content="item"></content-item>
+			 
+			 	<button type="submit" class="btn btn-default">Submit</button>
+			</form>
+		</div>
+	
+	</div>
+ 
+	  
+	 
+	<script src="${tg.url('/javascript/script/samplejs.js')}"></script>
+</body>
+
+</html>

@@ -118,4 +118,8 @@ td.patient-label {
     cursor: pointer;
 }
 
+.unstyled {
+    list-style: outside none none;
+    
+}
 /******/

@@ -1,0 +1,271 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <xi:include href="master.html" />
+
+<head>
+  <title>Welcome to TurboGears 2.3, standing on the shoulders of giants, since 2007</title>
+  
+  <style>
+table, th , td {
+  border: 1px solid grey;
+  border-collapse: collapse;
+  padding: 5px;
+}
+table tr:nth-child(odd) {
+  background-color: #f1f1f1;
+}
+table tr:nth-child(even) {
+  background-color: #ffffff;
+}
+</style> 
+  
+</head>
+
+<body >
+
+ 
+	 <div data-ng-app="" data-ng-init="firstName='John'">
+		<p>The name is <span data-ng-bind="firstName"></span></p>
+		<p>Name: <input type="text" ng-model="name"/></p>
+  		<p ng-bind="name"></p>
+  		 <br/>
+  		<p>My first expression: {{ 5 + 5 }}</p>
+  		 <br/>
+  		<div ng-controller="personController">
+
+			First Name: <input type="text" ng-model="firstName"/>   <br/>
+			Last Name: <input type="text" ng-model="lastName"/>  <br/>
+			 
+			Full Name: {{firstName + " " + lastName}}
+	
+		</div>
+		
+		<script>
+			function personController($$scope) {
+			    $$scope.firstName = "John";
+			    $$scope.lastName = "Doe";
+			}
+		</script>
+		 <br/>
+		 <div  ng-init="firstName='John';lastName='Doe'">
+
+			<p>The name is <span ng-bind="firstName + ' ' + lastName"></span></p>
+		
+		</div> 
+		
+		<br/>
+		 <div ng-init="person={firstName:'John',lastName:'Doe'}">
+			<p>The name is <span ng-bind="person.lastName"></span></p>
+		</div> 
+	
+		<br/>
+		<p>การ loop</p>
+		<div  ng-init="names1=['Jani','Hege','Kai']">
+		  <ul>
+		    <li ng-repeat="x in names1">
+		      {{ x }}
+		    </li>
+		  </ul>
+		</div>		
+		
+		<br/>
+		<p>การ loop Object</p>
+		 <div ng-init="names=[
+			{name:'Jani',country:'Norway'},
+			{name:'Hege',country:'Sweden'},
+			{name:'Kai',country:'Denmark'}]">
+			
+			<ul>
+			  <li ng-repeat="x in names">
+			    {{ x.name + ', ' + x.country }}
+			  </li>
+			</ul>
+			
+		</div> 
+		
+		<br/>
+		<p>การ ใช้ function </p>
+		 <div ng-controller="personController">
+
+			First Name: <input type="text" ng-model="firstName"/><br/>
+			Last Name: <input type="text" ng-model="lastName"/><br/>
+			<br/>
+			Full Name: {{fullName()}}
+			<p>The name is {{ lastName | uppercase }}</p>
+			
+		</div>
+			
+			<script>
+			function personController($$scope) {
+			    $$scope.firstName = "John",
+			    $$scope.lastName = "Doe",
+			    $$scope.fullName = function() {
+			        return $$scope.firstName + " " +$$scope.lastName;
+			    }
+			}
+			</script> 
+		
+		<br/>
+		<div  ng-controller="namesController">
+			
+			<p><input type="text" ng-model="test"/></p>
+			<p>Looping with objects:</p>
+			<ul>
+			  <li ng-repeat="x in names | filter:test | orderBy:'country'">
+			    {{ x.name + ', ' + x.country }}
+			  </li>
+			</ul>
+		
+		</div>
+		<script>
+		function namesController($$scope) {
+		    $$scope.names = [
+		        {name:'Jani',country:'Norway'},
+		        {name:'Hege',country:'Sweden'},
+		        {name:'Kai',country:'Denmark'}
+		    ];
+		}
+ 
+			</script> 
+		
+	
+		 <div  ng-controller="customersController">
+
+			<ul>
+			  <li ng-repeat="x in names">
+			    {{ x.Name + ', ' + x.Country }}
+			  </li>
+			</ul>
+		
+		</div>
+		
+		<script>
+		function customersController($$scope,$$http) {
+		    //$$http.get("http://www.w3schools.com/website/Customers_JSON.php")
+		    //.success(function(response) {$$scope.names = response;});
+		    
+		    $$http.get("/ang/getValueCustomer")
+		    .success(function(response) {$$scope.names = response.customers;});
+		}
+		</script> 
+	
+		<br/>
+		<p>แสดง ในตาราง</p>
+		 <div  ng-controller="customersController1">
+
+			<table>
+			  <tr ng-repeat="x in names | orderBy : 'Country'">
+			    <td>{{ x.Name }}</td>
+			    <td>{{ x.Country  | uppercase }}</td>
+			  </tr>
+			</table>
+			
+			</div>
+			
+			<script>
+			function customersController1($$scope,$$http) {
+			  $$http.get("http://www.w3schools.com/website/Customers_JSON.php")
+			  .success(function(response) {$$scope.names = response;});
+			}
+			</script> 
+			
+		<br/>
+		<p>ใช้งาน/ไม่ใช้งาน</p>
+		  <div>
+
+			<p>
+			<button ng-disabled="mySwitch">Click Me!</button>
+			</p>
+			
+			<p>
+			<input type="checkbox" ng-model="mySwitch"/>Button
+			</p>
+			
+			</div> 
+		<br/>
+		<p>แสดง/ไม่แสดง</p>
+		<div>
+			<p ng-show="true">I am visible.</p>
+
+			<p ng-show="false">I am not visible.</p>
+			<p ng-show="hour > 12">I am visible.</p>
+		</div>
+		
+		<div>
+			<button ng-click="count = count + 1">Click me!</button>
+
+			<p>{{ count }}</p>
+		</div>
+		
+		<br/>
+		<p>ซ่อนหรือไม่</p>
+		 <div   ng-controller="personController"  data-ng-init="myVar=true">
+
+			<button ng-click="toggle()">Toggle</button>
+			
+			<p ng-hide="myVar">
+			First Name: <input type="text" ng-model="firstName"/><br/>
+			Last Name: <input type="text" ng-model="lastName"/><br/>
+			<br/>
+			Full Name: {{firstName + " " + lastName}}
+			</p>
+			
+			</div>
+			
+			<script>
+			function personController($$scope) {
+			    $$scope.firstName = "John",
+			    $$scope.lastName = "Doe"
+			    $$scope.myVar = false;
+			    $$scope.toggle = function() {
+			        $$scope.myVar = !$$scope.myVar;
+			    };
+			}
+			</script> 
+	
+	</div> 
+	<br/>
+	<!-- 
+	<p>module</p>
+	<div ng-app="myApp" ng-controller="myCtrl">
+		{{ firstName + " " + lastName }}
+	</div>
+	
+	<script>
+	var app = angular.module("myApp", []);
+	
+	app.controller("myCtrl", function($$scope) {
+	    $$scope.firstName = "John";
+	    $$scope.lastName = "Doe";
+	});
+	</script>
+	 -->
+	 
+	 
+	  <div ng-controller="formController">
+		  <form>
+		    First Name:<br/>
+		    <input type="text" ng-model="user.firstName"/><br/>
+		    Last Name:<br/>
+		    <input type="text" ng-model="user.lastName"/>
+		    <br/><br/>
+		    <button ng-click="reset()">RESET</button>
+		  </form>
+		  <p>form = {{user}}</p>
+		  <p>master = {{master}}</p>
+	</div>
+		
+		<script>
+		function formController ($$scope) {
+		    $$scope.master = {firstName: "John", lastName: "Doe"};
+		    $$scope.reset = function() {
+		        $$scope.user = angular.copy($$scope.master);
+		    };
+		    $$scope.reset();
+		};
+		</script> 
+	
+</body>
+</html>
