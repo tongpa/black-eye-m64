@@ -103,7 +103,37 @@ var app = angular.module("poll", []);
 	                    ]);
 	
 	*/
-	
+	app.directive('contentItemIndex', function ($compile, $templateCache) {
+		console.log("contentItemIndex");
+		
+		
+		
+		var getTemplate = function(contentType) {
+	         var template = '';
+	          
+	         template ="/template/questionindextpl.html";
+
+	         return template;
+	     }
+		
+		
+		var directive = {};
+	     directive.restrict = 'E';
+	     //directive.link =  linker;	     
+	     directive.template =  '<ng-include src="getTemplateUrl()"/>';
+	     directive.controller = function($scope) {
+	         $scope.getTemplateUrl = function() {  
+	        	  
+	        	 return getTemplate($scope.content.type);
+	           
+	         }
+	       }
+	     directive.scope  =  {
+					             content:'=' 
+					         }
+	     
+	     return directive;
+	});
 	app.directive('contentItem', function ($compile, $templateCache) {
 	    /* EDITED FOR BREVITY */
 
