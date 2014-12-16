@@ -30,9 +30,12 @@ table tr:nth-child(even) {
 </head>
 
 <body >
-	
-	<div data-ng-app="poll" >
+	test
+	<div data-ng-app="poll" name='1'>
 		<div id="container" ng-controller="pollController">
+			 
+			<content-item ng-repeat="item in content" content="item"> 1,</content-item>
+		
 			<form name="myForm" action="/ang/saveQuestion" method ="POST">
 			 <content-item ng-repeat="item in content" content="item"></content-item>
 			 

@@ -1,16 +1,38 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
       xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:ng="http://angularjs.org"
       py:strip="">
 <head py:match="head" py:attrs="select('@*')">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta charset="${response.charset}" />
   <title py:if="False">Your generic title goes here</title>
   <meta py:replace="select('*')"/>
-   <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/css/bootstrap.min.css')}" /> 
-  <!--  <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/javascript/bootstrap/css/bootstrap.min.css')}" />-->
+   <!--  <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/css/bootstrap.min.css')}" /> -->
+ 	 <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/javascript/bootstrap/css/bootstrap.min.css')}" />
+ 	 <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/javascript/bootstrap/css/bootstrap-theme.css')}" />
+ 	
+ 	<link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/javascript/bootstrap/css/docs.min.css')}" />
+ 
   <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/css/style.css')}" />
-    <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/css/viewsurvey.css')}" /> 
+   <!--  <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/css/viewsurvey.css')}" />  --> 
+    
+    
+     
+ 
+ 
+ 
+  
+  
+  <script src="${tg.url('/javascript/jquery/jquery-2.1.1.js')}"></script>
+  <script src="${tg.url('/javascript/angularjs/angular.js')}"></script>
+  <script src="${tg.url('/javascript/angularjs/angular-touch.js')}"></script>
+    
+    
+    
+    
+    
+    
 </head>
 
 <body py:match="body" py:attrs="select('@*')">
@@ -70,6 +92,6 @@
 
  <!--  <script src="http://code.jquery.com/jquery.js"></script> -->
   <script src="${tg.url('/javascript/bootstrap/js/bootstrap.min.js')}"></script>
- 
+  <script src="${tg.url('/javascript/bootstrap/js/pagination.js')}"></script>
 </body>
 </html>
