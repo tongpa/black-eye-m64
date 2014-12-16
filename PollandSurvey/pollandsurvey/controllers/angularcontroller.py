@@ -41,6 +41,7 @@ class AngularController(BaseController):
     @expose('angularjs.templates.angular.SampleForm')
     def SampleForm(self):
         """Handle the front-page."""
+        
         return dict(page='SampleForm')
     
     @expose('angularjs.templates.angular.radiotpl')
@@ -87,11 +88,11 @@ class AngularController(BaseController):
         question.append({'id':3 ,'seq':3,'question': 'Do you like a color?','type': 'radio', 'answer': answer});
         
         answer = [];       
-        answer.append({'id' : 1 , 'label': 'http://localhost:8080/images/user_1/project_1/question_3/answer_1.png'});
-        answer.append({'id' : 2 , 'label': 'http://localhost:8080/images/user_1/project_1/question_3/answer_2.png'}); 
-        answer.append({'id' : 3 , 'label': 'http://localhost:8080/images/user_1/project_1/question_3/answer_3.png'}); 
-        answer.append({'id' : 4 , 'label': 'http://localhost:8080/images/user_1/project_1/question_3/answer_4.png'}); 
-        question.append({'id':4 ,'seq':4,'question': 'http://localhost:8080/images/user_1/project_1/question_3/question_3.png', 'type': 'image', 'answer': answer});
+        answer.append({'id' : 1 , 'label': 'http://localhost:8081/images/user_1/project_1/question_3/answer_1.png'});
+        answer.append({'id' : 2 , 'label': 'http://localhost:8081/images/user_1/project_1/question_3/answer_2.png'}); 
+        answer.append({'id' : 3 , 'label': 'http://localhost:8081/images/user_1/project_1/question_3/answer_3.png'}); 
+        answer.append({'id' : 4 , 'label': 'http://localhost:8081/images/user_1/project_1/question_3/answer_4.png'}); 
+        question.append({'id':4 ,'seq':4,'question': 'http://localhost:8081/images/user_1/project_1/question_3/question_3.png', 'type': 'image', 'answer': answer});
         
         
         questions.append({'id': 1, 'question' : question});

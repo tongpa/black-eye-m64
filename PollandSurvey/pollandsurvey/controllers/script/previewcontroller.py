@@ -27,13 +27,13 @@ __all__ = ['PreviewController']
 
 class PreviewController(BaseController):
    
-    @expose('pollandsurvey.templates.view.index')
+    @expose('pollandsurvey.templates.view.view')
     def index(self ,id=0 , came_from=lurl('/')):
         if not request.identity:
             login_counter = request.environ.get('repoze.who.logins', 0) + 1
             redirect('/login',   params=dict(came_from=came_from, __logins=login_counter))
         userid = request.identity['repoze.who.userid']
-        flash(_('Welcome back, %s!') % userid)
+        #flash(_('Welcome back, %s!') % userid)
         
         log.info('preview id : ' + str(id));
         
@@ -47,7 +47,7 @@ class PreviewController(BaseController):
         else :
             log.info('expire');
         
-        return dict(page='index')
+        return dict(page='view')
     
     
     
