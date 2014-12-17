@@ -32,6 +32,11 @@ table tr:nth-child(even) {
 <body >
 	test
 	<div data-ng-app="poll" name='1'>
+		
+		<div ng-controller="pagingController">
+			<pagination total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()"></pagination>
+		</div>
+		
 		<div id="container" ng-controller="pollController">
 			 
 			<content-item ng-repeat="item in content" content="item"> 1,</content-item>

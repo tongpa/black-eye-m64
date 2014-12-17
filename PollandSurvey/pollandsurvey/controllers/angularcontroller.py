@@ -23,28 +23,28 @@ class AngularController(BaseController):
     def _before(self, *args, **kw):
         tmpl_context.project_name = "angularjs"
 
-    @expose('angularjs.templates.angular.index')
+    @expose('pollandsurvey.templates.angular.index')
     def index(self):
         """Handle the front-page."""
         return dict(page='index')
     
-    @expose('angularjs.templates.angular.form')
+    @expose('pollandsurvey.templates.angular.form')
     def form(self):
         """Handle the front-page."""
         return dict(page='form')
     
-    @expose('angularjs.templates.angular.validateform')
+    @expose('pollandsurvey.templates.angular.validateform')
     def validateform(self):
         """Handle the front-page."""
         return dict(page='validateform')
     
-    @expose('angularjs.templates.angular.SampleForm')
+    @expose('pollandsurvey.templates.angular.SampleForm')
     def SampleForm(self):
         """Handle the front-page."""
         
         return dict(page='SampleForm')
     
-    @expose('angularjs.templates.angular.radiotpl')
+    @expose('pollandsurvey.templates.angular.radiotpl')
     def radiotpl(self):
         """Handle the front-page."""
         return dict(page='radiotpl')

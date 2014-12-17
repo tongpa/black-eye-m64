@@ -1,14 +1,19 @@
 
 <div class="zero-clipboard">
-	<span class="btn-clipboard">Copy</span>
+	<span class="btn-clipboard"><button type="button" class="btn btn-default btn-xs"  aria-label="Center Align" id="right_{{content.id}}" data-placement="right" title="Tooltip on right">
+<span class="glyphicon glyphicon-info-sign"  aria-hidden="true"> </span> 
+</button></span>
 </div> 
 
 <div class="highlight"> 
 <pre>
 	<h2><span>{{content.seq}}. </span>  <img ng-src="{{content.question}}" alt="{{content.id}}"/>
+	<!-- 
 	<button type="button" class="btn btn-default btn-xs"  aria-label="Center Align" id="right_{{content.id}}" data-placement="right" title="Tooltip on right">
 <span class="glyphicon glyphicon-info-sign"  aria-hidden="true"> </span> 
-</button></h2> 
+</button>
+ -->
+</h2> 
 	
 	<input type="hidden" name="question_{{content.id}}" value="{{content.id}}"/>
 	<ul class="unstyled">

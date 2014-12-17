@@ -1,8 +1,24 @@
 var app = angular.module("poll", ['ui.bootstrap']);
 	
-	app.controller("pollController", function($scope, $http) {
+	app.controller("pollController", function($scope, $http,$log) {
 		$scope.url = '/ang/getQuestion';
 		$scope.content = [];
+		
+		/**Paging**/
+		 
+		$scope.setPage = function (pageNo) {
+		    $scope.bigCurrentPage = pageNo;
+		  };
+		  
+		  $scope.pageChanged = function() {
+			    $log.log('Page changed to: ' + $scope.bigCurrentPage);
+			  };
+
+		  $scope.maxSize = 10;
+		  $scope.bigTotalItems = 175;
+		  $scope.bigCurrentPage = 1;
+	
+		/**Paging**/
 		
 		$scope.fetchContent = function (){
 	        $http.get($scope.url).success(function(response) {
@@ -18,107 +34,8 @@ var app = angular.module("poll", ['ui.bootstrap']);
 	
 	});
 	
-	app.controller("pagingController",function($scope, $log) {
-		$scope.totalItems = 64;
-		$scope.currentPage = 4;
-
-		  $scope.setPage = function (pageNo) {
-			$scope.currentPage = pageNo;
-		  };
-
-	  $scope.pageChanged = function() {
-		$log.log('Page changed to: ' + $scope.currentPage);
-	  };
-
-	  $scope.maxSize = 5;
-	  $scope.bigTotalItems = 175;
-	  $scope.bigCurrentPage = 1;
-	});
 	
-	/*
-	app.filter('partition', [
-	                      'filterStabilize',
-	                      function(stabilize) {
-
-	                        function partition(arr, size) {
-
-	                          var newArr = [];
-
-	                          for (var i=0; i<arr.length; i+=size) {
-	                            newArr.push(arr.slice(i, i+size));
-	                          }
-
-	                          return newArr;
-
-	                        }
-
-	                        return stabilize(partition);
-
-	                      }
-	                    ]);
-	
-	app.factory('filterStabilize', [
-	                      'memoize',
-	                      function(memoize) {
-
-	                        function service(fn) {
-
-	                          function filter() {
-	                            var args = [].slice.call(arguments);
-	                            // always pass a copy of the args so that the original input can't be modified
-	                            args = angular.copy(args);
-	                            // return the `fn` return value or input reference (makes `fn` return optional)
-	                            var filtered = fn.apply(this, args) || args[0];
-	                            return filtered;
-	                          }
-
-	                          var memoized = memoize(filter);
-
-	                          return memoized;
-
-	                        }
-
-	                        return service;
-
-	                      }
-	                    ]);
-	app.factory('memoize', [
-	                      function() {
-
-	                        function service() {
-	                          return memoizeFactory.apply(this, arguments);
-	                        }
-
-	                        function memoizeFactory(fn) {
-
-	                          var cache = {};
-
-	                          function memoized() {
-
-	                            var args = [].slice.call(arguments);
-
-	                            var key = JSON.stringify(args);
-
-	                            if (cache.hasOwnProperty(key)) {
-	                              return cache[key];
-	                            }
-
-	                            cache[key] = fn.apply(this, arguments);
-
-	                            return cache[key];
-
-	                          }
-
-	                          return memoized;
-
-	                        }
-
-	                        return service;
-
-	                      }
-	                    ]);
-	
-	*/
+	 
 	app.directive('contentItemIndex', function ($compile, $templateCache) {
 		console.log("contentItemIndex");
 		
@@ -208,14 +125,21 @@ var app = angular.module("poll", ['ui.bootstrap']);
 	     directive.template =  '<ng-include src="getTemplateUrl()"/>';
 	     directive.controller = function($scope) {
 	         $scope.getTemplateUrl = function() {  
-	        	  
+	        	 console.log('gettemplate');
 	        	 return getTemplate($scope.content.type);
 	           
 	         }
 	       }
 	     directive.scope  =  {
 					             content:'=' 
-					         }
+					         };
+	     
+	     directive.link = function( $scope, $element, $attrs ){
+	    	 console.log('link'); 
+	    	 $scope.evalScore = function(id) {
+	    		 console.log(id); 
+	    	 }
+	     }
 	     
 	     return directive;
 	   /*

@@ -50,5 +50,28 @@ class PreviewController(BaseController):
         return dict(page='view')
     
     
+    @expose('pollandsurvey.templates.view.showview')
+    def show(self ,id=0 , came_from=lurl('/')):
+        if not request.identity:
+            login_counter = request.environ.get('repoze.who.logins', 0) + 1
+            redirect('/login',   params=dict(came_from=came_from, __logins=login_counter))
+        userid = request.identity['repoze.who.userid']
+        #flash(_('Welcome back, %s!') % userid)
+        
+        log.info('preview id : ' + str(id));
+        
+        self.questionOption = model.QuestionOption.getId(id);
+        
+        log.info('expire date : ' + str(self.questionOption.expire_date));
+        log.info('current : ' + str(datetime.now()) );
+        
+        if datetime.now() <= self.questionOption.expire_date:
+            log.info('not expire');
+        else :
+            log.info('expire');
+        
+        return dict(page='view')
+    
+    
     
     
