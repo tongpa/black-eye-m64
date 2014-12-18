@@ -65,26 +65,28 @@ class AngularController(BaseController):
         answer = [];
         question = [];
         
-        answer.append({'id' : 1 , 'label': 'red'});
-        answer.append({'id' : 2 , 'label': 'green'});
-        answer.append({'id' : 3 , 'label': 'blue'});
-        answer.append({'id' : 4 , 'label': 'orange'});        
+        
+        
+        answer.append({'id' : 1 , 'label': 'red','selected': 'checked'});
+        answer.append({'id' : 2 , 'label': 'green','selected': ''});
+        answer.append({'id' : 3 , 'label': 'blue','selected': ''});
+        answer.append({'id' : 4 , 'label': 'orange','selected': ''});        
         question.append({'id':1 ,'seq':1,'question': 'What do you like a color?','type': 'radio', 'answer': answer});
         
         
         
         answer = [];       
-        answer.append({'id' : 1 , 'label': 'red'});
-        answer.append({'id' : 2 , 'label': 'green'});
-        answer.append({'id' : 3 , 'label': 'blue'});
-        answer.append({'id' : 4 , 'label': 'orange'});
+        answer.append({'id' : 1 , 'label': 'red','selected': True});
+        answer.append({'id' : 2 , 'label': 'green','selected': False});
+        answer.append({'id' : 3 , 'label': 'blue','selected': False});
+        answer.append({'id' : 4 , 'label': 'orange','selected':False});
         
         question.append({'id':2 ,'seq':2,'question': 'What do you not like a color?','type': 'check', 'answer': answer});
         
         
         answer = [];       
-        answer.append({'id' : 1 , 'label': 'Yes'});
-        answer.append({'id' : 2 , 'label': 'No'}); 
+        answer.append({'id' : 1 , 'label': 'Yes','selected': ''});
+        answer.append({'id' : 2 , 'label': 'No','selected': 'checked'}); 
         question.append({'id':3 ,'seq':3,'question': 'Do you like a color?','type': 'radio', 'answer': answer});
         
         answer = [];       

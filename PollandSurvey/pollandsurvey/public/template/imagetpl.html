@@ -1,4 +1,5 @@
-
+ <html><head><meta http-equiv="content-type" content="text/html; charset=windows-1252"/></head>
+<body>
 <div class="zero-clipboard">
 	<span class="btn-clipboard"><button type="button" class="btn btn-default btn-xs"  aria-label="Center Align" id="right_{{content.id}}" data-placement="right" title="Tooltip on right">
 <span class="glyphicon glyphicon-info-sign"  aria-hidden="true"> </span> 
@@ -16,15 +17,18 @@
 </h2> 
 	
 	<input type="hidden" name="question_{{content.id}}" value="{{content.id}}"/>
-	<ul class="unstyled">
-	<!-- <label data-ng-repeat="answer in content.answer"> -->
-		<li data-ng-repeat="answer in content.answer">
-			
-			<input type="radio" name="image_{{content.id}}" ng-model="$parent.id"  value="{{answer.id}}" required="required"/>
-		 
- 			<span > <img ng-src="{{answer.label}}" alt="{{answer.id}}"  /> </span> 
-		</li>
-	</ul>
+	
+	<div style="padding-left:25px" ng-repeat="answer in content.answer">
+    	<div class="radio media-middle">
+    		 <label>
+		        <input type="radio" name="image_{{content.id}}" ng-model="$parent.id" ng-change="selectedScore(content.id,answer.id,'image')"  value="{{answer.id}}" required="required"/>
+		 		<span > <img ng-src="{{answer.label}}" alt="{{answer.id}}"/> </span> 
+		      </label>
+    	</div>
+    </div>
+	
+	
+	 
 </pre>
 </div>
 
@@ -39,5 +43,6 @@ $(document).ready(function(){
     });
 });
 </script>
-
+</body>
+</html>
  

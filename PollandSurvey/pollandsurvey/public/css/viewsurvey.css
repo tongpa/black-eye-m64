@@ -16,3 +16,7 @@ main {
   margin-left: auto;  
   width: auto;
 }
+
+.highlight {
+    background-color: #f5f5f5;
+}
