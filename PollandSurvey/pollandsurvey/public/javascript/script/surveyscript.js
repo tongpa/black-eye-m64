@@ -1,10 +1,22 @@
-var app = angular.module("poll", ['ui.bootstrap']);
+var app = angular.module("poll", ['ui.bootstrap','ngRoute']);
 	
-	app.controller("pollController", function($scope, $http,$log) {
-		$scope.url = '/ang/getQuestion';
+	app.config(['$routeProvider', '$locationProvider',function($routeProvider, $locationProvider) {
+		console.log($routeProvider);
+		$locationProvider.html5Mode(true);
+		
+	}]);
+
+	app.controller("pollController", function($scope, $http,$log,$location,$routeParams   ) {
+		$scope.url = '/preview/getDataPreview';
 		$scope.content = [];
 		
 		/**Paging**/
+		var getUrl = $location.url();
+		var param = $location.search();
+		
+		console.log(param.id);
+		 
+		
 		 
 		$scope.setPage = function (pageNo) {
 		    $scope.bigCurrentPage = pageNo;
@@ -21,6 +33,9 @@ var app = angular.module("poll", ['ui.bootstrap']);
 		/**Paging**/
 		
 		$scope.fetchContent = function (){
+			
+			$scope.url = $scope.url + "?idProject=" +param.id  ;
+			
 	        $http.get($scope.url).success(function(response) {
 	        	$scope.content = response.questions[0].question;;
 	        	 
@@ -33,6 +48,13 @@ var app = angular.module("poll", ['ui.bootstrap']);
 	    
 	
 	});
+	
+	/*.config(["$routeProvider",
+	    function($routeProvider) {
+		console.log($routeProvider);
+		
+	    }
+	 ]);*/
 	
 	
 	 
