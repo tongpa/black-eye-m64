@@ -1,11 +1,14 @@
  <html><head><meta http-equiv="content-type" content="text/html; charset=windows-1252"/></head>
 <body>
 
-<div class="highlight"> 
-	<h2><span>{{content.seq}}. </span>{{content.question}} 
-	<button type="button" class="btn btn-default btn-xs"  aria-label="Center Align" id="right_{{content.id}}" data-placement="right" title="Tooltip on right">
+<div class="zero-clipboard">
+	<span class="btn-clipboard"><button type="button" class="btn btn-default btn-xs"  aria-label="Center Align" id="right_{{content.id}}" data-placement="right" title="{{content.help_message}}">
 <span class="glyphicon glyphicon-info-sign"  aria-hidden="true"> </span> 
-</button></h2> 
+</button></span>
+</div> 
+
+<div class="highlight"> 
+	<h2><span>{{content.seq}}. </span>{{content.question}}  </h2> 
 
 	<input type="hidden" name="question_{{content.id}}" value="{{content.id}}"/>
 	

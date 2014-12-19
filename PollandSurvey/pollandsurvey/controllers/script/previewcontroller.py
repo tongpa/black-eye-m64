@@ -72,6 +72,38 @@ class PreviewController(BaseController):
         
         return dict(page='view')
     
+    @expose('json')
+    def getDataPreview(self, came_from=lurl('/'),   *args, **kw): 
+        reload(sys);
+        sys.setdefaultencoding("utf-8");
+        
+        idProject = kw.get('idProject');
+        print args;
+        print kw ;
+        
+        
+        self.questionOption = model.QuestionOption.getId(idProject);
+        
+        self.listQuestions = model.Question.getByProjectId(self.questionOption.id_question_project);
+        
+        question = [];
+        for self.question in self.listQuestions:
+            print self.question.id_question;
+            print self.question.question;
+            print self.question.question_type.type;
+            print self.question.order;
+            
+            question.append(self.question.to_json());
+        
+        
+        questions = [];
+       
+         
+        
+        questions.append({'id': idProject, 'question' : question});
+        
+        return dict(questions = questions);
+    
     
     
     

@@ -83,6 +83,7 @@ class QuestionType(DeclarativeBase):
 
     id_question_type =  Column(Integer, autoincrement=True, primary_key=True)
     description = Column(String(255),unique=True, nullable=False)
+    type = Column(String(255),unique=True, nullable=False)
     active  = Column(BIT, nullable=True, default=1)
     
     def __init__(self):
@@ -218,7 +219,8 @@ class QuestionProject(DeclarativeBase):
         quest = DBSession.query(cls).filter(cls.id_question_project == str(id) ).delete();
         #DBSession.delete(quest); 
         DBSession.flush() ;
-        
+    
+    
 
 class Question(DeclarativeBase):
 
@@ -251,6 +253,29 @@ class Question(DeclarativeBase):
         
     def __str__(self):
         return '"%s"' % (self.question )
+    
+    
+    def to_json(self):
+        
+        #{'id':1 ,'seq':1,'question': 'What do you like a color?','type': 'radio', 'answer': answer};
+        dict  = {"id": self.id_question, 
+                 "question": self.question,
+                 "help_message": self.help_message,
+                 "text_label": self.text_label,
+                "seq": self.order ,
+                'type': self.question_type.type,
+                "answer": [],
+                "active": self.active };
+                
+        child =[];
+        if len( self.child ) >0 : 
+            for answer in self.child:
+                for basicText in  answer.basicData.childenText:                    
+                    child.append(basicText.to_json());
+        
+        dict['answer'] = child;
+         
+        return dict;
     
     def save (self):
         DBSession.add(self); 
@@ -714,6 +739,15 @@ class BasicTextData(DeclarativeBase):
     def __str__(self):
         return '"%s"' % str(self.id_basic_data )
     
+    def to_json(self):
+        
+        dict  = {"id": self.id_basic_data, 
+                 "label": self.value,
+                 "multi_line": self.multi_line
+                 };
+                 
+        return dict;
+    
     def save (self):
         DBSession.add(self); 
         DBSession.flush() ;
@@ -790,6 +824,8 @@ class QuestionOption(DeclarativeBase):
     @classmethod
     def getId(cls,act):
         return DBSession.query(cls).get(act); 
+    
+    
         
     
     

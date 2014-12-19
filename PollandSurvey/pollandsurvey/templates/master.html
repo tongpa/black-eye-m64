@@ -8,6 +8,7 @@
   <meta charset="${response.charset}" />
   <title py:if="False">Your generic title goes here</title>
   <meta py:replace="select('*')"/>
+  <link rel="shortcut icon" href="${tg.url('/favicon.ico')}"/>
    <!--  <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/css/bootstrap.min.css')}" /> -->
  	 <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/javascript/bootstrap/css/bootstrap.min.css')}" />
  	 <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/javascript/bootstrap/css/bootstrap-theme.css')}" />
@@ -27,7 +28,8 @@
   <script src="${tg.url('/javascript/jquery/jquery-2.1.1.js')}"></script>
   <script src="${tg.url('/javascript/angularjs/angular.js')}"></script>
   <script src="${tg.url('/javascript/angularjs/angular-touch.js')}"></script>
-    
+  <script src="${tg.url('/javascript/angularjs/angular-route.js')}"></script>
+   
     
     
     
@@ -46,8 +48,8 @@
         <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="${tg.url('/')}">
-        <img src="${tg.url('/img/turbogears_logo.png')}" height="20" alt="TurboGears 2"/>
-        ${getattr(tmpl_context, 'project_name', 'turbogears2')}
+        <img src="${tg.url('/img/jm_logo.png')}" height="20" alt="Poll JobsMatcher"/>
+        ${getattr(tmpl_context, 'project_name', 'Poll JobsMatcher')}
       </a>
     </div>
 
