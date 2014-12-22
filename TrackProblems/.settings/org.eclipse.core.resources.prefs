@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+encoding//trackproblems/controllers/root.py=utf-8
+encoding//trackproblems/model/__init__.py=utf-8
+encoding//trackproblems/model/trackbug.py=utf-8
+encoding//trackproblems/templates/master.html=UTF-8
+encoding/setup.py=utf-8
