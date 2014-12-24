@@ -14,7 +14,7 @@ from tgext.admin.controller import AdminController
 from exportemaildata.lib.base import BaseController
 from exportemaildata.controllers.error import ErrorController
 from exportemaildata.controllers.importemail.importfromfile import importDataThread
-
+from exportemaildata.controllers.importemail.importfromfile_old import importData_old
 __all__ = ['RootController']
 
 
@@ -113,23 +113,25 @@ class RootController(BaseController):
     @expose('json')
     def importData(self,*kw):
         
+        try:
+            thread1 = importDataThread("Thread-1",'D:\Tong\Code\code_python\ExportEmail\ExportEmailData\sample_data\Data5000.xlsx'   );
+            thread1.start();
+        except Exception as e:
+            print e;
+            pass;
         
-        thread1 = importDataThread("Thread-1",model,'D:\Tong\Code\code_python\ExportEmail\ExportEmailData\sample_data\Data5000-1.xlsx'   );
-        
-        thread1.start();
         """
         import thread
         import time
         try:
-            thread.start_new_thread( importData, ("Thread-1", model,'D:\Tong\Code\code_python\ExportEmail\ExportEmailData\sample_data\Data5000-1.xlsx', ) );
-        
-            print thread.getName();
+            thread.start_new_thread( importData_old, ("Thread-1", model,'D:\Tong\Code\code_python\ExportEmail\ExportEmailData\sample_data\Data2.xlsx', ) );
         except:
             print "Error: unable to start thread"
         """
         """
+        #used
         import openpyxl
-        workbook = openpyxl.load_workbook(filename = 'D:\Tong\Code\code_python\ExportEmail\ExportEmailData\sample_data\Data5000-1.xlsx', use_iterators = True)
+        workbook = openpyxl.load_workbook(filename = 'D:\Tong\Code\code_python\ExportEmail\ExportEmailData\sample_data\Data2.xlsx', use_iterators = True)
         worksheets = workbook.get_sheet_names()
         worksheet = workbook.get_sheet_by_name('Sheet13')    
         print str(worksheet.calculate_dimension());
@@ -139,7 +141,7 @@ class RootController(BaseController):
         same_email = [];
         same_pid = [];
         used_email = [];
-        for row in worksheet.iter_rows():
+        for row in worksheet.iter_rows(range_string="A1:Z10"):
             
             emaildata = model.EmailData();
             emaildata.prefix =  row[0].value;
@@ -175,7 +177,7 @@ class RootController(BaseController):
             if (email.get(emaildata.email) is None) :
                 #emaildata.save();
                 if(pid.get(emaildata.pid) is None) :
-                    #emaildata.save();
+                    emaildata.save();
                     email[emaildata.email] = emaildata;
                     pid[emaildata.pid] = emaildata;
                     used_email.append(emaildata);

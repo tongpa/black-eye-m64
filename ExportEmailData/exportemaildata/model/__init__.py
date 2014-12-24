@@ -2,7 +2,7 @@
 """The application's model objects"""
 
 from zope.sqlalchemy import ZopeTransactionExtension
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker, Session
 #from sqlalchemy import MetaData
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -10,6 +10,7 @@ from sqlalchemy.ext.declarative import declarative_base
 # session object appropriate for the current web request.
 maker = sessionmaker(autoflush=True, autocommit=False,
                      extension=ZopeTransactionExtension())
+ 
 DBSession = scoped_session(maker)
 
 # Base class for all of our model classes: By default, the data model is
@@ -60,4 +61,4 @@ def init_model(engine):
 
 # Import your model modules here.
 from exportemaildata.model.auth import User, Group, Permission
-from exportemaildata.model.email import EmailData;
+from exportemaildata.model.email import EmailData,ExportEmail;

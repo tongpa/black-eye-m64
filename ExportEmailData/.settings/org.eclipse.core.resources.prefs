@@ -1,4 +1,8 @@
 eclipse.preferences.version=1
+encoding//exportemaildata/config/__init__.py=utf-8
+encoding//exportemaildata/config/app_cfg.py=utf-8
+encoding//exportemaildata/config/environment.py=utf-8
+encoding//exportemaildata/config/middleware.py=utf-8
 encoding//exportemaildata/controllers/importemail/__init__.py=utf-8
 encoding//exportemaildata/controllers/root.py=utf-8
 encoding//exportemaildata/model/__init__.py=utf-8

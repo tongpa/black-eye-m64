@@ -14,7 +14,7 @@ def importData_old(threadName, model, pathFile):
     same_email = [];
     same_pid = [];
     used_email = [];
-    for row in worksheet.iter_rows():
+    for row in worksheet.iter_rows(range_string="A1:Z10"):
         
         emaildata = model.EmailData();
         emaildata.prefix =  row[0].value;
@@ -50,7 +50,7 @@ def importData_old(threadName, model, pathFile):
         if (email.get(emaildata.email) is None) :
             #emaildata.save();
             if(pid.get(emaildata.pid) is None) :
-                #emaildata.save();
+                emaildata.save();
                 email[emaildata.email] = emaildata;
                 pid[emaildata.pid] = emaildata;
                 used_email.append(emaildata);

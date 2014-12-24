@@ -61,3 +61,30 @@ print test[1];
 print test.get(2);
 print test.get(3);
 
+
+wb = openpyxl.Workbook();
+ws = wb.active;
+
+sheet = wb.get_active_sheet();
+wb.remove_sheet(sheet);
+
+
+#sheet = wb.get_active_sheet()
+
+sheet = wb.create_sheet()
+sheet.title = "Pi"
+ 
+i =1;
+cell_C1 = sheet.cell( row=i, column=1 );
+cell_C1.value = "test123";
+
+cell_C2 = sheet.cell( row=i, column=2 );
+cell_C2.value = "5555";
+
+path = r'C:\temp\demo.xlsx';
+wb.save(path);
+
+
+
+
+print (201%10);
