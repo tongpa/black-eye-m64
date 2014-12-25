@@ -7,6 +7,7 @@ from tg.configuration import AppConfig, config
 from exportemaildata import model
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql import update
 exitFlag = 0
 
 __all__ = ['importDataThread']
@@ -18,13 +19,24 @@ class importDataThread(threading.Thread):
         #self.model = model
         self.pathFile = pathFile
         
-        print config['sqlalchemy.url'];
+        self.some_engine = create_engine(config['sqlalchemy.url'] );
+        
+        # create a configured "Session" class
+        self.Session = sessionmaker(bind=self.some_engine)
+        
+        # create a Session
+        self.session = self.Session();
+        
+        
         
     def run(self):
         print "Starting " + self.threadID
         
-        
-        self.importData(self.threadID ,self.pathFile); 
+        #step : 1 importData
+        exportEmail = self.importData(self.threadID ,self.pathFile); 
+        #step : 2 checkData Same Old Email
+        #exportEmail = model.ExportEmail.getId(5);
+        self.checkEmailDuplicate(exportEmail);
         
         print "Exiting " + self.threadID
        
@@ -49,13 +61,7 @@ class importDataThread(threading.Thread):
         
         # an Engine, which the Session will use for connection
         # resources
-        some_engine = create_engine(config['sqlalchemy.url'] );
         
-        # create a configured "Session" class
-        Session = sessionmaker(bind=some_engine)
-        
-        # create a Session
-        session = Session()
         
         # work with sess
          
@@ -69,9 +75,12 @@ class importDataThread(threading.Thread):
         exportEmail.insert_row = 0;
         exportEmail.error_row = 0;
         
-        session.add(exportEmail);
-        session.flush() ;
-        session.commit();
+        exportEmail.same_old_row = 0;
+        exportEmail.insert_real_row = 0;
+        
+        self.session.add(exportEmail);
+        self.session.flush() ;
+        self.session.commit();
         
         total = 0;
         
@@ -137,16 +146,16 @@ class importDataThread(threading.Thread):
         
         
         row =1000;
-        count = 1;
+        count = 0;
         print "start insert";
         for key_email in self.email:
             useEmail = self.email[key_email];
             try:
-                session.add(useEmail);
-                session.flush() ;
+                self.session.add(useEmail);
+                self.session.flush() ;
                 
                 if(count % row == 0):
-                    session.commit();
+                    self.session.commit();
                     print "commit ";
                     
             except Exception as e:
@@ -174,7 +183,7 @@ class importDataThread(threading.Thread):
         exportEmail.insert_row = count;
         exportEmail.error_row = total- count;
         
-        session.commit();
+        self.session.commit();
         
         print "used email " + str( len(self.email));
         print "same email " + str( len(self.same_email));
@@ -195,6 +204,8 @@ class importDataThread(threading.Thread):
         
         if(len(self.email_empty) > 0):
             self.writeToExcel(workbook,self.email_empty,path,'email empty');
+            
+        return exportEmail;
             
         #workbook.save(path);
     
@@ -300,5 +311,48 @@ class importDataThread(threading.Thread):
        
         
         wb.save(fileName);
+        
+    def checkEmailDuplicate(self,exportEmail):
+        #check duplicate
+        self.dupEmail =  model.EmailData.checkDuplicateEmail();
+        #check not duplicate
+        self.noDupEmail =  model.EmailData.checkNotDuplicateEmail();
+        
+        path = r'C:\temp\demo.xlsx';
+        print len(self.dupEmail);
+        
+        #update value
+        idexport = exportEmail.id_export_email;
+        
+       
+        #update value
+        u = update(model.ExportEmail).where( model.ExportEmail.id_export_email==idexport).\
+        values(same_old_row= len(self.dupEmail),insert_real_row= len(self.noDupEmail) )
+
+        self.session.execute(u)
+        self.session.flush() ;
+        self.session.commit();
+        
+        
+        #export file
+        if(len(self.dupEmail) > 0):
+            workbook = openpyxl.load_workbook(filename = exportEmail.error_path_file,  use_iterators = False);
+            self.writeToExcel(workbook,self.dupEmail,path,'email same old');
+        
+        
+        #insert to data temp
+        for emailData in self.noDupEmail:
+            emailTemp = model.EmailTemp();
+            emailTemp.copyData(emailData);    
+            self.session.add(emailTemp);
+            self.session.flush() ;
+            emailTemp = None;
+        
+        print "insert success";    
+        self.session.commit();
+        print "insert commit";  
+        
+         
+        
         
         

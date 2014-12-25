@@ -61,4 +61,4 @@ def init_model(engine):
 
 # Import your model modules here.
 from exportemaildata.model.auth import User, Group, Permission
-from exportemaildata.model.email import EmailData,ExportEmail;
+from exportemaildata.model.email import EmailData,ExportEmail,EmailTemp;

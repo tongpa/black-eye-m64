@@ -109,9 +109,14 @@ class RootController(BaseController):
         flash(_('We hope to see you soon!'))
         return HTTPFound(location=came_from)
     
-    
     @expose('json')
-    def importData(self,*kw):
+    def checkEmail(self,**kw):
+        dupEmail = model.EmailData.checkDuplicateEmail();
+        print len(dupEmail);
+        return dict(success=True); 
+        
+    @expose('json')
+    def importData(self,**kw):
         
         try:
             thread1 = importDataThread("Thread-1",'D:\Tong\Code\code_python\ExportEmail\ExportEmailData\sample_data\Data5000.xlsx'   );
@@ -196,3 +201,6 @@ class RootController(BaseController):
         print "same ipd   " + str( len(same_pid));
         """
         return dict(success=True);
+    
+    
+    

@@ -11,7 +11,7 @@ though.
 import os
 from datetime import datetime
 from hashlib import sha256
-__all__ = ['EmailData' ]
+__all__ = ['EmailData' ,'ExportEmail' ,'EmailTemp']
 
 from sqlalchemy import Table, ForeignKey, Column
 from sqlalchemy.types import Unicode, Integer, DateTime
@@ -33,6 +33,11 @@ class ExportEmail(DeclarativeBase):
     total_row = Column(Integer);
     insert_row = Column(Integer );
     error_row = Column(Integer );
+    
+    same_old_row = Column(Integer );    
+    insert_real_row = Column(Integer );
+    
+    
     active  = Column(BIT, nullable=True, default=1);
     created = Column(DateTime, default=datetime.now);
     
@@ -46,11 +51,14 @@ class ExportEmail(DeclarativeBase):
         return self.file_name 
 
     
+    @classmethod
+    def getId(cls,id):
+        return DBSession.query(cls).get(id);
+        
     def save(self):
         DBSession.add(self); 
-        
-        
         DBSession.flush() ;
+    
     
 class EmailData(DeclarativeBase):
     """
@@ -68,8 +76,7 @@ class EmailData(DeclarativeBase):
     firstname_thai = Column(Unicode(255) );
     lastname_thai = Column(Unicode(255) );
     firstname_eng = Column(Unicode(255) );
-    lastname_eng = Column(Unicode(255) );
-    lastname_eng = Column(Unicode(255) );
+    lastname_eng = Column(Unicode(255) ); 
     sex = Column(Unicode(255) );
     birthdate = Column(DateTime, default=datetime.now)
     
@@ -103,7 +110,15 @@ class EmailData(DeclarativeBase):
 
     def __unicode__(self):
         return self.firstname_thai or self.email
-
+    
+    @classmethod
+    def checkNotDuplicateEmail(cls):
+        return DBSession.query(cls).outerjoin(EmailTemp,cls.email == EmailTemp.email).filter(   EmailTemp.email == None   ).all();#.outerjoin(EmailTemp).filter(EmailTemp.email = cls.email).all();
+     
+    @classmethod
+    def checkDuplicateEmail(cls):
+        return DBSession.query(cls).outerjoin(EmailTemp,cls.email == EmailTemp.email).filter(   EmailTemp.email != None   ).all();#.outerjoin(EmailTemp).filter(EmailTemp.email = cls.email).all();
+         
     
     def save(self):
         DBSession.add(self); 
@@ -127,8 +142,7 @@ class EmailTemp(DeclarativeBase):
     firstname_thai = Column(Unicode(255) );
     lastname_thai = Column(Unicode(255) );
     firstname_eng = Column(Unicode(255) );
-    lastname_eng = Column(Unicode(255) );
-    lastname_eng = Column(Unicode(255) );
+    lastname_eng = Column(Unicode(255) ); 
     sex = Column(Unicode(255) );
     birthdate = Column(DateTime, default=datetime.now)
     
@@ -152,8 +166,9 @@ class EmailTemp(DeclarativeBase):
     salary= Column(Unicode(255) );
     education= Column(Unicode(255) ); 
     
+    
     id_export_email = Column(   Integer,ForeignKey('export_email.id_export_email'), nullable=False, index=True) ;
-    exportemail = relation('ExportEmail', backref='email_data_id_export_email');
+    exportemail = relation('ExportEmail', backref='email_temp_id_export_email');
     
     
     def __repr__(self):
@@ -162,7 +177,40 @@ class EmailTemp(DeclarativeBase):
 
     def __unicode__(self):
         return self.firstname_thai or self.email
-
+    
+    
+    def copyData(self, emailData):
+        if(emailData):
+            self.prefix = emailData.prefix;
+            self.firstname_thai = emailData.firstname_thai;
+            self.lastname_thai = emailData.lastname_thai;
+            self.firstname_eng = emailData.firstname_eng;
+            self.lastname_eng = emailData.lastname_eng;
+            
+            self.sex = emailData.sex;
+            self.birthdate = emailData.birthdate;
+            
+            self.pid = emailData.pid;
+            self.passport = emailData.passport;
+            self.countryname = emailData.countryname;
+            self.house_no = emailData.house_no;
+            self.building_village = emailData.building_village;
+            self.moo = emailData.moo;
+            self.soi =  emailData.soi;
+            self.road =  emailData.road;
+            self.county = emailData.county;
+            self.city =  emailData.city;
+            self.province =  emailData.province;
+            self.postcode= emailData.postcode;
+            self.mobile= emailData.mobile;
+            self.telephone= emailData.telephone;
+            self.email=  emailData.email;
+            self.housing_type=  emailData.housing_type;
+            self.category=  emailData.category;
+            self.salary=  emailData.salary;
+            self.education=  emailData.education;
+            self.id_export_email =  emailData.id_export_email;
+        
     
     def save(self):
         DBSession.add(self); 
