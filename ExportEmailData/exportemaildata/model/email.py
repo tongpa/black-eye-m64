@@ -112,12 +112,12 @@ class EmailData(DeclarativeBase):
         return self.firstname_thai or self.email
     
     @classmethod
-    def checkNotDuplicateEmail(cls):
-        return DBSession.query(cls).outerjoin(EmailTemp,cls.email == EmailTemp.email).filter(   EmailTemp.email == None   ).all();#.outerjoin(EmailTemp).filter(EmailTemp.email = cls.email).all();
+    def checkNotDuplicateEmail(cls,idExport):
+        return DBSession.query(cls).outerjoin(EmailTemp,cls.email == EmailTemp.email ).filter(   EmailTemp.email == None,cls.id_export_email == idExport   ).all();#.outerjoin(EmailTemp).filter(EmailTemp.email = cls.email).all();
      
     @classmethod
-    def checkDuplicateEmail(cls):
-        return DBSession.query(cls).outerjoin(EmailTemp,cls.email == EmailTemp.email).filter(   EmailTemp.email != None   ).all();#.outerjoin(EmailTemp).filter(EmailTemp.email = cls.email).all();
+    def checkDuplicateEmail(cls,idExport):
+        return DBSession.query(cls).outerjoin(EmailTemp,cls.email == EmailTemp.email ).filter(   EmailTemp.email != None,cls.id_export_email == idExport   ).all();#.outerjoin(EmailTemp).filter(EmailTemp.email = cls.email).all();
          
     
     def save(self):

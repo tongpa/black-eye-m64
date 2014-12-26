@@ -8,7 +8,11 @@ from exportemaildata import model
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import update
-exitFlag = 0
+ 
+
+
+import logging;
+log = logging.getLogger(__name__);
 
 __all__ = ['importDataThread']
 class importDataThread(threading.Thread):
@@ -30,7 +34,9 @@ class importDataThread(threading.Thread):
         
         
     def run(self):
-        print "Starting " + self.threadID
+        
+        log.info("Starting importData : " + str(self.threadID));
+         
         
         #step : 1 importData
         exportEmail = self.importData(self.threadID ,self.pathFile); 
@@ -38,15 +44,18 @@ class importDataThread(threading.Thread):
         #exportEmail = model.ExportEmail.getId(5);
         self.checkEmailDuplicate(exportEmail);
         
-        print "Exiting " + self.threadID
-       
+         
+        log.info("Finish importData : " + str(self.threadID));
      
         
     def importData(self,threadName,   pathFile):
-        print "start : " + threadName;
+        
+        log.info("read file " + str(pathFile));
+         
         workbook = openpyxl.load_workbook(filename = pathFile, use_iterators = True)
-        worksheets = workbook.get_sheet_names()
-        worksheet = workbook.get_sheet_by_name('Sheet13')    
+        #worksheets = workbook.get_sheet_names()
+        #worksheet = workbook.get_sheet_by_name('Sheet13')    
+        worksheet =  workbook.active
         print str(worksheet.calculate_dimension());
         
         self.email = {};
@@ -133,12 +142,12 @@ class importDataThread(threading.Thread):
             
                  
         
-        print "same email before " + str( len(self.same_email));
-        print "used email before " + str( len(self.email));
+        log.info( "same email before " + str( len(self.same_email)));
+        log.info( "used email before " + str( len(self.email)) );
         #remove same email
         for email in self.same_email:
             sameemail = self.email.get(email.email);
-            print "same email : " + email.email;
+            log.info( "same email : " + email.email);
             if(sameemail):
                 del self.email[email.email];
                 self.same_email.append(sameemail);     
@@ -147,7 +156,7 @@ class importDataThread(threading.Thread):
         
         row =1000;
         count = 0;
-        print "start insert";
+        log.info( "start insert");
         for key_email in self.email:
             useEmail = self.email[key_email];
             try:
@@ -156,28 +165,16 @@ class importDataThread(threading.Thread):
                 
                 if(count % row == 0):
                     self.session.commit();
-                    print "commit ";
+                    #print "commit ";
                     
             except Exception as e:
-                print "---error---";
-                print "email :" + useEmail.email;
+                log.info( "---error---");
+                log.info( "email :" + useEmail.email);
                 print e;
             
             count = count + 1;
             
-            
-        
-        
-            #model.DBSession.add(useEmail); 
-            #model.DBSession.flush() ;
-        """    break;
-            #except :
-                print "----error----------";
-                print useEmail.email;
-                print useEmail.birthdate;
-                print "--------------";
-                break;
-           """ 
+
            
         exportEmail.total_row = total;
         exportEmail.insert_row = count;
@@ -185,9 +182,9 @@ class importDataThread(threading.Thread):
         
         self.session.commit();
         
-        print "used email " + str( len(self.email));
-        print "same email " + str( len(self.same_email));
-        print "same ipd   " + str( len(self.same_pid));
+        log.info( "used email " + str( len(self.email)));
+        log.info( "same email " + str( len(self.same_email)));
+        log.info( "same ipd   " + str( len(self.same_pid)));
         
         
         
@@ -313,16 +310,19 @@ class importDataThread(threading.Thread):
         wb.save(fileName);
         
     def checkEmailDuplicate(self,exportEmail):
+        
+        idexport = exportEmail.id_export_email;
+        
         #check duplicate
-        self.dupEmail =  model.EmailData.checkDuplicateEmail();
+        self.dupEmail =  model.EmailData.checkDuplicateEmail(idexport);
         #check not duplicate
-        self.noDupEmail =  model.EmailData.checkNotDuplicateEmail();
+        self.noDupEmail =  model.EmailData.checkNotDuplicateEmail(idexport);
         
         path = r'C:\temp\demo.xlsx';
-        print len(self.dupEmail);
+        #print len(self.dupEmail);
         
         #update value
-        idexport = exportEmail.id_export_email;
+        
         
        
         #update value
@@ -348,9 +348,9 @@ class importDataThread(threading.Thread):
             self.session.flush() ;
             emailTemp = None;
         
-        print "insert success";    
+        log.info( "insert success");    
         self.session.commit();
-        print "insert commit";  
+        log.info( "insert commit");  
         
          
         

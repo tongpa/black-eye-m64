@@ -115,6 +115,11 @@ class RootController(BaseController):
         print len(dupEmail);
         return dict(success=True); 
         
+    @expose('exportemaildata.templates.uploadEmail')
+    def importEmail(self,**kw):
+         
+        return dict(page='index')
+        
     @expose('json')
     def importData(self,**kw):
         

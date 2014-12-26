@@ -1,14 +1,27 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
       xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:ng="http://angularjs.org"
       py:strip="">
 <head py:match="head" py:attrs="select('@*')">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta charset="${response.charset}" />
   <title py:if="False">Your generic title goes here</title>
   <meta py:replace="select('*')"/>
-  <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/css/bootstrap.min.css')}" />
+ 
+  
+  <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/javascript/bootstrap/css/bootstrap.min.css')}" />
+  <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/javascript/bootstrap/css/bootstrap-theme.css')}" />
+  <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/javascript/bootstrap/css/docs.min.css')}" />
+  
+  
+  
   <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/css/style.css')}" />
+  
+  <script src="${tg.url('/javascript/jquery/jquery-2.1.1.js')}"></script>
+  <script src="${tg.url('/javascript/angularjs/angular.js')}"></script>
+  <script src="${tg.url('/javascript/angularjs/angular-touch.js')}"></script>
+  <script src="${tg.url('/javascript/angularjs/angular-route.js')}"></script>
 </head>
 
 <body py:match="body" py:attrs="select('@*')">
@@ -29,10 +42,13 @@
 
     <div class="collapse navbar-collapse" id="navbar-content">
       <ul class="nav navbar-nav">
-        <li class="${('', 'active')[value_of('page') == 'index']}"><a href="${tg.url('/')}">Welcome</a></li>
+      	<li class="${('', 'active')[value_of('page') == 'index']}"><a href="${tg.url('/importEmail')}">import Email</a></li>
+       <!-- 
+       	<li class="${('', 'active')[value_of('page') == 'index']}"><a href="${tg.url('/')}">Welcome</a></li>
         <li class="${('', 'active')[value_of('page') == 'about']}"><a href="${tg.url('/about')}">About</a></li>
         <li class="${('', 'active')[value_of('page') == 'data']}"><a href="${tg.url('/data')}">Serving Data</a></li>
         <li class="${('', 'active')[value_of('page') == 'environ']}"><a href="${tg.url('/environ')}">WSGI Environment</a></li>
+         --> 
       </ul>
 
       <ul py:if="tg.auth_stack_enabled" class="nav navbar-nav navbar-right">
@@ -64,7 +80,9 @@
     <p>Copyright &copy; ${getattr(tmpl_context, 'project_name', 'TurboGears2')} ${h.current_year()}</p>
   </footer>
 
-  <script src="http://code.jquery.com/jquery.js"></script>
-  <script src="${tg.url('/javascript/bootstrap.min.js')}"></script>
+  
+  
+  <script src="${tg.url('/javascript/bootstrap/js/bootstrap.min.js')}"></script>
+  <script src="${tg.url('/javascript/bootstrap/js/ui-bootstrap-tpls-0.12.0.min.js')}"></script>
 </body>
 </html>
