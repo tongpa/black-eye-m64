@@ -44,6 +44,69 @@ def bootstrap(command, conf, vars):
     
         model.DBSession.add(u1)
         model.DBSession.flush()
+        
+        
+        statusExport = model.StatusExport();
+        statusExport.id_status_export = 1;
+        statusExport.name = 'received file';
+        model.DBSession.add(statusExport);
+        
+        statusExport = model.StatusExport();
+        statusExport.id_status_export = 2;
+        statusExport.name = 'writed file';
+        model.DBSession.add(statusExport);
+        
+        statusExport = model.StatusExport();
+        statusExport.id_status_export = 3;
+        statusExport.name = 'analysis data';
+        model.DBSession.add(statusExport);
+        
+        statusExport = model.StatusExport();
+        statusExport.id_status_export = 4;
+        statusExport.name = 'insert data';
+        model.DBSession.add(statusExport);
+        
+        statusExport = model.StatusExport();
+        statusExport.id_status_export = 5;
+        statusExport.name = 'writed file error';
+        model.DBSession.add(statusExport);
+        
+        statusExport = model.StatusExport();
+        statusExport.id_status_export = 6;
+        statusExport.name = 'checking same data';
+        model.DBSession.add(statusExport);
+        
+        statusExport = model.StatusExport();
+        statusExport.id_status_export = 7;
+        statusExport.name = 'export same data';
+        model.DBSession.add(statusExport);
+        
+        statusExport = model.StatusExport();
+        statusExport.id_status_export = 8;
+        statusExport.name = 'merge data';
+        model.DBSession.add(statusExport);
+        
+        statusExport = model.StatusExport();
+        statusExport.id_status_export = 9;
+        statusExport.name = 'finish';
+        model.DBSession.add(statusExport);
+        
+        model.DBSession.flush()
+        
+        
+        typeEmail = model.TypeEmail();
+        typeEmail.id_type_email = 1;
+        typeEmail.name = 'Applicant';
+        model.DBSession.add(typeEmail);
+        
+        typeEmail = model.TypeEmail();
+        typeEmail.id_type_email = 2;
+        typeEmail.name = 'Corporate';
+        model.DBSession.add(statusExport);
+        
+        model.DBSession.flush()
+        
+        
         transaction.commit()
     except IntegrityError:
         print('Warning, there was a problem adding your auth data, it may have already been added:')

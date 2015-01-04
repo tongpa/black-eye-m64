@@ -3,6 +3,9 @@
 import threading
 import time
 import openpyxl
+import os
+import os.path
+
 from tg.configuration import AppConfig, config
 from exportemaildata import model
 from sqlalchemy import create_engine
@@ -17,17 +20,27 @@ log = logging.getLogger(__name__);
 __all__ = ['importDataThread']
 class importDataThread(threading.Thread):
     
-    def __init__(self, threadID,   pathFile):
+    
+   
+    
+    def __init__(self, threadID,   pathFile,importEmail = None):
         threading.Thread.__init__(self)
+        
         self.threadID = threadID
-        #self.model = model
-        self.pathFile = pathFile
+        self.importEmail = None;
+        self.idExport = None;
+        if(importEmail == None):        
+            #self.model = model
+            self.pathFile = pathFile;
+        else:
+            print importEmail.id_export_email;
+            self.idExport = importEmail.id_export_email;
+            self.importEmail = importEmail;
+            self.pathFile = importEmail.path_file;
         
         self.some_engine = create_engine(config['sqlalchemy.url'] );
-        
         # create a configured "Session" class
         self.Session = sessionmaker(bind=self.some_engine)
-        
         # create a Session
         self.session = self.Session();
         
@@ -40,6 +53,8 @@ class importDataThread(threading.Thread):
         
         #step : 1 importData
         exportEmail = self.importData(self.threadID ,self.pathFile); 
+        
+       
         #step : 2 checkData Same Old Email
         #exportEmail = model.ExportEmail.getId(5);
         self.checkEmailDuplicate(exportEmail);
@@ -66,33 +81,40 @@ class importDataThread(threading.Thread):
         self.used_email = [];
         
         
-        path = r'C:\temp\demo.xlsx';
+        path = r'C:\temp\demo1.xlsx';
         
         # an Engine, which the Session will use for connection
         # resources
         
         
         # work with sess
-         
-        exportEmail = model.ExportEmail();
-        
-        exportEmail.file_name = "data1";
-        exportEmail.path_file = "ddddd.exls";
-        exportEmail.error_path_file = path;
-
-        exportEmail.total_row = 0;
-        exportEmail.insert_row = 0;
-        exportEmail.error_row = 0;
-        
-        exportEmail.same_old_row = 0;
-        exportEmail.insert_real_row = 0;
-        
-        self.session.add(exportEmail);
-        self.session.flush() ;
-        self.session.commit();
+        if(self.importEmail == None):
+            exportEmail = model.ExportEmail();
+            
+            exportEmail.file_name = "data1";
+            exportEmail.path_file = "ddddd.exls";
+            exportEmail.error_path_file = path;
+    
+            exportEmail.total_row = 0;
+            exportEmail.insert_row = 0;
+            exportEmail.error_row = 0;
+            
+            exportEmail.same_old_row = 0;
+            exportEmail.insert_real_row = 0;
+            
+            self.session.add(exportEmail);
+            self.session.flush() ;
+            self.session.commit();
+        else:
+            print  self.idExport 
+            
+            exportEmail = self.session.query(model.ExportEmail).get(self.idExport);
+            path = exportEmail.error_path_file;
+            print 'get export data ' + str(exportEmail.id_export_email);
+            print 'error path file' + path;
         
         total = 0;
-        
+        exportEmail.id_status_export = 3 ;
         for row in worksheet.iter_rows():
             total = total +1;
             emaildata = model.EmailData();
@@ -157,6 +179,7 @@ class importDataThread(threading.Thread):
         row =1000;
         count = 0;
         log.info( "start insert");
+        exportEmail.id_status_export = 4 ;
         for key_email in self.email:
             useEmail = self.email[key_email];
             try:
@@ -174,7 +197,7 @@ class importDataThread(threading.Thread):
             
             count = count + 1;
             
-
+            
            
         exportEmail.total_row = total;
         exportEmail.insert_row = count;
@@ -201,7 +224,8 @@ class importDataThread(threading.Thread):
         
         if(len(self.email_empty) > 0):
             self.writeToExcel(workbook,self.email_empty,path,'email empty');
-            
+        
+        exportEmail.id_status_export = 5 ;    
         return exportEmail;
             
         #workbook.save(path);
@@ -216,7 +240,7 @@ class importDataThread(threading.Thread):
         sheet = wb.create_sheet()
         sheet.title = sheedName;
         
-    
+        log.info("add sheed : " + sheedName);
         
         i =1;
         for v in data:
@@ -313,12 +337,13 @@ class importDataThread(threading.Thread):
         
         idexport = exportEmail.id_export_email;
         
+        
         #check duplicate
         self.dupEmail =  model.EmailData.checkDuplicateEmail(idexport);
         #check not duplicate
         self.noDupEmail =  model.EmailData.checkNotDuplicateEmail(idexport);
         
-        path = r'C:\temp\demo.xlsx';
+       
         #print len(self.dupEmail);
         
         #update value
@@ -327,7 +352,7 @@ class importDataThread(threading.Thread):
        
         #update value
         u = update(model.ExportEmail).where( model.ExportEmail.id_export_email==idexport).\
-        values(same_old_row= len(self.dupEmail),insert_real_row= len(self.noDupEmail) )
+        values(same_old_row= len(self.dupEmail),insert_real_row= len(self.noDupEmail) , id_status_export= 6)
 
         self.session.execute(u)
         self.session.flush() ;
@@ -335,11 +360,37 @@ class importDataThread(threading.Thread):
         
         
         #export file
+        
         if(len(self.dupEmail) > 0):
-            workbook = openpyxl.load_workbook(filename = exportEmail.error_path_file,  use_iterators = False);
-            self.writeToExcel(workbook,self.dupEmail,path,'email same old');
+            log.info("dupEmail");
+            path =exportEmail.error_path_file;
+            
+            if (os.path.isfile(path) ):
+                workbook = openpyxl.load_workbook(filename = path,  use_iterators = False);
+                worksheets = workbook.get_sheet_names();
+                print worksheets;
+            else:
+                workbook = openpyxl.Workbook();
+                sheet = workbook.get_active_sheet();
+                workbook.remove_sheet(sheet);
+            
+            
+            self.writeToExcel(workbook,self.dupEmail,path,'emailold');
+       
+        u = update(model.ExportEmail).where( model.ExportEmail.id_export_email==idexport).\
+        values(  id_status_export= 7)
+
+        self.session.execute(u)
+        self.session.flush() ;
+        self.session.commit();
         
         
+        u = update(model.ExportEmail).where( model.ExportEmail.id_export_email==idexport).\
+        values(  id_status_export= 8)
+
+        self.session.execute(u)
+        self.session.flush() ;
+        self.session.commit();
         #insert to data temp
         for emailData in self.noDupEmail:
             emailTemp = model.EmailTemp();
@@ -352,7 +403,12 @@ class importDataThread(threading.Thread):
         self.session.commit();
         log.info( "insert commit");  
         
-         
+        u = update(model.ExportEmail).where( model.ExportEmail.id_export_email==idexport).\
+        values(  id_status_export= 9)
+
+        self.session.execute(u)
+        self.session.flush() ;
+        self.session.commit(); 
         
         
         

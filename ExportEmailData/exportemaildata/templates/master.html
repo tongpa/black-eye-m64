@@ -12,6 +12,7 @@
   
   <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/javascript/bootstrap/css/bootstrap.min.css')}" />
   <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/javascript/bootstrap/css/bootstrap-theme.css')}" />
+  <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/css/ng-grid.css')}" />
   <link rel="stylesheet" type="text/css" media="screen" href="${tg.url('/javascript/bootstrap/css/docs.min.css')}" />
   
   
@@ -20,8 +21,11 @@
   
   <script src="${tg.url('/javascript/jquery/jquery-2.1.1.js')}"></script>
   <script src="${tg.url('/javascript/angularjs/angular.js')}"></script>
+  <script src="${tg.url('/javascript/angularjs/angular.ng-modules.js')}"></script>
   <script src="${tg.url('/javascript/angularjs/angular-touch.js')}"></script>
   <script src="${tg.url('/javascript/angularjs/angular-route.js')}"></script>
+  <script src="${tg.url('/javascript/angularjs/ng-grid.debug.js')}"></script>
+   <script src="${tg.url('/javascript/script/track-report.js')}"></script>
 </head>
 
 <body py:match="body" py:attrs="select('@*')">
@@ -35,14 +39,18 @@
         <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="${tg.url('/')}">
-        <img src="${tg.url('/img/turbogears_logo.png')}" height="20" alt="TurboGears 2"/>
-        ${getattr(tmpl_context, 'project_name', 'turbogears2')}
+        <!-- <img src="${tg.url('/img/turbogears_logo.png')}" height="20" alt="TurboGears 2"/> -->
+        ${getattr(tmpl_context, 'Export Email', 'Export Email')}
       </a>
     </div>
 
     <div class="collapse navbar-collapse" id="navbar-content">
+   
       <ul class="nav navbar-nav">
-      	<li class="${('', 'active')[value_of('page') == 'index']}"><a href="${tg.url('/importEmail')}">import Email</a></li>
+      
+      	<li class="${('', 'active')[value_of('page') == 'importEmail']}"><a href="${tg.url('/importEmail')}">import Email Applicant</a></li>
+       <li class="${('', 'active')[value_of('page') == 'corp']}"><a href="${tg.url('/importEmailCorporate')}">import Email Corporate</a></li>
+       
        <!-- 
        	<li class="${('', 'active')[value_of('page') == 'index']}"><a href="${tg.url('/')}">Welcome</a></li>
         <li class="${('', 'active')[value_of('page') == 'about']}"><a href="${tg.url('/about')}">About</a></li>
@@ -50,8 +58,17 @@
         <li class="${('', 'active')[value_of('page') == 'environ']}"><a href="${tg.url('/environ')}">WSGI Environment</a></li>
          --> 
       </ul>
-
+ 
       <ul py:if="tg.auth_stack_enabled" class="nav navbar-nav navbar-right">
+      	<li><div id="track-report"  >
+      		<!-- 
+      			<div ng-controller="trackReportController" class="pad">
+      				<button class="btn btn-warning" ng-click="reportProblem()">Track Report</button> 
+      			</div>
+      		 -->
+      		</div>
+      		
+      		</li>
         <li py:if="not request.identity"><a href="${tg.url('/login')}">Login</a></li>
         <li py:if="request.identity"><a href="${tg.url('/logout_handler')}">Logout</a></li>
         <li py:if="request.identity"><a href="${tg.url('/admin')}">Admin</a></li>
@@ -76,13 +93,22 @@
 
   <!-- Footer -->
   <footer class="footer hidden-xs hidden-sm">
-    <a class="pull-right" href="http://www.turbogears.org"><img style="vertical-align:middle;" src="${tg.url('/img/under_the_hood_blue.png')}" alt="TurboGears 2" /></a>
-    <p>Copyright &copy; ${getattr(tmpl_context, 'project_name', 'TurboGears2')} ${h.current_year()}</p>
+     
+    <p>Copyright &copy; ${getattr(tmpl_context, 'JobsMatcher', 'JobsMatcher')} ${h.current_year()}</p>
   </footer>
 
   
-  
+ 
   <script src="${tg.url('/javascript/bootstrap/js/bootstrap.min.js')}"></script>
   <script src="${tg.url('/javascript/bootstrap/js/ui-bootstrap-tpls-0.12.0.min.js')}"></script>
+
+	<script type="text/javascript" src="/javascript/html2canvas/html2canvas.js"></script>
+    <script type="text/javascript">
+        html2canvas(document.body).then(function(canvas) {
+            document.body.appendChild(canvas);
+			 
+        });
+    </script>
+
 </body>
 </html>

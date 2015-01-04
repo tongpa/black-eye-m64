@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """Main Controller"""
 
-from tg import expose, flash, require, url, lurl, request, redirect, tmpl_context
+from tg import expose, flash, require, url, lurl, request, redirect, tmpl_context,response
 from tg.i18n import ugettext as _, lazy_ugettext as l_
 from tg.exceptions import HTTPFound
+
+from tg.configuration import AppConfig, config
 from tg import predicates
 from exportemaildata import model
 from exportemaildata.controllers.secure import SecureController
@@ -11,10 +13,16 @@ from exportemaildata.model import DBSession, metadata
 from tgext.admin.tgadminconfig import BootstrapTGAdminConfig as TGAdminConfig
 from tgext.admin.controller import AdminController
 
+import os
+
 from exportemaildata.lib.base import BaseController
 from exportemaildata.controllers.error import ErrorController
+from exportemaildata.controllers.utility import Utility
 from exportemaildata.controllers.importemail.importfromfile import importDataThread
 from exportemaildata.controllers.importemail.importfromfile_old import importData_old
+from exportemaildata.controllers.importemail.importEmailController import ImportEmailController
+
+from  exportemaildata.service.importEmailService import ImportEmailService
 __all__ = ['RootController']
 
 
@@ -34,44 +42,22 @@ class RootController(BaseController):
     """
     secc = SecureController()
     admin = AdminController(model, DBSession, config_type=TGAdminConfig)
-
+    importemail = ImportEmailController();
     error = ErrorController()
-
+    
+    utility = Utility();
+    importEmailService = ImportEmailService();
+    
     def _before(self, *args, **kw):
         tmpl_context.project_name = "exportemaildata"
 
     @expose('exportemaildata.templates.index')
     def index(self):
         """Handle the front-page."""
+        redirect('/importEmail' )
         return dict(page='index')
 
-    @expose('exportemaildata.templates.about')
-    def about(self):
-        """Handle the 'about' page."""
-        return dict(page='about')
-
-    @expose('exportemaildata.templates.environ')
-    def environ(self):
-        """This method showcases TG's access to the wsgi environment."""
-        return dict(page='environ', environment=request.environ)
-
-    @expose('exportemaildata.templates.data')
-    @expose('json')
-    def data(self, **kw):
-        """This method showcases how you can use the same controller for a data page and a display page"""
-        return dict(page='data', params=kw)
-    @expose('exportemaildata.templates.index')
-    @require(predicates.has_permission('manage', msg=l_('Only for managers')))
-    def manage_permission_only(self, **kw):
-        """Illustrate how a page for managers only works."""
-        return dict(page='managers stuff')
-
-    @expose('exportemaildata.templates.index')
-    @require(predicates.is_user('editor', msg=l_('Only for the editor')))
-    def editor_user_only(self, **kw):
-        """Illustrate how a page exclusive for the editor works."""
-        return dict(page='editor stuff')
-
+   
     @expose('exportemaildata.templates.login')
     def login(self, came_from=lurl('/')):
         """Start the user login."""
@@ -99,6 +85,7 @@ class RootController(BaseController):
         # of the application twice.
         return HTTPFound(location=came_from)
 
+
     @expose()
     def post_logout(self, came_from=lurl('/')):
         """
@@ -119,12 +106,91 @@ class RootController(BaseController):
     def importEmail(self,**kw):
          
         return dict(page='index')
+    
+    @expose(content_type="application/ms-excel")
+    def downloadOrig (self,**kw):
+        idExport = kw.get('id');
         
+        downloadFile = self.importEmailService.downloadFile(idExport,True);
+        response.content_type = downloadFile.get('content_type');
+        response.headers["Content-Disposition"] = downloadFile.get('headers');
+            
+        return  downloadFile.get('dataFile');
+    
+    @expose(content_type="application/ms-excel")
+    def downloadError (self,**kw):
+        
+        idExport = kw.get('id');
+        downloadFile = self.importEmailService.downloadFile(idExport,False);
+        response.content_type = downloadFile.get('content_type');
+        response.headers["Content-Disposition"] = downloadFile.get('headers');
+            
+        return  downloadFile.get('dataFile');
+    @expose('json')
+    def fileUpload(self, **kw):
+        print kw.get('file');
+        fileUpload = kw.get('file');
+        data = fileUpload.file.read();
+        UPLOAD_DIR = config['path_upload_file'] ;
+      
+        
+        #step 1 
+        export=model.ExportEmail();
+        export.file_name = fileUpload.filename;
+        export.error_file_name = 'error-'+fileUpload.filename;
+        export.error_path_file = '';#error_file_name;
+        export.path_file = '';#target_file_name;
+        export.total_row = 0;
+        export.insert_row = 0;
+        export.error_row = 0;
+        export.id_status_export = 1; #received file
+        export.same_old_row = 0;    
+        export.insert_real_row = 0;
+        
+        print "save"
+        export.save();
+        print "save1"
+        
+        
+        target_file_name = os.path.join(os.getcwd(), UPLOAD_DIR + str(export.id_export_email), fileUpload.filename);
+        error_file_name = os.path.join(os.getcwd(), UPLOAD_DIR + str(export.id_export_email), 'error-'+fileUpload.filename);
+        
+        self.utility.checkPathFile(UPLOAD_DIR + str(export.id_export_email));
+        self.utility.checkPathFile(UPLOAD_DIR + str(export.id_export_email));
+        
+        export.error_path_file = error_file_name;
+        export.path_file = target_file_name;
+        
+        
+        f = open(target_file_name, 'wb')
+        f.write(data)
+        f.close()
+        
+         
+        export.id_status_export = 2; #writed file
+        
+        
+        try:
+            export.thread_id = "Thread-" + str(export.id_export_email);  
+            thread1 = importDataThread(export.thread_id, target_file_name,export  );
+            #thread1 = importDataThread("Thread-1",'D:/tong/code_py/ExportEmailData/ExportEmailData/sample_data/Data500.xlsx'   );
+            
+            thread1.start();
+        except Exception as e:
+            print e;
+            pass;
+        
+        
+        return dict(sucess=True,thred = export.thread_id,id= str(export.id_export_email));
+    
+    
     @expose('json')
     def importData(self,**kw):
         
         try:
-            thread1 = importDataThread("Thread-1",'D:\Tong\Code\code_python\ExportEmail\ExportEmailData\sample_data\Data5000.xlsx'   );
+            thread1 = importDataThread("Thread-1",'D:/tong/code_py/ExportEmailData/ExportEmailData/sample_data/Data_100000_S2.xlsx'   );
+            #thread1 = importDataThread("Thread-1",'D:/tong/code_py/ExportEmailData/ExportEmailData/sample_data/Data500.xlsx'   );
+            
             thread1.start();
         except Exception as e:
             print e;

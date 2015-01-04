@@ -11,15 +11,60 @@ though.
 import os
 from datetime import datetime
 from hashlib import sha256
-__all__ = ['EmailData' ,'ExportEmail' ,'EmailTemp']
-
-from sqlalchemy import Table, ForeignKey, Column
+__all__ = ['EmailData' ,'ExportEmail' ,'EmailTemp','StatusExport','TypeEmail']
+ 
+from sqlalchemy import Table, ForeignKey, Column, desc
 from sqlalchemy.types import Unicode, Integer, DateTime
 from sqlalchemy.orm import relation, synonym
 from sqlalchemy.dialects.mysql import BIT
 
 from exportemaildata.model import DeclarativeBase, metadata, DBSession
 
+class TypeEmail(DeclarativeBase):
+    __tablename__ = 'type_email';
+     
+    id_type_email = Column(Integer, autoincrement=True, primary_key=True)    
+    name = Column(Unicode(255) );
+    
+    def __repr__(self):
+        return '<User: name=%s >' % (
+                repr(self.name) )
+
+    def __unicode__(self):
+        return self.file_name 
+
+    
+    @classmethod
+    def getId(cls,id):
+        return DBSession.query(cls).get(id);
+        
+    @classmethod
+    def getAll(cls):
+        
+        return DBSession.query(cls).all();
+class StatusExport(DeclarativeBase):
+    __tablename__ = 'status_export';
+     
+    id_status_export = Column(Integer, autoincrement=True, primary_key=True)    
+    name = Column(Unicode(255) );
+    
+    def __repr__(self):
+        return '<User: name=%s >' % (
+                repr(self.name) )
+
+    def __unicode__(self):
+        return self.file_name 
+
+    
+    @classmethod
+    def getId(cls,id):
+        return DBSession.query(cls).get(id);
+        
+    @classmethod
+    def getAll(cls):
+        
+        return DBSession.query(cls).all();
+    
 class ExportEmail(DeclarativeBase):
     
     __tablename__ = 'export_email'
@@ -27,6 +72,7 @@ class ExportEmail(DeclarativeBase):
     id_export_email = Column(Integer, autoincrement=True, primary_key=True)
     
     file_name = Column(Unicode(255) );
+    error_file_name = Column(Unicode(255) );
     path_file = Column(Unicode(255) );
     error_path_file = Column(Unicode(255) );
     
@@ -37,6 +83,13 @@ class ExportEmail(DeclarativeBase):
     same_old_row = Column(Integer );    
     insert_real_row = Column(Integer );
     
+    thread_id =  Column(Unicode(255) );
+    
+    id_status_export =  Column(   Integer,ForeignKey('status_export.id_status_export'), nullable=False, index=True) ;
+    statusexport = relation('StatusExport', backref='export_email_id_status_export');
+    
+    id_type_email =  Column(   Integer,ForeignKey('type_email.id_type_email'), nullable=False, index=True) ;
+    typeemail = relation('TypeEmail', backref='export_email_id_type_email');
     
     active  = Column(BIT, nullable=True, default=1);
     created = Column(DateTime, default=datetime.now);
@@ -55,9 +108,26 @@ class ExportEmail(DeclarativeBase):
     def getId(cls,id):
         return DBSession.query(cls).get(id);
         
+    @classmethod
+    def getAll(cls):
+        
+        return DBSession.query(cls).order_by(desc( cls.id_export_email )).all();
+    
     def save(self):
         DBSession.add(self); 
         DBSession.flush() ;
+        
+    def to_json(self):
+        return {'id_export_email': self.id_export_email,
+                'total_row': self.total_row,
+                'insert_row': self.insert_row,
+                'error_row': self.error_row,
+                'same_old_row': self.same_old_row,
+                'insert_real_row': self.insert_real_row,
+                'import_date' : self.created,
+                'status' : self.statusexport.name,
+                'file_name' : self.file_name 
+                };
     
     
 class EmailData(DeclarativeBase):
