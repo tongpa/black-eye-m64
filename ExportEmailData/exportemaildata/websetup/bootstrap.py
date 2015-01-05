@@ -13,6 +13,7 @@ def bootstrap(command, conf, vars):
     # <websetup.bootstrap.before.auth
     from sqlalchemy.exc import IntegrityError
     try:
+        """
         u = model.User()
         u.user_name = 'manager'
         u.display_name = 'Example manager'
@@ -44,8 +45,8 @@ def bootstrap(command, conf, vars):
     
         model.DBSession.add(u1)
         model.DBSession.flush()
-        
-        
+        transaction.commit()
+        """
         statusExport = model.StatusExport();
         statusExport.id_status_export = 1;
         statusExport.name = 'received file';
@@ -102,7 +103,7 @@ def bootstrap(command, conf, vars):
         typeEmail = model.TypeEmail();
         typeEmail.id_type_email = 2;
         typeEmail.name = 'Corporate';
-        model.DBSession.add(statusExport);
+        model.DBSession.add(typeEmail);
         
         model.DBSession.flush()
         

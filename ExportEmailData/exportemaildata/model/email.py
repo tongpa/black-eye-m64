@@ -125,7 +125,7 @@ class ExportEmail(DeclarativeBase):
                 'same_old_row': self.same_old_row,
                 'insert_real_row': self.insert_real_row,
                 'import_date' : self.created,
-                'status' : self.statusexport.name,
+                'status' :  self.statusexport.name if self.statusexport is not None else '' ,
                 'file_name' : self.file_name 
                 };
     

@@ -98,21 +98,33 @@ class RootController(BaseController):
         return HTTPFound(location=came_from)
     
     @expose('json')
-    def feedback(self, *args, **kw):
+    def feedback(self, data, **kw):
         import json
         reload(sys);
         sys.setdefaultencoding("utf-8");
         
-        print args;
-        print request;
+        df = json.loads(data, encoding=request.charset);
         
-         
+        print len(df);
+        if(len(df) >0):
+            for d in df:
+                print d;
+            print '-----------'    
+            print df[0].get('Issue');
+            data = df[1]
+            print data;
+            
+            #write file image 
+            import base64  
+            type,b64data = data.split(',');
+            imgData = base64.b64decode(b64data) 
+            f = open('c:/temp/issue1.png', 'wb')
+            f.write(imgData)
+            f.close() 
         
-        #df = json.loads(request.body, encoding=request.charset);
         
-        #print df;
         print 'feed back'
-        print kw;
+        
         
         return dict(success=True);
     @expose('json')

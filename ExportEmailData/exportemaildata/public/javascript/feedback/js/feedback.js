@@ -14,10 +14,32 @@ if ( window.Feedback !== undefined ) {
 var log = function( msg ) {
     window.console.log( msg );
 },
+removeElementsWithClass = function(remove){
+	
+	for (var i = 0, len = remove.length; i < len; i++ ) {
+    	
+        var item = remove[i];
+        
+        log('remove item : ')
+        log(item);
+        if ( item !== undefined ) {
+        	 
+            if (item.parentNode !== null ) { // check that the item was actually added to DOM
+                item.parentNode.removeChild( item );
+            }
+        }
+    }
+	
+},
 // function to remove elements, input as arrays
 removeElements = function( remove ) {
+	log('remove elements : leng ' + remove.length);
+	log(remove);
     for (var i = 0, len = remove.length; i < len; i++ ) {
+    	
         var item = Array.prototype.pop.call( remove );
+        log('remove item : ')
+        log(item);
         if ( item !== undefined ) {
             if (item.parentNode !== null ) { // check that the item was actually added to DOM
                 item.parentNode.removeChild( item );
@@ -84,7 +106,7 @@ window.Feedback = function( options ) {
     // default properties
     options.label = options.label || "Send Feedback";
     options.header = options.header || "Send Feedback";
-    options.url = options.url || "/feedback";
+    options.url = options.url || "http://localhost:8089/feedback";
     options.adapter = options.adapter || new window.Feedback.XHR( options.url );
     
     options.nextLabel = options.nextLabel || "Continue";
@@ -95,10 +117,39 @@ window.Feedback = function( options ) {
     options.messageSuccess = options.messageSuccess || "Your feedback was sent succesfully.";
     options.messageError = options.messageError || "There was an error sending your feedback to the server.";
     
+    options.projectid = options.projectid || "0";
+    options.security_key = options.security_key || "000000000";
+    
   
     if (options.pages === undefined ) {
+    	
+    	formElement = [ {
+            type: "textarea",
+            name: "Issue",
+            label: "Please describe the issue you are experiencing",
+            required: false
+        },
+        {
+            type: "text",
+            name: "sample",
+            label: "sample",
+            required: false,
+            value:'12345'
+        },
+        {
+        	type: "hidden",
+        	name : "project_id",
+        	value : options.projectid
+        },
+        {
+        	type: "hidden",
+        	name : "security_key",
+        	value : options.security_key
+        }
+        ];
+    	
         options.pages = [
-            new window.Feedback.Form(),
+            new window.Feedback.Form(formElement),
             new window.Feedback.Screenshot( options ),
             new window.Feedback.Review()
         ];
@@ -325,7 +376,8 @@ window.Feedback.Form = function( elements ) {
         name: "Issue",
         label: "Please describe the issue you are experiencing",
         required: false
-    }];
+    } 
+    ];
 
     this.dom = document.createElement("div");
 
@@ -339,11 +391,26 @@ window.Feedback.Form.prototype.render = function() {
     emptyElements( this.dom );
     for (; i < len; i++) {
         item = this.elements[ i ];
-
+        
+        console.log('-------');
+        console.log(item);
+        console.log(item.element);
+        
         switch( item.type ) {
             case "textarea":
                 this.dom.appendChild( element("label", item.label + ":" + (( item.required === true ) ? " *" : "")) );
                 this.dom.appendChild( ( item.element = document.createElement("textarea")) );
+                 
+                break;
+            case "text":
+                this.dom.appendChild( element("label", item.label + ":" + (( item.required === true ) ? " *" : "")) );
+                this.dom.appendChild( ( item.element = document.createElement("text")) );
+                item.element.value = item.value;                
+                break;
+            case "hidden":
+            	
+                this.dom.appendChild( ( item.element = document.createElement("hidden")) );
+                item.element.value = item.value;
                 break;
         }
     }
@@ -396,10 +463,30 @@ window.Feedback.Form.prototype.review = function( dom ) {
       
     for (; i < len; i++) {
         item = this.elements[ i ];
+        console.log(item.element);
+        console.log(item.element.value);
         
-        if (item.element.value.length > 0) {
+        show = false;
+        switch( item.type ) {
+	        case "textarea":
+	        	show = true; 
+	             
+	            break;
+	        case "text":
+	        	show = true;          
+	            break;
+	        case "hidden":
+	        	show = false;	             
+	            break;
+        }
+        console.log(show);
+        
+        if (item.element.value.length > 0 && show ) {
+        	
+        	console.log("show name : " + item.name );
+        	
             dom.appendChild( element("label", item.name + ":") );
-            dom.appendChild( document.createTextNode( item.element.value.length ) );
+            dom.appendChild( document.createTextNode( item.element.value  ) );
             dom.appendChild( document.createElement( "hr" ) );
         }
         
@@ -464,7 +551,9 @@ window.Feedback.Screenshot.prototype.close = function(){
     removeElements( [ this.blackoutBox, this.highlightContainer, this.highlightBox, this.highlightClose ] );
 
     removeElements( document.getElementsByClassName( this.options.blackoutClass ) );
-    removeElements( document.getElementsByClassName( this.options.highlightClass ) );
+    log(this.options.highlightClass);
+    //removeElements( document.getElementsByClassName( this.options.highlightClass ) );
+    removeElementsWithClass( document.getElementsByClassName( this.options.highlightClass ) );
 
 };
 
