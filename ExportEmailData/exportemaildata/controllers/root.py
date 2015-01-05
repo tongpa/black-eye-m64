@@ -14,7 +14,8 @@ from tgext.admin.tgadminconfig import BootstrapTGAdminConfig as TGAdminConfig
 from tgext.admin.controller import AdminController
 
 import os
-
+import sys
+import json 
 from exportemaildata.lib.base import BaseController
 from exportemaildata.controllers.error import ErrorController
 from exportemaildata.controllers.utility import Utility
@@ -96,6 +97,24 @@ class RootController(BaseController):
         flash(_('We hope to see you soon!'))
         return HTTPFound(location=came_from)
     
+    @expose('json')
+    def feedback(self, *args, **kw):
+        import json
+        reload(sys);
+        sys.setdefaultencoding("utf-8");
+        
+        print args;
+        print request;
+        
+         
+        
+        #df = json.loads(request.body, encoding=request.charset);
+        
+        #print df;
+        print 'feed back'
+        print kw;
+        
+        return dict(success=True);
     @expose('json')
     def checkEmail(self,**kw):
         dupEmail = model.EmailData.checkDuplicateEmail();
