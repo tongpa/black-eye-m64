@@ -98,7 +98,7 @@ nextButton,
 H2C_IGNORE = "data-html2canvas-ignore",
 currentPage,
 modalBody = document.createElement("div");
-
+var projectClientid,securityKeyClient;
 window.Feedback = function( options ) {
 
     options = options || {};
@@ -120,31 +120,55 @@ window.Feedback = function( options ) {
     options.projectid = options.projectid || "0";
     options.security_key = options.security_key || "000000000";
     
-  
+    options.from_page = options.from_page || "";
+    
+    window.Feedback.projectClientid = options.projectid;
+    window.Feedback.securityKeyClient = options.security_key;
+    window.Feedback.problemType = [];
     if (options.pages === undefined ) {
     	
     	formElement = [ {
             type: "textarea",
-            name: "Issue",
+            name: "issue",
             label: "Please describe the issue you are experiencing",
             required: false
         },
         {
-            type: "text",
-            name: "sample",
-            label: "sample",
-            required: false,
-            value:'12345'
+        	type : "select",
+        	name: "type_problem",
+        	label : 'problem',
+        	url : 'http://192.168.1.71:8089/getproblemtype',
+        	required : false
         },
         {
         	type: "hidden",
         	name : "project_id",
+        	required : false,
         	value : options.projectid
         },
         {
         	type: "hidden",
         	name : "security_key",
+        	required : false,
         	value : options.security_key
+        },
+        {
+        	type: "hidden",
+        	name : "feedback_url",
+        	required : false,
+        	value : document.URL
+        },
+        {
+        	type: "hidden",
+        	name : "from_page",
+        	required : false,
+        	value : options.from_page
+        },
+        {
+        	type: "hidden",
+        	name : "domain",
+        	required : false,
+        	value : document.domain
         }
         ];
     	
@@ -371,13 +395,14 @@ window.Feedback.Send.prototype = {
 
 window.Feedback.Form = function( elements ) {
 
-    this.elements = elements || [{
+    /*this.elements = elements || [{
         type: "textarea",
         name: "Issue",
         label: "Please describe the issue you are experiencing",
         required: false
     } 
-    ];
+    ];*/
+	this.elements = elements;
 
     this.dom = document.createElement("div");
 
@@ -388,31 +413,40 @@ window.Feedback.Form.prototype = new window.Feedback.Page();
 window.Feedback.Form.prototype.render = function() {
 
     var i = 0, len = this.elements.length, item;
+
     emptyElements( this.dom );
     for (; i < len; i++) {
         item = this.elements[ i ];
         
-        console.log('-------');
-        console.log(item);
-        console.log(item.element);
-        
-        switch( item.type ) {
-            case "textarea":
-                this.dom.appendChild( element("label", item.label + ":" + (( item.required === true ) ? " *" : "")) );
+        switch (item.type){
+        	case "textarea":
+        		 
+        		this.dom.appendChild( element("label", item.label + ":" + (( item.required === true ) ? " *" : "")) );
                 this.dom.appendChild( ( item.element = document.createElement("textarea")) );
-                 
-                break;
-            case "text":
-                this.dom.appendChild( element("label", item.label + ":" + (( item.required === true ) ? " *" : "")) );
-                this.dom.appendChild( ( item.element = document.createElement("text")) );
-                item.element.value = item.value;                
-                break;
-            case "hidden":
-            	
-                this.dom.appendChild( ( item.element = document.createElement("hidden")) );
-                item.element.value = item.value;
-                break;
+	        	break;
+        	case "hidden":
+	        	 
+	        	this.dom.appendChild( ( item.element = document.createElement("input")) );
+	            item.element.type = 'hidden';
+	            item.element.id = item.name;
+	            item.element.name = item.name;
+	            item.element.value = item.value;
+	        	break;
+        	case "text":
+	        	 
+	        	this.dom.appendChild( ( item.element = document.createElement("input")) );
+	            item.element.type = 'text';
+	            item.element.name = item.name;
+	            item.element.value = item.value;
+	        	break;
+        	case "select":
+	        	 
+	        	this.dom.appendChild( element("label", item.label + ":" + (( item.required === true ) ? " *" : "")) );
+            	this.dom.appendChild( ( item.element = document.createElement("select")) );            	
+            	window.Feedback.getSelectData(item);
+	        	break;
         }
+      
     }
 
     return this;
@@ -430,7 +464,11 @@ window.Feedback.Form.prototype.end = function() {
             item.element.className = "feedback-error";
             return false;
         } else {
-            item.element.className = "";
+            
+        	 
+        	 
+        	item.element.className = "";
+            
         }
     }
     
@@ -473,6 +511,9 @@ window.Feedback.Form.prototype.review = function( dom ) {
 	             
 	            break;
 	        case "text":
+	        	show = true;          
+	            break;
+	        case "select":
 	        	show = true;          
 	            break;
 	        case "hidden":
@@ -949,6 +990,9 @@ window.Feedback.XHR.prototype = new window.Feedback.Send();
 
 window.Feedback.XHR.prototype.send = function( data, callback ) {
     
+	
+	 
+	
     var xhr = this.xhr;
     
     xhr.onreadystatechange = function() {
@@ -964,8 +1008,61 @@ window.Feedback.XHR.prototype.send = function( data, callback ) {
 };
 })( window, document );
 
+/**
+ * use get data from select 
+ **/
+window.Feedback.getSelectData = function(item) {
+	
+	/*
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function() {
+        if( xhr.readyState == 4  && xmlhttp.status==200){
+           // callback( (xhr.status === 200) );
+            console.log(xhr.responseText);
+        }
+    };
+	
+    xhr.open("POST",item.url,true);
+    xhr.send();
+    */
+	//alert(document.domain);
+	alert(document.URL);
+	
+	if( window.Feedback.problemType.length == 0){
+	
+		jQuery.ajax
+	    ({
+	        type: "POST",
+	        url: item.url,
+	        dataType: 'json',
+	        async: false,
+	        data: '{"domain": "' + document.domain+ '", "project_id": "'+ window.Feedback.projectClientid +'", "security_key" : "'+ window.Feedback.securityKeyClient +'"}',
+	        success: function (data) {
+	        	window.Feedback.problemType = data.data;
+	        	for (var select = 0; select < data.data.length; select++) { 
+	        		var options = document.createElement("option");
+	        		options.value =  data.data[select].id;
+	        	    options.text = data.data[select].name;
+	        	    item.element.appendChild(options);
+	            	 
+	        	}
+	        	
+	        	
+	        }
+	    }) 	;
+	}
+	else{
+		
+		data = window.Feedback.problemType;
+		for (var select = 0; select < data.length; select++) { 
+    		var options = document.createElement("option");
+    		options.value =  data[select].id;
+    	    options.text = data[select].name;
+    	    item.element.appendChild(options);
+		}
+	}
+};
+ 
+ 
 
-
-
-
-window.onload=Feedback({h2cPath:'http://localhost:8089/javascript/html2canvas/html2canvas.js',projectid:'2',security_key:'123456789'});
+ 

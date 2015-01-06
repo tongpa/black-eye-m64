@@ -55,6 +55,44 @@ class RootController(BaseController):
         return dict(page='index')
     
     @expose('json')
+    def getproblemtype(self, **kw):
+        reload(sys);
+        sys.setdefaultencoding("utf-8");
+        response.content_type = 'application/json';
+        response.headers["Access-Control-Allow-Origin"] = '*';
+        response.headers["Access-Control-Allow-Headers"] = '*';
+        
+        project_id = 0;
+        security_key = 0;
+        domain_name = '';
+        for data in kw:
+            df = json.loads(data );
+            domain_name = df.get('domain');
+            project_id = df.get('project_id');
+            security_key = df.get('security_key');
+            print domain_name;
+         
+        
+        self.trackModule = model.TrackModule.getByIdAndSecureKey(project_id,security_key);
+        datas = [];
+        if self.trackModule and self.trackModule.active == 1 :
+            
+            if( self.trackModule.domain_name in domain_name or self.trackModule.bypass == 1):
+                self.problemType = self.trackModule.problemType;
+                if(self.problemType):
+                    for type in self.problemType:
+                        datas.append(type.to_json());
+            else:
+                return dict(status=False,data=datas,message='access denied this domain');
+        else:
+            return dict(status=False,data=datas,message='access denied this security key or client id');
+        
+         
+        
+        
+        
+        return dict(status=True,data=datas,message='');
+    @expose('json')
     def feedback(self, data, **kw):
         
         reload(sys);
@@ -68,23 +106,48 @@ class RootController(BaseController):
                 print d;
             """
             print '-----------'    
-            print df[0].get('Issue');
-            data = df[1]
-            #print data;
+            print df[0];
+            self.issue = df[0].get('issue');
+            self.type_problem =  df[0].get('type_problem');
+            self.security_key =  df[0].get('security_key');
+            self.feedback_url =  df[0].get('feedback_url');
+            self.from_page =  df[0].get('from_page');
+            self.project_id =  df[0].get('project_id');
+            self.domain_name =  df[0].get('domain');
             
-            #write file image 
+            self.module = model.TrackModule.checkSecureKey(self.project_id,self.security_key);
             
-            UPLOAD_DIR = config['path_upload_file'] ;
+            if(self.module):
+                if( self.module.domain_name in self.domain_name or self.module.bypass == 1):
+                    self.problem = model.TrackProblem();
+                    self.problem.id_track_module =  self.project_id;
+                    self.problem.id_problem_page =  self.project_id;
+                    self.problem.id_problem_type = self.type_problem;
+                    self.problem.feedback_url = self.feedback_url;
+                    self.problem.description = self.issue;
+                    self.problem.save();
+                    
+                    data = df[1]
+                     
+                    
+                    UPLOAD_DIR = config['path_upload_file'] ;
+                    
+                    print UPLOAD_DIR;
+                    
+                    
+                     
+                    type,b64data = data.split(',');
+                    imgData = base64.b64decode(b64data) 
+                    f = open('c:/temp/issue1234.png', 'wb')
+                    f.write(imgData)
+                    f.close() 
+                else:
+                    #domain is not same 
+                    pass;
+            else:
+                #project is not exits;
+                pass;
             
-            print UPLOAD_DIR;
-            
-            
-             
-            type,b64data = data.split(',');
-            imgData = base64.b64decode(b64data) 
-            f = open('c:/temp/issue1234.png', 'wb')
-            f.write(imgData)
-            f.close() 
         
         
         print 'feed back'
