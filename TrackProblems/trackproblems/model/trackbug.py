@@ -129,6 +129,8 @@ class TrackProblem(DeclarativeBase):
     feedback_url =  Column(Text , nullable=True); 
     
     description =  Column(Text , nullable=True); 
+    from_page =  Column(Unicode(255) , nullable=True); 
+    user =  Column(Unicode(255) , nullable=True); 
     
     active= Column(BIT, nullable=True, default=1);
     created = Column(DateTime, default=datetime.now)
@@ -154,8 +156,8 @@ class TrackImage(DeclarativeBase):
 
     id_track_image = Column(Integer, autoincrement=True, primary_key=True)
     
-    id_track_module = Column(   Integer,ForeignKey('track_module.id_track_module'), nullable=False, index=True) ;
-    track_module = relation('TrackModule', backref='track_image_id_track_module');
+    id_track_problem = Column(   Integer,ForeignKey('track_problem.id_track_problem'), nullable=False, index=True) ;
+    track_module = relation('TrackProblem', backref='track_image_id_track_problem');
     
  
     path_image =  Column(Unicode(255) , nullable=True); 
@@ -168,4 +170,8 @@ class TrackImage(DeclarativeBase):
         return '<TrackImage: name=%s>' % repr(self.path_image)
 
     def __unicode__(self):
-        return self.path_image
+        return self.path_image;
+    
+    def save(self):
+        DBSession.add(self); 
+        DBSession.flush() ;

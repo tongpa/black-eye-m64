@@ -104,27 +104,33 @@ window.Feedback = function( options ) {
     options = options || {};
 
     // default properties
+    //config
+    options.server_feedback = options.server_feedback || "http://feedback.jobmatcher.poweredbyclear.com";
+    options.projectid = options.projectid || "0";
+    options.security_key = options.security_key || "000000000";
+    options.from_page = options.from_page || "";
+    options.user = options.user || "";
+    
     options.label = options.label || "Send Feedback";
     options.header = options.header || "Send Feedback";
-    options.url = options.url || "http://localhost:8089/feedback";
-    options.adapter = options.adapter || new window.Feedback.XHR( options.url );
     
+    options.url = options.url || options.server_feedback  + "/feedback";
+    options.url_load_type_problem = options.server_feedback  + "/getproblemtype";
+     
+    //pathfile html2canvas
+    options.h2cPath =   options.h2cPath || options.server_feedback  + "/javascript/html2canvas/html2canvas.js";
+    
+    options.adapter = options.adapter || new window.Feedback.XHR( options.url );
     options.nextLabel = options.nextLabel || "Continue";
     options.reviewLabel = options.reviewLabel || "Review";
     options.sendLabel = options.sendLabel || "Send";
     options.closeLabel = options.closeLabel || "Close";
-    
     options.messageSuccess = options.messageSuccess || "Your feedback was sent succesfully.";
     options.messageError = options.messageError || "There was an error sending your feedback to the server.";
-    
-    options.projectid = options.projectid || "0";
-    options.security_key = options.security_key || "000000000";
-    
-    options.from_page = options.from_page || "";
-    
     window.Feedback.projectClientid = options.projectid;
     window.Feedback.securityKeyClient = options.security_key;
     window.Feedback.problemType = [];
+     
     if (options.pages === undefined ) {
     	
     	formElement = [ {
@@ -137,7 +143,7 @@ window.Feedback = function( options ) {
         	type : "select",
         	name: "type_problem",
         	label : 'problem',
-        	url : 'http://192.168.1.71:8089/getproblemtype',
+        	url : options.url_load_type_problem,
         	required : false
         },
         {
@@ -169,6 +175,12 @@ window.Feedback = function( options ) {
         	name : "domain",
         	required : false,
         	value : document.domain
+        },
+        {
+        	type: "hidden",
+        	name : "user",
+        	required : false,
+        	value : options.user
         }
         ];
     	
@@ -505,16 +517,20 @@ window.Feedback.Form.prototype.review = function( dom ) {
         console.log(item.element.value);
         
         show = false;
+        showValue = '';
         switch( item.type ) {
 	        case "textarea":
 	        	show = true; 
-	             
+	        	showValue = item.element.value;
 	            break;
 	        case "text":
-	        	show = true;          
+	        	show = true;    
+	        	showValue = item.element.value;
 	            break;
 	        case "select":
-	        	show = true;          
+	        	show = true;     
+	        	showValue =  item.element.textContent;
+	        	
 	            break;
 	        case "hidden":
 	        	show = false;	             
@@ -526,8 +542,8 @@ window.Feedback.Form.prototype.review = function( dom ) {
         	
         	console.log("show name : " + item.name );
         	
-            dom.appendChild( element("label", item.name + ":") );
-            dom.appendChild( document.createTextNode( item.element.value  ) );
+            dom.appendChild( element("label", item.name + ": ") );
+            dom.appendChild( document.createTextNode( showValue  ) );
             dom.appendChild( document.createElement( "hr" ) );
         }
         
@@ -864,7 +880,9 @@ window.Feedback.Screenshot.prototype.render = function() {
 
         script = document.createElement("script");
         script.src = options.h2cPath || "libs/html2canvas.js";
+        
         script.onerror = function() {
+        	alert("Failed to load html2canvas library, check that the path is correctly defined");
             log("Failed to load html2canvas library, check that the path is correctly defined");
         };
 
@@ -1026,7 +1044,7 @@ window.Feedback.getSelectData = function(item) {
     xhr.send();
     */
 	//alert(document.domain);
-	alert(document.URL);
+	 
 	
 	if( window.Feedback.problemType.length == 0){
 	

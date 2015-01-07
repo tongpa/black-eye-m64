@@ -16,11 +16,14 @@ from tgext.admin.controller import AdminController
 from trackproblems.lib.base import BaseController
 from trackproblems.controllers.error import ErrorController
 from trackproblems.controllers.trackproblemcontroller import TrackProblemController;
+from trackproblems.controllers.utility import Utility
 
-import os
-import sys
-import json 
-import base64 
+
+import os;
+import sys;
+import json; 
+import logging;
+log = logging.getLogger(__name__); 
  
 __all__ = ['RootController']
 
@@ -45,14 +48,17 @@ class RootController(BaseController):
     track = TrackProblemController();
     
     error = ErrorController()
-
+    
+    utility = Utility();
     def _before(self, *args, **kw):
         tmpl_context.project_name = "trackproblems"
 
+     
     @expose('trackproblems.templates.index')
     def index(self):
-        """Handle the front-page."""
+        
         return dict(page='index')
+    
     
     @expose('json')
     def getproblemtype(self, **kw):
@@ -98,59 +104,69 @@ class RootController(BaseController):
         reload(sys);
         sys.setdefaultencoding("utf-8");
         
-        df = json.loads(data, encoding=request.charset);
-        
-        print len(df);
-        if(len(df) >0):
-            """for d in df:
-                print d;
-            """
-            print '-----------'    
-            print df[0];
-            self.issue = df[0].get('issue');
-            self.type_problem =  df[0].get('type_problem');
-            self.security_key =  df[0].get('security_key');
-            self.feedback_url =  df[0].get('feedback_url');
-            self.from_page =  df[0].get('from_page');
-            self.project_id =  df[0].get('project_id');
-            self.domain_name =  df[0].get('domain');
+        try:
+            df = json.loads(data, encoding=request.charset);
             
-            self.module = model.TrackModule.checkSecureKey(self.project_id,self.security_key);
-            
-            if(self.module):
-                if( self.module.domain_name in self.domain_name or self.module.bypass == 1):
-                    self.problem = model.TrackProblem();
-                    self.problem.id_track_module =  self.project_id;
-                    self.problem.id_problem_page =  self.project_id;
-                    self.problem.id_problem_type = self.type_problem;
-                    self.problem.feedback_url = self.feedback_url;
-                    self.problem.description = self.issue;
-                    self.problem.save();
-                    
-                    data = df[1]
-                     
-                    
-                    UPLOAD_DIR = config['path_upload_file'] ;
-                    
-                    print UPLOAD_DIR;
-                    
-                    
-                     
-                    type,b64data = data.split(',');
-                    imgData = base64.b64decode(b64data) 
-                    f = open('c:/temp/issue1234.png', 'wb')
-                    f.write(imgData)
-                    f.close() 
+            #print len(df);
+            if(len(df) >0):
+                log.info(df[0]);
+                self.issue = df[0].get('issue');
+                self.type_problem =  df[0].get('type_problem');
+                self.security_key =  df[0].get('security_key');
+                self.feedback_url =  df[0].get('feedback_url');
+                self.from_page =  df[0].get('from_page');
+                self.project_id =  df[0].get('project_id');
+                self.domain_name =  df[0].get('domain');
+                self.user = df[0].get('user');
+                
+                #query project
+                self.module = model.TrackModule.checkSecureKey(self.project_id,self.security_key);
+                
+                #check project_id and security_key is exits
+                if(self.module):
+                    #check bypass 
+                    if( self.module.domain_name in self.domain_name or self.module.bypass == 1):
+                        self.problem = model.TrackProblem();
+                        self.problem.id_track_module =  self.project_id;
+                        self.problem.id_problem_page =  self.project_id;
+                        self.problem.id_problem_type = self.type_problem;
+                        self.problem.feedback_url = self.feedback_url;
+                        self.problem.description = self.issue;
+                        self.problem.user = self.user;
+                        self.problem.from_page = self.from_page;
+                        self.problem.save();
+                        
+                        data = df[1];
+                        UPLOAD_DIR = config['path_upload_file'] ;
+                        self.file_name = 'issue_' + str(self.problem.id_track_problem) + '.png';
+                        self.target_file_name= self.utility.joinPathFileAndCreatePath(UPLOAD_DIR , str(self.problem.id_track_problem), self.file_name);
+                        
+                        type,b64data = data.split(',');
+                         
+                        
+                        if( self.utility.createFileImageb64data(b64data,self.target_file_name) ):
+                            self.trackImage = model.TrackImage();
+                            self.trackImage.id_track_problem = self.problem.id_track_problem;                           
+                            self.trackImage.path_image = self.target_file_name;
+                            self.trackImage.save();
+                        else:
+                            log.info('can not create file image');
+                        
+                         
+                    else:
+                        #domain is not same 
+                        log.info('check domain data : ' +self.module.domain_name + " is not same with " + self.domain_name );
+                        pass;
                 else:
-                    #domain is not same 
-                    pass;
-            else:
-                #project is not exits;
-                pass;
-            
+                    log.info('project : '+ self.project_id + ' or security key : ' + self.security_key +'  is not exits');
+                     
+        except Exception:
+            log.info('project : '+ self.project_id + ' or security key : ' + self.security_key +'  is not exits');
+        finally:
+            pass;    
         
         
-        print 'feed back'
+       
         
         response.content_type = 'application/json';
         response.headers["Access-Control-Allow-Origin"] = '*';
