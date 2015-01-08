@@ -5,7 +5,7 @@
   <xi:include href="master.html" />
 
 <head>
-  <title>Welcome to TurboGears 2.3, standing on the shoulders of giants, since 2007</title>
+  <title>Report Problem</title>
 	 
 </head>
 
@@ -14,19 +14,17 @@
     <div class="col-md-12">
        <div class="container" role="main">
        		 <span class="com">Step 1 load css :</span><br/>
-       			<div class="highlight">
+       			 
        				  
-       			<code class="prettyprint" data-lang="html">
-       				  &#60;link rel=&#34;stylesheet&#34; href=&#34;http&#58;&#47;&#47;feedback.jobmatcher.poweredbyclear.com&#47;javascript&#47;feedback&#47;css&#47;feedback.css&#34;  type=&#34;text&#47;css&#34; media=&#34;screen&#34; &#47;&#62;
-       				</code>
+       			<pre class="prettyprint" data-lang="html">  &#60;link rel=&#34;stylesheet&#34; href=&#34;http&#58;&#47;&#47;feedback.jobmatcher.poweredbyclear.com&#47;javascript&#47;feedback&#47;css&#47;feedback.css&#34;  type=&#34;text&#47;css&#34; media=&#34;screen&#34; &#47;&#62;
+       				</pre>
        				 
-       			</div>
+       			 
        			<span class="com">Step 2 load javascript :</span><br/>
-       			<div class="highlight">
-       				 <code class="prettyprint" data-lang="html">
-       				 <span class="str"> &#60;script src=&#34;http&#58;&#47;&#47;feedback.jobmatcher.poweredbyclear.com&#47;javascript&#47;feedback&#47;js&#47;feedback.js&#34; type=&#34;text&#47;javascript&#34;&#62;&#60;&#47;script&#62;  </span>
-       				</code>
-       			</div>
+       			 
+       				 <pre class="prettyprint" data-lang="html">  <span class="str"> &#60;script src=&#34;http&#58;&#47;&#47;feedback.jobmatcher.poweredbyclear.com&#47;javascript&#47;feedback&#47;js&#47;feedback.js&#34; type=&#34;text&#47;javascript&#34;&#62;&#60;&#47;script&#62;  </span>
+       				</pre>
+       			 
        			
        			<span class="com">Step 3 How to use type 1 : insert tag with body</span><br/>
        			<pre class="prettyprint">  &#60;body onload=&#34;Feedback({projectid:'key_id',from_page: 'page with track report',user:'user in you system',security_key:'secure_key'});&#34;&#62;  
@@ -43,8 +41,14 @@
 			user:'tong_pa@hotmail.com',
 			security_key:'123456789'
 			};
-					  		 
-  		Feedback(options);
+			
+		try {
+		    Feedback(options);
+		}
+		catch(err) {
+		    console.log(err.message);
+		}			  		 
+  		
 	}
   	loadFeedBack();
   &#60;&#47;script&#62;
@@ -69,7 +73,12 @@
   				security_key:'123456789'
   				};
   		 
-  		Feedback(options);
+  		try {
+		    Feedback(options);
+		}
+		catch(err) {
+		    console.log(err.message);
+		}		
 	}
   	loadFeedBack();
   </script>  

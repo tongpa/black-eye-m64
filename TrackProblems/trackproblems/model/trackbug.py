@@ -14,7 +14,7 @@ from hashlib import sha256
 
 
 from sqlalchemy import Table, ForeignKey, Column
-from sqlalchemy.types import Unicode, Integer, DateTime,Text
+from sqlalchemy.types import Unicode, Integer, DateTime,Text,BigInteger
 from sqlalchemy.orm import relation, synonym
 from sqlalchemy.dialects.mysql import BIT
 from trackproblems.model import DeclarativeBase, metadata, DBSession
@@ -30,13 +30,15 @@ class TrackModule(DeclarativeBase):
 
     __tablename__ = 'track_module'
 
-    id_track_module = Column(Integer, autoincrement=True, primary_key=True)
+    id_track_module = Column(BigInteger, autoincrement=True, primary_key=True)
     module_name =   Column(Unicode(255) , nullable=True);
     secure_key =  Column(Unicode(255) , nullable=True);
     domain_name =  Column(Unicode(255) , nullable=True);
     bypass = Column(BIT, nullable=True, default=0); # 0 is not bypass (serious ) , 1 is bypass  
     active = Column(BIT, nullable=True, default=1);
     created = Column(DateTime, default=datetime.now)
+    user_id =  Column(   Integer,ForeignKey('tg_user.user_id'), nullable=False, index=True) ;
+    user = relation('User', backref='track_module_user_id');
     
     problemType = relation('ProblemType')  ;  
 
@@ -65,8 +67,8 @@ class ProblemType(DeclarativeBase):
 
     __tablename__ = 'problem_type'
 
-    id_problem_type = Column(Integer, autoincrement=True, primary_key=True)
-    id_track_module = Column(   Integer,ForeignKey('track_module.id_track_module'), nullable=False, index=True) ;
+    id_problem_type = Column(BigInteger, autoincrement=True, primary_key=True)
+    id_track_module = Column(   BigInteger,ForeignKey('track_module.id_track_module'), nullable=False, index=True) ;
     track_module = relation('TrackModule', backref='problem_type_id_track_module');
     
     problem_name =  Column(Unicode(255) , nullable=True);
@@ -75,10 +77,10 @@ class ProblemType(DeclarativeBase):
      
 
     def __repr__(self):
-        return '<ProblemType: name=%s>' % repr(self.problem_name)
+        return '<ProblemType: name=%s>' % repr(self.problem_name) 
 
     def __unicode__(self):
-        return self.problem_name
+        return self.id_problem_type
     
     def to_json(self):
         dict  = {"id": self.id_problem_type, 
@@ -93,8 +95,8 @@ class ProblemPage(DeclarativeBase):
 
     __tablename__ = 'problem_page'
 
-    id_problem_page = Column(Integer, autoincrement=True, primary_key=True)
-    id_track_module = Column(   Integer,ForeignKey('track_module.id_track_module'), nullable=False, index=True) ;
+    id_problem_page = Column(BigInteger, autoincrement=True, primary_key=True)
+    id_track_module = Column(   BigInteger,ForeignKey('track_module.id_track_module'), nullable=False, index=True) ;
     track_module = relation('TrackModule', backref='problem_page_id_track_module');
     
     page =  Column(Unicode(255) , nullable=True);
@@ -115,15 +117,15 @@ class TrackProblem(DeclarativeBase):
 
     __tablename__ = 'track_problem'
 
-    id_track_problem = Column(Integer, autoincrement=True, primary_key=True)
+    id_track_problem = Column(BigInteger, autoincrement=True, primary_key=True)
     
-    id_track_module = Column(   Integer,ForeignKey('track_module.id_track_module'), nullable=False, index=True) ;
+    id_track_module = Column(   BigInteger,ForeignKey('track_module.id_track_module'), nullable=False, index=True) ;
     track_module = relation('TrackModule', backref='track_problem_id_track_module');
     
-    id_problem_page = Column(   Integer,ForeignKey('problem_page.id_problem_page'), nullable=False, index=True) ;
+    id_problem_page = Column(   BigInteger,ForeignKey('problem_page.id_problem_page'), nullable=False, index=True) ;
     problem_page = relation('ProblemPage', backref='track_problem_id_problem_page');
     
-    id_problem_type = Column(   Integer,ForeignKey('problem_type.id_problem_type'), nullable=False, index=True) ;
+    id_problem_type = Column(   BigInteger,ForeignKey('problem_type.id_problem_type'), nullable=False, index=True) ;
     problem_type = relation('ProblemType', backref='track_problem_id_problem_type');
     
     feedback_url =  Column(Text , nullable=True); 
@@ -154,9 +156,9 @@ class TrackImage(DeclarativeBase):
 
     __tablename__ = 'track_image'
 
-    id_track_image = Column(Integer, autoincrement=True, primary_key=True)
+    id_track_image = Column(BigInteger, autoincrement=True, primary_key=True)
     
-    id_track_problem = Column(   Integer,ForeignKey('track_problem.id_track_problem'), nullable=False, index=True) ;
+    id_track_problem = Column(   BigInteger,ForeignKey('track_problem.id_track_problem'), nullable=False, index=True) ;
     track_module = relation('TrackProblem', backref='track_image_id_track_problem');
     
  
@@ -175,3 +177,5 @@ class TrackImage(DeclarativeBase):
     def save(self):
         DBSession.add(self); 
         DBSession.flush() ;
+        
+   

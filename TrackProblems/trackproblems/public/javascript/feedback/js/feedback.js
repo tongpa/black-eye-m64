@@ -367,9 +367,18 @@ window.Feedback = function( options ) {
 
     options = options || {};
 
-    button = element( "button", options.label );
-    button.className = "feedback-btn feedback-bottom-right";
-
+    button = element( "button", options.label  );
+    //button.className = "feedback-btn feedback-bottom-right btn-primary";
+    button.className = "btn btn-primary feedback-bottom-right ";
+    
+    
+    inbutton1 = element("span", ' ');
+    button.appendChild(inbutton1);
+    
+    inbutton2 = element("span", ' ');
+    inbutton2.className = "glyphicon glyphicon-thumbs-up";
+    button.appendChild(inbutton2);
+ 
     button.setAttribute(H2C_IGNORE, true);
 
     button.onclick = returnMethods.open;

@@ -98,6 +98,17 @@ class RootController(BaseController):
         
         
         return dict(status=True,data=datas,message='');
+    
+    
+    @expose(content_type='image/jpg')
+    def getImage(self,*args,**kw):
+        reload(sys);
+        sys.setdefaultencoding("utf-8");
+        
+        
+        return dict(status=True);
+        
+    
     @expose('json')
     def feedback(self, data, **kw):
         
