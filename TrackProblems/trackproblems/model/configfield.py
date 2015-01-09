@@ -1,0 +1,119 @@
+# -*- coding: utf-8 -*-
+"""
+Auth* related model.
+
+This is where the models used by the authentication stack are defined.
+
+It's perfectly fine to re-use this definition in the trackproblem application,
+though.
+
+"""
+import os
+from datetime import datetime
+from hashlib import sha256
+
+
+from sqlalchemy import Table, ForeignKey, Column, desc
+from sqlalchemy.types import Unicode, Integer, DateTime,Text,BigInteger
+from sqlalchemy.orm import relation, synonym
+from sqlalchemy.dialects.mysql import BIT
+from trackproblems.model import DeclarativeBase, metadata, DBSession
+
+# This is the association table for the many-to-many relationship between
+# groups and permissions.
+ 
+__all__ = ['FieldType', 'OwnerPage','FieldOwnerName'  ]
+
+
+class FieldType(DeclarativeBase):
+ 
+
+    __tablename__ = 'field_type'
+
+    id_field_type = Column(BigInteger, autoincrement=True, primary_key=True);
+    name =   Column(Unicode(255) , nullable=True); 
+
+    def __repr__(self):
+        return '<TrackModule: name=%s>' % repr(self.name)
+
+    def __unicode__(self):
+        return self.name
+    
+    
+            
+
+
+class OwnerPage(DeclarativeBase):
+ 
+
+    __tablename__ = 'owner_page'
+
+    id_owner_page = Column(BigInteger, autoincrement=True, primary_key=True)
+    owner_name_page =   Column(Unicode(255) , nullable=True);
+     
+    active= Column(BIT, nullable=True, default=1);
+    
+     
+
+    def __repr__(self):
+        return '<ProblemType: name=%s>' % repr(self.owner_name_page) 
+
+    def __unicode__(self):
+        return self.owner_name_page
+    
+    def to_json(self):
+        dict  = {"id": self.id_owner_page, 
+                 "name": self.owner_name_page 
+                 };
+                 
+        return dict;
+    
+ 
+class FieldOwnerName(DeclarativeBase):
+ 
+
+    __tablename__ = 'field_owner_name'
+
+    id_field_owner_name = Column(BigInteger, autoincrement=True, primary_key=True)
+    
+    id_owner_page = Column(   BigInteger,ForeignKey('owner_page.id_owner_page'), nullable=False, index=True) ;
+    owner_page = relation('OwnerPage', backref='field_owner_name_id_owner_page');
+    
+    id_field_type = Column(   BigInteger,ForeignKey('field_type.id_field_type'), nullable=False, index=True) ;
+    field_type = relation('FieldType', backref='field_owner_name_id_field_type');
+    
+    field_label =  Column(Unicode(255) , nullable=True);
+    field_name =  Column(Unicode(255) , nullable=True);
+    
+    field_required = Column(BIT, nullable=True, default=1);
+     
+    id_parent  = Column(   BigInteger,ForeignKey('field_owner_name.id_parent'), nullable=True, index=True) ;
+    parent = relation('FieldOwnerName');
+    
+    seq = Column(Integer, nullable=True, default=1);
+
+    def __repr__(self):
+        return '<ProblemPage: name=%s>' % repr(self.field_name)
+
+    def __unicode__(self):
+        return self.field_name
+    
+    @classmethod
+    def getbyId(cls,id):
+        return DBSession.query(cls).get(id);
+    @classmethod
+    def getByPageId(cls,pageid):
+        return DBSession.query(cls).filter(cls.id_owner_page == pageid ).order_by(  cls.seq ).all();
+    
+    def to_json_field(self):
+         
+        dict  = {"type": self.field_type.name, 
+             "field_label": self.field_label , 
+             "field_name": self.field_name, 
+             "field_required": self.field_required
+             };
+     
+        return dict;
+     
+        
+   

@@ -23,6 +23,32 @@ class TrackProblemController(BaseController):
     
     
     @expose('json')
+    def showFieldByPage(self, **kw):
+        fields = [];
+        idpage = kw.get('id');
+        
+        fieldOwner = model.FieldOwnerName.getByPageId(idpage);
+        
+        parent = {};
+        for field in fieldOwner:
+            print "-----field : " + str(field.id_field_owner_name);
+            if(field.id_parent is not None):
+                field.child = [];
+                parent[field.id_field_owner_name] = field;
+                print "---------------------- root : " + str(field.id_field_owner_name);
+            else:
+                temp_field = parent.get(field.id_field_owner_name);
+                if(temp_field):
+                    temp_field.child.append(field);
+                    
+                    print "add child : " + str(field.id_field_owner_name);
+                
+            
+            
+            fields.append(field.to_json_field());
+        return dict(fields = fields);
+    
+    @expose('json')
     def showField(self,**kw):
         field = [];
         fields = [];
