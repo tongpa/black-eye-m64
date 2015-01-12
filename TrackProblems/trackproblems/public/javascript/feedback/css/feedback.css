@@ -105,8 +105,14 @@
     cursor: pointer;
 }
 
+.feedback-ontop {
+	position:relative;
+	z-index:999;
+}
 
 .feedback-btn {
+	position:relative;
+	z-index:999;
     display: inline-block;
     padding: 4px 10px 4px;
     margin-bottom: 0;

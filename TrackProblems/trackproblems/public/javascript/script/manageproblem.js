@@ -50,6 +50,23 @@ app.controller("filedController", function($scope, $http,$log) {
 	      }  
 	    } 
 	  ];  
+	  
+	  
+	  $scope.url = '/track/showFieldByPage?id=1';
+		
+		$scope.fetchContent = function (){
+	        $http.get($scope.url).success(function(response) {
+	        	$scope.fields = response.fields;
+	        	 
+	        	
+	        	
+	        	
+	        	
+	        	 
+	        });
+		};
+		
+		 $scope.fetchContent();
 });
 
 

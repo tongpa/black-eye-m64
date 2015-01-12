@@ -93,10 +93,10 @@ class FieldOwnerName(DeclarativeBase):
     seq = Column(Integer, nullable=True, default=1);
 
     def __repr__(self):
-        return '<ProblemPage: name=%s>' % repr(self.field_name)
+        return '<FieldOwnerName: name=%s>' % repr( self.field_label)
 
     def __unicode__(self):
-        return self.field_name
+        return self.field_name | self.field_label
     
     @classmethod
     def getbyId(cls,id):
@@ -107,12 +107,17 @@ class FieldOwnerName(DeclarativeBase):
     
     def to_json_field(self):
          
-        dict  = {"type": self.field_type.name, 
+        dict  = {
+             "id" : self.id_field_owner_name,
+             "type": self.field_type.name, 
              "field_label": self.field_label , 
              "field_name": self.field_name, 
              "field_required": self.field_required
              };
-     
+        
+        if hasattr(self, 'child'):
+        #if self.child:
+            dict['child'] = self.child;
         return dict;
      
         

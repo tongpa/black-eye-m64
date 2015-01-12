@@ -369,7 +369,7 @@ window.Feedback = function( options ) {
 
     button = element( "button", options.label  );
     //button.className = "feedback-btn feedback-bottom-right btn-primary";
-    button.className = "btn btn-primary feedback-bottom-right ";
+    button.className = "btn btn-primary feedback-ontop feedback-bottom-right";
     
     
     inbutton1 = element("span", ' ');

@@ -1,32 +1,43 @@
     <!--also suitable for creation-->  
-    <label class="control-label col-md-3">{{ field.title }}<em ng-hide="!field.required">*</em> :</label>  
+    <label class="control-label col-md-3" ><em ng-hide="'submit' == child.type">{{ child.field_label }}  <em ng-hide="!child.required">*</em> :  </em></label>  
+   
+    
     <div class="col-md-4">
     	<div class="input-group" style="text-align:left">
-		    <span ng-switch on="field.type.view">  
+		    <span ng-switch on="child.type">  
 		      <span ng-switch-when="input">  
 		        <input    class="form-control"
-		                  ng-model="entity[field.name]"  
+		                  ng-model="entity[child.field_name]"  
 		                  type="text"  
 		                  />  
 		      </span>  
 		      <span ng-switch-when="checkbox">  
 		          <input  class="form-control"
 		                  ng-model="entity[field.name]"  
-		                  ng-checked="entity[field.name]"  
+		                  ng-checked="entity[child.field_name]"  
 		                  type="checkbox"  
 		                  />  
 		      </span>  
 		      <span ng-switch-when="textarea">  
 		        <textarea  class="form-control"
-		                ng-model="entity[field.name]"  
+		                ng-model="entity[child.field_name]"  
 		                ></textarea>  
 		      </span>  
 		      <span ng-switch-when="select">  
 		        <select  class="form-control"
-		                ng-model="entity[field.name]"  
-		                ng-options="item.id as item.name for item in field.type.options"  
+		                ng-model="entity[child.field_name]"  
+		                ng-options="item.id as item.name for item in child.type.options"  
 		                ></select>  
-		      </span>  
+		      </span> 
+		      <span ng-switch-when="submit">  
+		        
+		        <input    class="form-control"
+		                  ng-model="entity[child.field_name]"  
+		                  type="submit"  
+		                  value="{{child.field_label}}"
+		                  />  
+		    
+		      </span>   
 		      <!--You can add more custom widget types needed for your project-->  
 		      <span ng-switch-default>  
 		          <span>Unknown widget</span>  

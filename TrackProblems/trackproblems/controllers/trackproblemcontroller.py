@@ -31,34 +31,43 @@ class TrackProblemController(BaseController):
         
         parent = {};
         for field in fieldOwner:
-            print "-----field : " + str(field.id_field_owner_name);
+            print "-----field : " + str(field.id_field_owner_name) + " ID_parent : " + str(field.id_parent);
             if(field.id_parent is not None):
+                temp_field = parent.get(field.id_parent);
+                if(temp_field):
+                    print "add id : " + str(field.id_field_owner_name) + " in " + str(temp_field.id_field_owner_name);
+                    temp_field.child.append(field.to_json_field());
+            else:
+                print "id " + str(field.id_field_owner_name) + " is Root";
                 field.child = [];
                 parent[field.id_field_owner_name] = field;
-                print "---------------------- root : " + str(field.id_field_owner_name);
-            else:
-                temp_field = parent.get(field.id_field_owner_name);
-                if(temp_field):
-                    temp_field.child.append(field);
-                    
-                    print "add child : " + str(field.id_field_owner_name);
-                
             
             
-            fields.append(field.to_json_field());
+            
+            
+        
+        print"check parent "
+        
+        for f in parent:
+            val = parent.get(f);
+            fields.append(val.to_json_field());
+            #print val.child;
+            
+        
+        
         return dict(fields = fields);
     
     @expose('json')
     def showField(self,**kw):
         field = [];
         fields = [];
-        field.append({'id':1 ,'seq':1,'field_label': 'Email','type': 'text', 'name' : 'email'   });
-        field.append({'id':2 ,'seq':2,'field_label': 'Page','type': 'text', 'name' : 'page'   });
-        field.append({'id':3 ,'seq':3,'field_label': 'Problem type','type': 'combobox', 'name' : 'problem_type'   });
+        field.append({'id':1 ,'seq':1,'field_label': 'Email','type': 'text', 'field_name' : 'email'   });
+        field.append({'id':2 ,'seq':2,'field_label': 'Page','type': 'text', 'field_name' : 'page'   });
+        field.append({'id':3 ,'seq':3,'field_label': 'Problem type','type': 'combobox', 'field_name' : 'problem_type'   });
         
-        field.append({'id':4 ,'seq':4,'field_label': 'Score','type': 'score_image', 'name' : 'score_image'   });
-        field.append({'id':5 ,'seq':5,'field_label': 'File','type': 'file', 'name' : 'problem_file'   });
-        field.append({'id':6 ,'seq':6,'field_label': 'Detail','type': 'textarea', 'name' : 'detail'   });
+        field.append({'id':4 ,'seq':4,'field_label': 'Score','type': 'score_image', 'field_name' : 'score_image'   });
+        field.append({'id':5 ,'seq':5,'field_label': 'File','type': 'file', 'field_name' : 'problem_file'   });
+        field.append({'id':6 ,'seq':6,'field_label': 'Detail','type': 'textarea', 'field_name' : 'detail'   });
         
         
         
