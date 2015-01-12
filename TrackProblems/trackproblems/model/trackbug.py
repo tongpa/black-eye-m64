@@ -49,6 +49,10 @@ class TrackModule(DeclarativeBase):
         return self.module_name
     
     @classmethod
+    def getAll(cls):
+        return DBSession.query(cls).all();
+    
+    @classmethod
     def getByIdAndSecureKey(cls,id,securekey):
         return DBSession.query(cls).filter(cls.id_track_module == str(id), cls.secure_key == str(securekey) ).first();
     
@@ -58,6 +62,13 @@ class TrackModule(DeclarativeBase):
         if module and module.active == 1 :
             return module;
         return None;
+    
+    def to_json(self):
+        dict  = {"id": self.id_track_module, 
+                 "name": self.module_name 
+                 };
+                 
+        return dict;
             
             
 
@@ -81,6 +92,10 @@ class ProblemType(DeclarativeBase):
 
     def __unicode__(self):
         return self.id_problem_type
+    
+    @classmethod
+    def getProblemByProject(cls,id):
+        return  DBSession.query(cls).filter(cls.id_track_module == str(id)).all();
     
     def to_json(self):
         dict  = {"id": self.id_problem_type, 

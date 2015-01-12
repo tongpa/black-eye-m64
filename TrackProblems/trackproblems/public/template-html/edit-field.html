@@ -1,15 +1,15 @@
     <!--also suitable for creation-->  
-    <label class="control-label col-md-3" ><em ng-hide="'submit' == child.type">{{ child.field_label }}  <em ng-hide="!child.required">*</em> :  </em></label>  
-   
+    <label class="control-label col-md-3" ><em ng-hide="'submit' == child.type">{{ child.field_label }}  <em ng-hide="!child.field_required">*</em> :  </em></label>  
     
-    <div class="col-md-4">
-    	<div class="input-group" style="text-align:left">
+    <div class="col-md-9">
+    	<div style="text-align:left">
 		    <span ng-switch on="child.type">  
 		      <span ng-switch-when="input">  
 		        <input    class="form-control"
 		                  ng-model="entity[child.field_name]"  
 		                  type="text"  
 		                  />  
+		                              
 		      </span>  
 		      <span ng-switch-when="checkbox">  
 		          <input  class="form-control"
@@ -25,13 +25,16 @@
 		      </span>  
 		      <span ng-switch-when="select">  
 		        <select  class="form-control"
-		                ng-model="entity[child.field_name]"  
-		                ng-options="item.id as item.name for item in child.type.options"  
+		        		ng-model="entity[child.field_name]"  
+		                ng-options="item.id as item.name for item in child.select_options"  
+		                required="required"
 		                ></select>  
+		                <em ng-hide="!child.field_required"> <span class="help-block">{{child.text_required}}</span> </em>
 		      </span> 
 		      <span ng-switch-when="submit">  
 		        
-		        <input    class="form-control"
+		        <input    class="btn btn-default"
+		        
 		                  ng-model="entity[child.field_name]"  
 		                  type="submit"  
 		                  value="{{child.field_label}}"

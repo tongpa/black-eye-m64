@@ -22,7 +22,7 @@ from trackproblems.model import DeclarativeBase, metadata, DBSession
 # This is the association table for the many-to-many relationship between
 # groups and permissions.
  
-__all__ = ['FieldType', 'OwnerPage','FieldOwnerName'  ]
+__all__ = ['FieldType', 'OwnerPage','FieldOwnerName','FieldOwnerSelectsOption'  ]
 
 
 class FieldType(DeclarativeBase):
@@ -86,10 +86,13 @@ class FieldOwnerName(DeclarativeBase):
     field_name =  Column(Unicode(255) , nullable=True);
     
     field_required = Column(BIT, nullable=True, default=1);
+    text_required=  Column(Unicode(255) , nullable=True);
      
     id_parent  = Column(   BigInteger,ForeignKey('field_owner_name.id_parent'), nullable=True, index=True) ;
     parent = relation('FieldOwnerName');
     
+    options = relation('FieldOwnerSelectsOption');
+    url_get_option =  Column(Unicode(255) , nullable=True);
     seq = Column(Integer, nullable=True, default=1);
 
     def __repr__(self):
@@ -112,13 +115,54 @@ class FieldOwnerName(DeclarativeBase):
              "type": self.field_type.name, 
              "field_label": self.field_label , 
              "field_name": self.field_name, 
-             "field_required": self.field_required
+             "field_required": self.field_required,
+             "text_required": self.text_required
              };
         
         if hasattr(self, 'child'):
         #if self.child:
             dict['child'] = self.child;
+        
+         
+        
+        if hasattr(self, 'select_options'):
+            dict['select_options'] = self.select_options;
+        else :
+            dict['url_get_option'] = self.url_get_option;
+        
+        
         return dict;
      
-        
+      
+
+class FieldOwnerSelectsOption(DeclarativeBase):   
+    __tablename__ = 'field_owner_selects_option'
+
+    id_field_owner_selects_option = Column(BigInteger, autoincrement=True, primary_key=True)
+    
+    id_field_owner_name = Column(   BigInteger,ForeignKey('field_owner_name.id_field_owner_name'), nullable=False, index=True) ;
+    field_owner_name = relation('FieldOwnerName', backref='field_owner_selects_option_id_field_owner_name');
+    
+    
+    
+    name =  Column(Unicode(255) , nullable=True);
+    active= Column(BIT, nullable=True, default=1);
+    seq = Column(Integer, nullable=True, default=1);
+
+    def __repr__(self):
+        return '<FieldOwnerName: name=%s>' % repr( self.field_label)
+
+    def __unicode__(self):
+        return self.field_name | self.field_label
+    
+    @classmethod
+    def getbyId(cls,id):
+        return DBSession.query(cls).get(id);
+    
+    def to_json(self):
+        dict  = {"id": self.id_field_owner_selects_option, 
+                 "name": self.name 
+                 };
+                 
+        return dict;
    

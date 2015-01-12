@@ -60,5 +60,5 @@ def init_model(engine):
 
 # Import your model modules here.
 from trackproblems.model.auth import User, Group, Permission;
-from trackproblems.model.configfield import FieldType, OwnerPage,FieldOwnerName;
+from trackproblems.model.configfield import FieldType, OwnerPage,FieldOwnerName,FieldOwnerSelectsOption;
 from trackproblems.model.trackbug import TrackModule,ProblemType,ProblemPage,TrackProblem,TrackImage;

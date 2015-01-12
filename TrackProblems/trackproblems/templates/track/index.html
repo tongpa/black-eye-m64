@@ -51,34 +51,45 @@
 				  <div class="panel-collapse" >
 				      <div class="panel-body"  >
 				      	
-							<form action="#" id="form-username" class="form-horizontal form-bordered">
-					<div class="form-body">
-		 			  <div class="form-group" ng-repeat="field in fields">  
-		 			  	<!-- <h1>title: {{ field.field_label }}</h1> -->
-		 			  	<fieldset ng-repeat="child in field.child">
-					    	<!-- <label class="control-label col-md-3">{{ child.field_label }}<em ng-hide="!child.required">*</em> :</label> -->  
-					    	   <ng-include src="'/template-html/edit-field.html'"/>  
-					    </fieldset>
-					  </div>
-					</div>
-				 </form>
+						<form action="#" id="form-username" class="form-horizontal" role="form" ng-submit="submit()"> 
+							 
+		 			  			<div class="form-body" ng-repeat="field in fields">  
+		 			  				
+		 			  				<fieldset ng-repeat="child in field.child">
+		 			  					<div class="form-group">
+					    			 
+					    	   			<ng-include src="'/template-html/edit-field.html'"/>  
+					    	   			</div>
+					    			</fieldset>
+					  			</div>
+							 
+				 		</form>
 
 				      
 				      </div>
 				  </div>
 				</div>
 			
-			
-			 
-		
-		
-						
-			 <div>  
-			    <h1>Your entity JSON:</h1>  
-			    {{ entity }}  
-			  </div>
+			<div class="panel panel-default">
+				  <div class="panel-heading">
+				    <h4 class="panel-title">
+				      <a class="accordion-toggle" ><span ng-class="{'text-muted': isDisabled}">Result Search</span></a>
+				    </h4>
+				  </div>
+				  <div class="panel-collapse" >
+				      <div class="panel-body"  >
+				      	
+						 
+
+				      
+				      </div>
+				  </div>
+				</div> 
+			  
+			  
 		</div>
 		
+		 
 		 
 	</div>
 </div>

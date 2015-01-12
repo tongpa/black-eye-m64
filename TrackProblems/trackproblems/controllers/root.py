@@ -16,6 +16,7 @@ from tgext.admin.controller import AdminController
 from trackproblems.lib.base import BaseController
 from trackproblems.controllers.error import ErrorController
 from trackproblems.controllers.trackproblemcontroller import TrackProblemController;
+from trackproblems.controllers.valueoptioncontroller import ValueOptionController;
 from trackproblems.controllers.utility import Utility
 
 
@@ -46,7 +47,7 @@ class RootController(BaseController):
     admin = AdminController(model, DBSession, config_type=TGAdminConfig)
 
     track = TrackProblemController();
-    
+    options = ValueOptionController();
     error = ErrorController()
     
     utility = Utility();
@@ -59,6 +60,13 @@ class RootController(BaseController):
         
         return dict(page='index')
     
+    @expose('json')
+    def searchData(self,*args,**kw):
+        print kw;
+        print args;
+        self.df = json.loads(request.body, encoding=request.charset);
+        print self.df;
+        return dict(success= True);
     
     @expose('json')
     def getproblemtype(self, **kw):

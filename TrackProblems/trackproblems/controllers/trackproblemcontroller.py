@@ -1,4 +1,4 @@
-from tg import expose, flash, require, url, lurl, request, redirect, tmpl_context
+from tg import expose, flash, require, url, lurl, request, redirect, tmpl_context 
 from tg.i18n import ugettext as _, lazy_ugettext as l_
 from tg.exceptions import HTTPFound
 from tg import predicates
@@ -10,6 +10,8 @@ from tgext.admin.controller import AdminController
 
 from trackproblems.lib.base import BaseController
 from trackproblems.controllers.error import ErrorController
+
+import urllib, json
  
 __all__ = ['TrackProblemController']
 
@@ -29,6 +31,8 @@ class TrackProblemController(BaseController):
         
         fieldOwner = model.FieldOwnerName.getByPageId(idpage);
         
+        #print request.application_url ;
+        
         parent = {};
         for field in fieldOwner:
             print "-----field : " + str(field.id_field_owner_name) + " ID_parent : " + str(field.id_parent);
@@ -36,6 +40,21 @@ class TrackProblemController(BaseController):
                 temp_field = parent.get(field.id_parent);
                 if(temp_field):
                     print "add id : " + str(field.id_field_owner_name) + " in " + str(temp_field.id_field_owner_name);
+                    
+                    #option
+                    if field.url_get_option :
+                        print "get from url";
+                    else:
+                        print "get table";
+                        options = field.options;
+                        
+                        if options :
+                            field.select_options = [];
+                            for option in options:
+                                 
+                                field.select_options.append(option.to_json());
+                            
+                    
                     temp_field.child.append(field.to_json_field());
             else:
                 print "id " + str(field.id_field_owner_name) + " is Root";
