@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="WebCompanyEAR">
+        <wb-resource deploy-path="/" source-path="/WebCompanyEAR" tag="defaultRootSource"/>
+        <dependent-module archiveName="WebCompanys.war" deploy-path="/" handle="module:/resource/WebCompanys/WebCompanys">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>
