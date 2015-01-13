@@ -1,5 +1,11 @@
 //console.log('model.js');
 
+Ext.define('company.model.listHistory',{
+	extend : 'Ext.data.Model',
+	idProperty: 'date_string',
+	fields : ['date_string'
+	          ,'num']
+});
 
 Ext.define('company.model.position', {
     extend: 'Ext.data.Model',
@@ -84,3 +90,51 @@ company.searchCompany = new Ext.data.Store({
 	},
 	autoLoad : false
 });
+
+company.totalCompanys = new Ext.data.Store({
+	model : 'company.model.listHistory',
+	storeId : 'totalCompanysInStore',
+	pageSize: 50,
+	proxy : {
+		type : 'ajax',
+		url : '/WebCompanys/company/totalCompany',
+		reader : {
+			type : 'json',
+			rootProperty : 'totalCompany'
+		},
+		actionMethods: {
+			create : 'POST',
+			read   : 'GET',
+			update : 'POST',
+			destroy : 'POST'
+		}
+	},
+ 
+	autoLoad : false
+});
+
+
+company.listHistorys = new Ext.data.Store({
+	model : 'company.model.listHistory',
+	storeId : 'listHistoryInStore',
+	pageSize : 50,
+	proxy : {
+		type : 'ajax',
+		url : '/WebCompanys/company/history',
+		reader : {
+			type : 'json',
+			rootProperty : 'history'
+		},
+		 
+		actionMethods:{
+			create : 'POST',
+			read   : 'GET',
+			update : 'POST',
+			destroy : 'POST'
+		}
+	},
+	autoSync: false,
+	autoLoad : false
+});
+
+

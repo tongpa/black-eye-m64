@@ -15,12 +15,14 @@
 	//console.log(path + 'app.js');
     
      
-
+    document.write('<script type="text/javascript" src="' + path + 'model.js"  charset="UTF-8"></script>');
     document.write('<script type="text/javascript" src="' + path + 'addPosition.js"  charset="UTF-8"></script>');
     document.write('<script type="text/javascript" src="' + path + 'listPosition.js"  charset="UTF-8"></script>');
     document.write('<script type="text/javascript" src="' + path + 'listCompany.js"  charset="UTF-8"></script>');
 
-    document.write('<script type="text/javascript" src="' + path + 'model.js"  charset="UTF-8"></script>');
+    document.write('<script type="text/javascript" src="' + path + 'listHistory.js"  charset="UTF-8"></script>');
+
+    
     document.write('<script type="text/javascript" src="' + path + 'app.js"  charset="UTF-8"></script>');
 
 })();

@@ -41,7 +41,14 @@ Ext.application({
     		}
     	});
     	
+    	var listHistory = Ext.create('company.ListHistory',{
+    		region: 'west',
+    		//layout: 'fit',
+ 	        height : '100%',
+ 	        width: 170
+    	});
     	
+    	listHistory.resetData();
     	
     	
     	var addPosition = Ext.create('company.addPosition',{url : '/WebCompanys/job/addPosition'});
@@ -91,13 +98,7 @@ Ext.application({
                 split: true 
             },
             
-            items: [north, {
-    	        region: 'west',
-    	         
-    	       // title: 'Navigation',
-    	        width: 150
-    	        // could use a TreePanel or AccordionLayout for navigational items
-    	    },  {
+            items: [north, listHistory,  {
     	        region: 'center',
     	        xtype: 'panel', // TabPanel itself has no title
     	        activeTab: 0,      // First tab active by default

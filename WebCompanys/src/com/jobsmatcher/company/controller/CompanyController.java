@@ -35,6 +35,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 
+
+
+
+
+
+
+
+
 import com.jobsmatcher.company.dao.CompanyDao;
 import com.jobsmatcher.company.dao.PositionDao;
 import com.jobsmatcher.company.model.Company;
@@ -55,6 +63,9 @@ public class CompanyController {
 		try{
 			request.setCharacterEncoding("UTF-8");
 			response.setContentType("text/html; charset=UTF-8");
+			
+			
+			
 			}
 		catch(Exception ex){
 			ex.printStackTrace();
@@ -70,6 +81,29 @@ public class CompanyController {
 		  return model;
 	 
 		}
+	
+	
+	@RequestMapping(value = "totalCompany", method = RequestMethod.GET)
+	@ResponseBody
+	public   Map<String, List<Map<String, String>> > totalCompany( HttpServletRequest request, HttpServletResponse response, HttpSession sec){
+		List<Map<String, String>> book = companyDao.getTotalComnany();
+		Map<String, List<Map<String, String>> > books = new HashMap<String, List<Map<String, String>> >();
+		if(book.size() > 0){
+			books.put("totalCompany",   book);
+		}
+		return books;
+	}
+	
+	@RequestMapping(value = "history", method = RequestMethod.GET)
+	@ResponseBody
+	public   Map<String, List<Map<String, String>> > showHistory( HttpServletRequest request, HttpServletResponse response, HttpSession sec){
+		List<Map<String, String>> book = companyDao.listTotalInDate();
+		Map<String, List<Map<String, String>> > books = new HashMap<String, List<Map<String, String>> >();
+		if(book.size() > 0){
+			books.put("history",   book);
+		}
+		return books;
+	}
 	
 	@RequestMapping(value = "search", method = RequestMethod.POST)
 	@ResponseBody

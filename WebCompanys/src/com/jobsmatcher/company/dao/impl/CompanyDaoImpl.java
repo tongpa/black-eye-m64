@@ -2,6 +2,8 @@ package com.jobsmatcher.company.dao.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
  
@@ -12,6 +14,9 @@ import java.util.List;
 
 
 
+
+
+import java.util.Map;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -140,6 +145,50 @@ public class CompanyDaoImpl extends AbstractDaoImpl<Company, String> implements 
 		 
 		//System.out.println("Delete Company");
 		
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Map<String, String>> listTotalInDate() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("select  DATE_FORMAT(create_date,'%d-%m-%Y') as date_string, count(create_date) as num from company_data ")
+		.append(" GROUP BY DATE_FORMAT(create_date,'%d-%m-%Y') ") 
+		.append(" ORDER BY create_date DESC limit 35 ");
+ 
+		List<Object[]> results = getCurrentSession().createSQLQuery(sb.toString()).list();
+		List<Map<String, String>>  data = new ArrayList<Map<String, String>> (); 
+		for (Object[] arr  : results) {
+			//System.out.println(Arrays.toString(arr));
+			//System.out.println(arr[0] + " " + arr[1]);
+			
+			Map<String, String>  sa = new HashMap<String, String>();
+			sa.put("date_string", String.valueOf(arr[0] ));
+			sa.put("num",String.valueOf(arr[1]));
+			data.add(sa);
+			arr = null;
+		} 
+		results = null;
+		sb = null;
+		return data;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Map<String, String>>  getTotalComnany() {
+		//select count(*) from company_data;
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append("select count(*) from company_data ");
+		List<Object[]> results = getCurrentSession().createSQLQuery(sb.toString()).list(); 
+		List<Map<String, String>>  data = new ArrayList<Map<String, String>> (); 
+	 
+		Map<String, String>  sa = new HashMap<String, String>();
+		sa.put("num", String.valueOf( results.get(0) ));
+		data.add(sa);
+		
+		results = null;
+		sb = null;
+		return data;
 	}
 
 }

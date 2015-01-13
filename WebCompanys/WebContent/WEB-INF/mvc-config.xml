@@ -11,7 +11,7 @@
             base-package="org.springframework.samples.web"/>  -->
 
 
-	<context:component-scan base-package="com.jobsmatcher.company.*" />
+	<context:component-scan base-package="com.jobsmatcher.company.*,com.jobsmatcher.company.controller.*" />
     <mvc:annotation-driven />
 	 
 	

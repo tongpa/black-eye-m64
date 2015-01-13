@@ -1,6 +1,7 @@
 package com.jobsmatcher.company.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.jobsmatcher.company.model.Company; 
 
@@ -13,6 +14,10 @@ public interface CompanyDao extends AbstractDao<Company, String> {
 	
 	public Company getCompanyById(String id);
 	public void deleteById(Company company);
+	
+	public List<Map<String, String>> listTotalInDate();
+	
+	public List<Map<String, String>>  getTotalComnany();
 	
 	
 }
