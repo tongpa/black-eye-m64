@@ -170,7 +170,7 @@ class TrackProblem(DeclarativeBase):
     def getListByProjectAndProblemType(cls,projectId,problemId,offset,limit):
         if int( offset) == 1:
             offset = 0;
-        return  DBSession.query(cls).filter(cls.id_track_module == str(projectId),cls.id_problem_page == str(problemId)).offset( int( offset)*int(limit)   ).limit(limit).all();
+        return  DBSession.query(cls).filter(cls.id_track_module == str(projectId),cls.id_problem_type == str(problemId)).offset( int( offset)*int(limit)   ).limit(limit).all();
     
     def to_json(self):
         dict  = {"id": self.id_track_problem, 
@@ -210,5 +210,8 @@ class TrackImage(DeclarativeBase):
     def save(self):
         DBSession.add(self); 
         DBSession.flush() ;
-        
+    
+    @classmethod
+    def getbyId(cls,id):
+        return DBSession.query(cls).get(id);
    

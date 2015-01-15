@@ -85,7 +85,7 @@ app.controller("filedController", function($scope, $http,$log) {
 				totalServerItems: 'totalServerItems',
 				pagingOptions: $scope.pagingOptions,
 		        filterOptions: $scope.filterOptions,
-		        columnDefs: [{field: 'image', displayName: 'image', enableCellEdit: false, cellTemplate: '<div><img src="{{row.getProperty("image")}" alt="Mountain View" style="width:304px;height:228px"/> </div>'}, 
+		        columnDefs: [{field: 'image', displayName: 'image', enableCellEdit: false, cellTemplate: '<div><img src="{{row.getProperty(image)}" alt="Mountain View" style="width:304px;height:228px"/> </div>'}, 
 		                     {field:'description', displayName:'description', enableCellEdit: false}, 
 		                     {field:'user', displayName:'user', enableCellEdit: false}, 
 		                     {field:'from_page', displayName:'from_page', enableCellEdit: false}
@@ -145,6 +145,8 @@ app.controller("filedController", function($scope, $http,$log) {
 		$scope.loadResultSearch = function(search){
 			 console.log(search);
 			 
+			 search.project = 2;
+			 search.problem_type = 5;
 			
 			 $http.post('/searchData', search ).
 			  success(function(data, status, headers, config) {

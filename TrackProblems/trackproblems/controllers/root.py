@@ -23,6 +23,7 @@ from trackproblems.controllers.utility import Utility
 import os;
 import sys;
 import json; 
+import Image
 import logging;
 log = logging.getLogger(__name__); 
  
@@ -75,6 +76,8 @@ class RootController(BaseController):
         if('project' in self.df and 'problem_type' in self.df ):
             projectId = self.df.get('project');
             problemTypeId =  self.df.get('problem_type');
+            
+             
             
             if ('pageSize' in self.df):
                 pageSize = self.df.get('pageSize');
@@ -131,13 +134,25 @@ class RootController(BaseController):
         return dict(status=True,data=datas,message='');
     
     
-    @expose(content_type='image/jpg')
+    @expose(content_type='image/png')
     def getImage(self,*args,**kw):
         reload(sys);
         sys.setdefaultencoding("utf-8");
+        response.headers['content-type'] = 'image/png'
+        imageId = kw.get('id');
+        jpgfile = None;
+        trackImage = model.TrackImage.getbyId(imageId);
+        if trackImage:
+            print trackImage.path_image;
+            image_file = os.path.join(trackImage.path_image );
+            if not os.path.exists(image_file):
+                print "Found no %s" % image_file
+            else:
+                jpgfile = Image.open(image_file) ;
+                
         
-        
-        return dict(status=True);
+        response.headers['content-length'] = len(jpgfile.data)
+        return jpgfile.data;
         
     
     @expose('json')
