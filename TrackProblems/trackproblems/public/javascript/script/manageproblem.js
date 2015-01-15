@@ -1,4 +1,9 @@
-var app = angular.module("manage-report", ['ui.bootstrap','ngGrid']);//.config(function() { }); 
+var app = angular.module("manage-report", ['ui.bootstrap',
+                                           'ngAnimate',
+                                           'ngRoute',
+                                           'ngSanitize',
+                                           'ngTouch',
+                                           'ngGrid']);//.config(function() { }); 
 
 
 
@@ -61,13 +66,95 @@ app.controller("filedController", function($scope, $http,$log) {
 		//console.log($scope.fields);
 		
 		
+		//grid 
+		$scope.filterOptions = {
+		        filterText: "",
+		        useExternalFilter: true
+	    }; 
+	    $scope.totalServerItems = 0;
+	    $scope.pagingOptions = {
+	        pageSizes: [250, 500, 1000],
+	        pageSize: 250,
+	        currentPage: 1
+	    };	
+		
+		$scope.gridOptions = { 
+				data: 'myData',
+				enablePaging: true,
+				showFooter: true,
+				totalServerItems: 'totalServerItems',
+				pagingOptions: $scope.pagingOptions,
+		        filterOptions: $scope.filterOptions,
+		        columnDefs: [{field: 'image', displayName: 'image', enableCellEdit: false, cellTemplate: '<div><img src="{{row.getProperty("image")}" alt="Mountain View" style="width:304px;height:228px"/> </div>'}, 
+		                     {field:'description', displayName:'description', enableCellEdit: false}, 
+		                     {field:'user', displayName:'user', enableCellEdit: false}, 
+		                     {field:'from_page', displayName:'from_page', enableCellEdit: false}
+		        
+		        
+		        ]
+		};
+		
+		
+		$scope.setPagingData = function(data, page, pageSize){	
+			debugger;
+	        var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
+	        $scope.myData = pagedData;
+	        $scope.totalServerItems = data.length;
+	        if (!$scope.$$phase) {
+	            $scope.$apply();
+	        }
+	    };
+	    $scope.getPagedDataAsync = function (pageSize, page, searchText) {
+	        setTimeout(function () {
+	            var data;
+	            
+	            $scope.entity.pageSize = pageSize;
+	            $scope.entity.page = page;
+	            if (searchText) {
+	            	console.log('searchText' + pageSize + ' ' + page );
+	                var ft = searchText.toLowerCase();
+	                $http.get('/searchData').success(function (largeLoad) {		
+	                    data = largeLoad.filter(function(item) {
+	                        return JSON.stringify(item).toLowerCase().indexOf(ft) != -1;
+	                    });
+	                   // $scope.setPagingData(data,page,pageSize);
+	                });            
+	            } else {
+	            	console.log('not searchText');
+	            	$scope.loadResultSearch($scope.entity);
+	            }
+	        }, 100);
+	    };
+		
+	    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+		
+	    $scope.$watch('pagingOptions', function (newVal, oldVal) {
+	        if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
+	        	console.log('pagingOptions');
+	          $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+	        }
+	    }, true);
+	    $scope.$watch('filterOptions', function (newVal, oldVal) {
+	    	console.log('filterOptions');
+	        if (newVal !== oldVal) {
+	          $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage, $scope.filterOptions.filterText);
+	        }
+	    }, true);
+	    
+		
 		$scope.loadResultSearch = function(search){
 			 console.log(search);
 			 
 			
 			 $http.post('/searchData', search ).
 			  success(function(data, status, headers, config) {
-				  console.log(data);
+				  console.log(data.problem);
+				  
+				  
+				  $scope.myData = data.problem;
+				  
+				  
+				  
 				  
 			  }).
 			  error(function(data, status, headers, config) {

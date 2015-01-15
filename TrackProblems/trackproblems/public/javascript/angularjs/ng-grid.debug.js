@@ -209,8 +209,8 @@ ngGridFilters.filter('ngColumns', function() {
 angular.module('ngGrid.services').factory('$domUtilityService',['$utilityService', '$window', function($utils, $window) {
     var domUtilityService = {};
     var regexCache = {};
-    var getWidths = function() {
-        var $testContainer = $('<div></div>');
+    var getWidths = function() {    	
+        var $testContainer = $('<div></div>');        
         $testContainer.appendTo('body');
         // 1. Run all the following measurements on startup!
         //measure Scroll Bars

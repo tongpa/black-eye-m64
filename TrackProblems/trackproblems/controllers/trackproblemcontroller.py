@@ -23,7 +23,11 @@ class TrackProblemController(BaseController):
         """Handle the front-page."""
         return dict(page='index')
     
-    
+    @expose('trackproblems.templates.track.sample_grid')
+    def sample(self):
+        """Handle the front-page."""
+        return dict(page='index')
+     
     @expose('json')
     def showFieldByPage(self, **kw):
         fields = [];

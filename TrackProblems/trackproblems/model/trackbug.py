@@ -149,6 +149,9 @@ class TrackProblem(DeclarativeBase):
     from_page =  Column(Unicode(255) , nullable=True); 
     user =  Column(Unicode(255) , nullable=True); 
     
+    
+    image = relation('TrackImage')  ;
+    
     active= Column(BIT, nullable=True, default=1);
     created = Column(DateTime, default=datetime.now)
      
@@ -162,9 +165,24 @@ class TrackProblem(DeclarativeBase):
     def save(self):
         DBSession.add(self); 
         DBSession.flush() ;
-         
     
- 
+    @classmethod 
+    def getListByProjectAndProblemType(cls,projectId,problemId,offset,limit):
+        if int( offset) == 1:
+            offset = 0;
+        return  DBSession.query(cls).filter(cls.id_track_module == str(projectId),cls.id_problem_page == str(problemId)).offset( int( offset)*int(limit)   ).limit(limit).all();
+    
+    def to_json(self):
+        dict  = {"id": self.id_track_problem, 
+                 "description": self.description ,
+                 "user" : self.user,
+                 "from_page" : self.from_page
+                 };
+        if len(self.image) >0 : 
+             
+            dict['image'] = self.image[0].id_track_image;
+                 
+        return dict;
     
 class TrackImage(DeclarativeBase):
  

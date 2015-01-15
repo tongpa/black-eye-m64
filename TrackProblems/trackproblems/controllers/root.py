@@ -64,9 +64,32 @@ class RootController(BaseController):
     def searchData(self,*args,**kw):
         print kw;
         print args;
-        self.df = json.loads(request.body, encoding=request.charset);
+        print request.body;
+        if request.body:
+            self.df = json.loads(request.body, encoding=request.charset);
+        else:
+            self.df=[];
         print self.df;
-        return dict(success= True);
+        
+        listData = [];
+        if('project' in self.df and 'problem_type' in self.df ):
+            projectId = self.df.get('project');
+            problemTypeId =  self.df.get('problem_type');
+            
+            if ('pageSize' in self.df):
+                pageSize = self.df.get('pageSize');
+            else:
+                pageSize = 50;
+            if ('page' in self.df):
+                page = self.df.get('page');
+            else:
+                page = 0;
+            self.listData = model.TrackProblem.getListByProjectAndProblemType(projectId,problemTypeId, page, pageSize);
+            
+            for d in self.listData:
+                listData.append(d.to_json());
+            
+        return dict(success= True,problem = listData);
     
     @expose('json')
     def getproblemtype(self, **kw):
