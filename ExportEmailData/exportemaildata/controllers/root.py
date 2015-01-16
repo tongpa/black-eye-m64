@@ -183,8 +183,8 @@ class RootController(BaseController):
         print "save1"
         
         
-        target_file_name = os.path.join(os.getcwd(), UPLOAD_DIR + str(export.id_export_email), fileUpload.filename);
-        error_file_name = os.path.join(os.getcwd(), UPLOAD_DIR + str(export.id_export_email), 'error-'+fileUpload.filename);
+        target_file_name = os.path.join(os.getcwd(), UPLOAD_DIR , str(export.id_export_email), fileUpload.filename);
+        error_file_name = os.path.join(os.getcwd(), UPLOAD_DIR , str(export.id_export_email), 'error-'+fileUpload.filename);
         
         self.utility.checkPathFile(UPLOAD_DIR + str(export.id_export_email));
         self.utility.checkPathFile(UPLOAD_DIR + str(export.id_export_email));
