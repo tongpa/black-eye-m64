@@ -133,26 +133,30 @@ class RootController(BaseController):
         
         return dict(status=True,data=datas,message='');
     
-    
     @expose(content_type='image/png')
-    def getImage(self,*args,**kw):
+    def getImage(self,**kw):
         reload(sys);
         sys.setdefaultencoding("utf-8");
-        response.headers['content-type'] = 'image/png'
+        image_file = os.path.join('C:/temp/upload/track_feedback/images/27/issue_27.png' );
         imageId = kw.get('id');
-        jpgfile = None;
         trackImage = model.TrackImage.getbyId(imageId);
+        
         if trackImage:
             print trackImage.path_image;
             image_file = os.path.join(trackImage.path_image );
+            print image_file;
             if not os.path.exists(image_file):
                 print "Found no %s" % image_file
             else:
-                jpgfile = Image.open(image_file) ;
                 
+                return  file(image_file, "rb").read()
+            
         
-        response.headers['content-length'] = len(jpgfile.data)
-        return jpgfile.data;
+        return file(r"c:\temp\upload\track_feedback\images\27\issue_27.png", "rb").read()
+        
+      
+        
+     
         
     
     @expose('json')

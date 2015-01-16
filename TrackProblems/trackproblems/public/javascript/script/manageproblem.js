@@ -83,12 +83,15 @@ app.controller("filedController", function($scope, $http,$log) {
 				enablePaging: true,
 				showFooter: true,
 				totalServerItems: 'totalServerItems',
+				multiSelect: false,
 				pagingOptions: $scope.pagingOptions,
 		        filterOptions: $scope.filterOptions,
-		        columnDefs: [{field: 'image', displayName: 'image', enableCellEdit: false, cellTemplate: '<div><img src="{{row.getProperty(image)}" alt="Mountain View" style="width:304px;height:228px"/> </div>'}, 
-		                     {field:'description', displayName:'description', enableCellEdit: false}, 
-		                     {field:'user', displayName:'user', enableCellEdit: false}, 
-		                     {field:'from_page', displayName:'from_page', enableCellEdit: false}
+		        //rowTemplate: '<div ng-style="{\'cursor\': row.cursor, \'z-index\': col.zIndex(),\'height\': \'150px\' }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell {{col.cellClass}}" ng-cell></div>',
+		        rowHeight: 100,
+		        columnDefs: [{field: 'image', displayName: 'image', width: '25%', enableCellEdit: false, cellTemplate: '<div><img src="getImage?id={{row.getProperty(col.field)}}" alt="Mountain View" class="row_image"/> </div>'}, 
+		                     {field:'description', displayName:'description', width: '50%', enableCellEdit: false}, 
+		                     {field:'user', displayName:'user', width: '10%', enableCellEdit: false}, 
+		                     {field:'from_page', displayName:'from_page', width: '15%', enableCellEdit: false}
 		        
 		        
 		        ]
@@ -145,8 +148,7 @@ app.controller("filedController", function($scope, $http,$log) {
 		$scope.loadResultSearch = function(search){
 			 console.log(search);
 			 
-			 search.project = 2;
-			 search.problem_type = 5;
+			  
 			
 			 $http.post('/searchData', search ).
 			  success(function(data, status, headers, config) {
