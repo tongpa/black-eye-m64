@@ -84,10 +84,8 @@ class RootController(BaseController):
         
         return dict(page='index')
 
-    @expose('pollandsurvey.templates.about')
-    def about(self):
-        """Handle the 'about' page."""
-        return dict(page='about')
+    
+ 
 
     @expose('pollandsurvey.templates.environ')
     def environ(self):
