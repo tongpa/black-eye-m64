@@ -16,87 +16,36 @@ var log = function( msg ) {
 },
 removeElementsWithClass = function(remove){
 	
-	try{
-		for (var i = 0, len = remove.length; i < len; i++ ) {
-			
-			
-			if ( Array !== undefined) {
-				
-				var item = Array.prototype.pop.call( remove );
-				//console.log("remove array at : " + i + " of " + len);
-				debugger;
-				if ( item !== undefined ) {
-					if (item.parentNode !== null ) { // check that the item was actually added to DOM
-						item.parentNode.removeChild( item );
-					}
-				}
-			}
-		}
-	}
-	catch(err){
-		 
-		for (var i = 0, len = remove.length; i < len; i++ ) {
+	for (var i = 0, len = remove.length; i < len; i++ ) {
     	
-			var item = remove[i];
-			
-	
-			if ( item !== undefined ) {
-				 
-				if (item.parentNode !== null ) { // check that the item was actually added to DOM
-					item.parentNode.removeChild( item );
-				}
-			}
-		}
-	}
+        var item = remove[i];
+        
+        log('remove item : ')
+        log(item);
+        if ( item !== undefined ) {
+        	 
+            if (item.parentNode !== null ) { // check that the item was actually added to DOM
+                item.parentNode.removeChild( item );
+            }
+        }
+    }
 	
 },
 // function to remove elements, input as arrays
 removeElements = function( remove ) {
-
-    
-	try{
-		for (var i = 0, len = remove.length; i < len; i++ ) {
-			
-			
-			if ( Array !== undefined) {
-				
-				var item = Array.prototype.pop.call( remove );
-				 
-				//debugger;
-				if ( item !== undefined ) {
-					if (item.parentNode !== null ) { // check that the item was actually added to DOM
-						item.parentNode.removeChild( item );
-					}
-				}
-			}
-		}
-	}
-	catch(err){
-		 
-		for (var i = 0, len = remove.length; i < len; i++ ) {
-    	
-			var item = remove[i];
-			 
-			if ( item !== undefined ) {
-				 
-				if (item.parentNode !== null ) { // check that the item was actually added to DOM
-					item.parentNode.removeChild( item );
-				}
-			}
-		}
-	}
-	
-	/*
-	for (var i = 0, len = remove.length; i < len; i++ ) {
+	log('remove elements : leng ' + remove.length);
+	log(remove);
+    for (var i = 0, len = remove.length; i < len; i++ ) {
     	
         var item = Array.prototype.pop.call( remove );
-   
+        log('remove item : ')
+        log(item);
         if ( item !== undefined ) {
             if (item.parentNode !== null ) { // check that the item was actually added to DOM
                 item.parentNode.removeChild( item );
             }
         }
-    }*/
+    }
 },
 loader = function() {
     var div = document.createElement("div"), i = 3;
@@ -380,7 +329,6 @@ window.Feedback = function( options ) {
             for (var i = 0, len = options.pages.length, data = [], p = 0, tmp; i < len; i++) {
                 if ( (tmp = options.pages[ i ].data()) !== false ) {
                     data[ p++ ] = tmp;
-                     
                 }
             }
 
@@ -407,7 +355,7 @@ window.Feedback = function( options ) {
                 } else {
                     modalBody.appendChild( document.createTextNode( options.messageError ) );
                 }
-                console.log("Send : " );
+                
             } );
   
         }
@@ -551,11 +499,11 @@ window.Feedback.Form.prototype.end = function() {
 
 window.Feedback.Form.prototype.data = function() {
     
-   /* if ( this._data !== undefined ) {
+    if ( this._data !== undefined ) {
         // return cached value
         return this._data;
     }
-    */
+    
     var i = 0, len = this.elements.length, item, data = {};
     
     for (; i < len; i++) {
@@ -574,8 +522,8 @@ window.Feedback.Form.prototype.review = function( dom ) {
       
     for (; i < len; i++) {
         item = this.elements[ i ];
-        //console.log(item.element);
-        //console.log(item.element.value);
+        console.log(item.element);
+        console.log(item.element.value);
         
         show = false;
         showValue = '';
@@ -597,11 +545,11 @@ window.Feedback.Form.prototype.review = function( dom ) {
 	        	show = false;	             
 	            break;
         }
-        //console.log(show);
+        console.log(show);
         
         if (item.element.value.length > 0 && show ) {
         	
-        	//console.log("show name : " + item.name );
+        	console.log("show name : " + item.name );
         	
             dom.appendChild( element("label", item.name + ": ") );
             dom.appendChild( document.createTextNode( showValue  ) );
@@ -669,7 +617,7 @@ window.Feedback.Screenshot.prototype.close = function(){
     removeElements( [ this.blackoutBox, this.highlightContainer, this.highlightBox, this.highlightClose ] );
 
     removeElements( document.getElementsByClassName( this.options.blackoutClass ) );
-   
+    log(this.options.highlightClass);
     //removeElements( document.getElementsByClassName( this.options.highlightClass ) );
     removeElementsWithClass( document.getElementsByClassName( this.options.highlightClass ) );
 
@@ -907,7 +855,6 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
             $this.start.apply( $this, args );
         }, 500);
     }
-  //  console.log('highlight - screen');
 
 };
 
@@ -944,7 +891,7 @@ window.Feedback.Screenshot.prototype.render = function() {
         script.src = options.h2cPath || "libs/html2canvas.js";
         
         script.onerror = function() {
-        	//alert("Failed to load html2canvas library, check that the path is correctly defined");
+        	alert("Failed to load html2canvas library, check that the path is correctly defined");
             log("Failed to load html2canvas library, check that the path is correctly defined");
         };
 
@@ -974,11 +921,10 @@ window.Feedback.Screenshot.prototype.render = function() {
 
 window.Feedback.Screenshot.prototype.data = function() {
 
-  /*  if ( this._data !== undefined ) {
-    	console.log(" data is undefined in prototype.data");
+    if ( this._data !== undefined ) {
         return this._data;
     }
-*/
+
     if ( this.h2cCanvas !== undefined ) {
       
         var ctx = this.h2cCanvas.getContext("2d"),
@@ -1052,21 +998,12 @@ window.Feedback.Screenshot.prototype.data = function() {
 window.Feedback.Screenshot.prototype.review = function( dom ) {
   
     var data = this.data();
-    
     if ( data !== undefined ) {
-    	 
         var img = new Image();
         img.src = data;
         img.style.width = "300px";
         dom.appendChild( img );
-    }else{
-    	var img = new Image();
-        img.src = '';
-        img.style.width = "300px";
-        dom.appendChild( img );
     }
-     
-     
     
 };
 window.Feedback.XHR = function( url ) {

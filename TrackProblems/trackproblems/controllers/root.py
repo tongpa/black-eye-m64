@@ -220,10 +220,10 @@ class RootController(BaseController):
                         log.info('check domain data : ' +self.module.domain_name + " is not same with " + self.domain_name );
                         pass;
                 else:
-                    log.info('project : '+ self.project_id + ' or security key : ' + self.security_key +'  is not exits');
+                    log.info('project : '+ str(self.project_id) + ' or security key : ' + str(self.security_key) +'  is not exits');
                      
         except Exception:
-            log.info('project : '+ self.project_id + ' or security key : ' + self.security_key +'  is not exits');
+            log.info('project : '+ str(self.project_id) + ' or security key : ' + str(self.security_key) +'  is not exits');
         finally:
             pass;    
         
