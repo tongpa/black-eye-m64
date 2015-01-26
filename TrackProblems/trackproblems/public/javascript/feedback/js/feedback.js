@@ -61,7 +61,7 @@ removeElements = function( remove ) {
 			if ( Array !== undefined) {
 				
 				var item = Array.prototype.pop.call( remove );
-				 
+				log("remove : index " + i + " at " + len); 
 				//debugger;
 				if ( item !== undefined ) {
 					if (item.parentNode !== null ) { // check that the item was actually added to DOM
@@ -72,7 +72,7 @@ removeElements = function( remove ) {
 		}
 	}
 	catch(err){
-		 
+		log("error : " + err); 
 		for (var i = 0, len = remove.length; i < len; i++ ) {
     	
 			var item = remove[i];
@@ -847,6 +847,7 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
 
 
         highlightClose.addEventListener("click", function(){
+        	log("click");
             removeElement.parentNode.removeChild( removeElement );
             hideClose();
         }, false);
