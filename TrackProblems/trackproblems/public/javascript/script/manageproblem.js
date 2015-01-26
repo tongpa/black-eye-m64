@@ -78,17 +78,31 @@ app.controller("filedController", function($scope, $http,$log) {
 	        currentPage: 1
 	    };	
 		
+	    $scope.mySelections=[];
+	    
+	    $scope.afterSelect = function (rowItem, event){
+	    	 
+	    	$.fancybox( '<h3>' + rowItem.entity.description + '</h3> <img src="/getImage?id=' + rowItem.entity.image + '" alt="Mountain View"/>  '  );
+	    	 
+	    	
+	    }
+	    
+	    
 		$scope.gridOptions = { 
 				data: 'myData',
 				enablePaging: true,
 				showFooter: true,
 				totalServerItems: 'totalServerItems',
 				multiSelect: false,
+				selectedItems: $scope.mySelections,
+				afterSelectionChange : $scope.afterSelect,
 				pagingOptions: $scope.pagingOptions,
 		        filterOptions: $scope.filterOptions,
 		        //rowTemplate: '<div ng-style="{\'cursor\': row.cursor, \'z-index\': col.zIndex(),\'height\': \'150px\' }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell {{col.cellClass}}" ng-cell></div>',
 		        rowHeight: 100,
-		        columnDefs: [{field: 'image', displayName: 'image', width: '25%', enableCellEdit: false, cellTemplate: '<div><img src="getImage?id={{row.getProperty(col.field)}}" alt="Mountain View" class="row_image"/> </div>'}, 
+		        columnDefs: [
+
+		                     {field: 'image', displayName: 'image', width: '25%', enableCellEdit: false, cellTemplate: '<div ><img src="/getImage?id={{row.getProperty(col.field)}}" alt="Mountain View" class="row_image"/> </div>'}, 
 		                     {field:'description', displayName:'description', width: '50%', enableCellEdit: false}, 
 		                     {field:'user', displayName:'user', width: '10%', enableCellEdit: false}, 
 		                     {field:'from_page', displayName:'from_page', width: '15%', enableCellEdit: false}

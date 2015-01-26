@@ -61,6 +61,7 @@ class RootController(BaseController):
         
         return dict(page='index')
     
+     
     @expose('json')
     def searchData(self,*args,**kw):
         print kw;

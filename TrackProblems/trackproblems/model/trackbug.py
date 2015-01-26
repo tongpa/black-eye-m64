@@ -170,7 +170,9 @@ class TrackProblem(DeclarativeBase):
     def getListByProjectAndProblemType(cls,projectId,problemId,offset,limit):
         if int( offset) == 1:
             offset = 0;
-        return  DBSession.query(cls).filter(cls.id_track_module == str(projectId),cls.id_problem_type == str(problemId)).offset( int( offset)*int(limit)   ).limit(limit).all();
+        else:
+            offset  = (int(offset) -1 ) * int( limit);
+        return  DBSession.query(cls).filter(cls.id_track_module == str(projectId),cls.id_problem_type == str(problemId)).offset( int( offset )   ).limit(limit).all();
     
     def to_json(self):
         dict  = {"id": self.id_track_problem, 
