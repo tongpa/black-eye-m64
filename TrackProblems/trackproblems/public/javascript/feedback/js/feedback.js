@@ -24,7 +24,7 @@ removeElementsWithClass = function(remove){
 				
 				var item = Array.prototype.pop.call( remove );
 				//console.log("remove array at : " + i + " of " + len);
-				debugger;
+				 
 				if ( item !== undefined ) {
 					if (item.parentNode !== null ) { // check that the item was actually added to DOM
 						item.parentNode.removeChild( item );
@@ -61,8 +61,7 @@ removeElements = function( remove ) {
 			if ( Array !== undefined) {
 				
 				var item = Array.prototype.pop.call( remove );
-				log("remove : index " + i + " at " + len); 
-				//debugger;
+				 
 				if ( item !== undefined ) {
 					if (item.parentNode !== null ) { // check that the item was actually added to DOM
 						item.parentNode.removeChild( item );
@@ -72,7 +71,7 @@ removeElements = function( remove ) {
 		}
 	}
 	catch(err){
-		log("error : " + err); 
+		//log("error : " + err); 
 		for (var i = 0, len = remove.length; i < len; i++ ) {
     	
 			var item = remove[i];
@@ -363,7 +362,39 @@ window.Feedback = function( options ) {
             for (var i = 0, len = options.pages.length; i < len; i++) {
                 options.pages[ i ].close();
             }
-
+            
+             
+            
+            //remove feedback-canvas 
+            
+            feedbackhighlighted =  document.getElementsByClassName('feedback-highlighted');
+            feedbackblackedout = document.getElementsByClassName('feedback-blackedout');
+            
+            for(var i = (feedbackhighlighted.length -1), len =0  ; i >= len; i--) {
+            	document.body.removeChild(feedbackhighlighted[i]);
+            }
+            
+            for(var i = (feedbackblackedout.length -1), len =0  ; i >= len; i--) {
+            	document.body.removeChild(feedbackblackedout[i]);
+            }
+            
+             
+            feedbackhighlighted = null;
+            feedbackblackedout = null; 
+            
+            
+            /*
+            for (var i = (document.body.childNodes.length -1), len =0  ; i >= len; i--){
+            	
+            	var child = document.body.childNodes[i];
+            	 
+            	if ( (child.className !== undefined) && (child.className.trim().search('feedback-highlighted') >=0)  ){
+            		log("child.className : " + child.className);
+            		//document.body.removeChild(child);
+            	}
+            	child = null;
+            }*/
+            
             return false;
 
         },
@@ -407,7 +438,9 @@ window.Feedback = function( options ) {
                 } else {
                     modalBody.appendChild( document.createTextNode( options.messageError ) );
                 }
-                console.log("Send : " );
+                //console.log("Send : " );
+                
+                 
             } );
   
         }
@@ -678,6 +711,7 @@ window.Feedback.Screenshot.prototype.close = function(){
 window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modalFooter, nextButton ) {
 
     if ( this.h2cDone ) {
+    	//log("Start : window.Feedback.Screenshot.prototype.start");
         emptyElements( this.dom );
         nextButton.disabled = false;
         
@@ -847,7 +881,8 @@ window.Feedback.Screenshot.prototype.start = function( modal, modalHeader, modal
 
 
         highlightClose.addEventListener("click", function(){
-        	log("click");
+        	//log("click");
+        	 
             removeElement.parentNode.removeChild( removeElement );
             hideClose();
         }, false);
