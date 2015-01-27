@@ -87,7 +87,8 @@ app.controller("filedController", function($scope, $http,$log) {
 	    	
 	    }
 	    
-	    
+	    var myHeaderCellTemplate ='<div class="ngSelectionCell"><input tabindex="-1" class="ngSelectionCheckbox" type="checkbox" ng-checked="cbVal(row.entity)" /></div>';
+
 		$scope.gridOptions = { 
 				data: 'myData',
 				enablePaging: true,
@@ -98,19 +99,37 @@ app.controller("filedController", function($scope, $http,$log) {
 				afterSelectionChange : $scope.afterSelect,
 				pagingOptions: $scope.pagingOptions,
 		        filterOptions: $scope.filterOptions,
-		        //rowTemplate: '<div ng-style="{\'cursor\': row.cursor, \'z-index\': col.zIndex(),\'height\': \'150px\' }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell {{col.cellClass}}" ng-cell></div>',
+		        showSelectionCheckbox: true,
+		        selectWithCheckboxOnly : true,
+		        plugins:[new ngGridSingleSelectionPlugin()],
+		        checkboxHeaderTemplate: '<input class="ngSelectionHeader" type="checkbox" ng-show="multiSelect" ng-model="allSelected" ng-change="toggleSelectAll(allSelected, true)"/>',
+	            //rowTemplate: '<div ng-style="{\'cursor\': row.cursor, \'z-index\': col.zIndex(),\'height\': \'150px\' }" ng-repeat="col in renderedColumns" ng-class="col.colIndex()" class="ngCell {{col.cellClass}}" ng-cell></div>',
 		        rowHeight: 100,
 		        columnDefs: [
 
 		                     {field: 'image', displayName: 'image', width: '25%', enableCellEdit: false, cellTemplate: '<div ><img src="/getImage?id={{row.getProperty(col.field)}}" alt="Mountain View" class="row_image"/> </div>'}, 
-		                     {field:'description', displayName:'description', width: '50%', enableCellEdit: false}, 
+		                     {field:'description', displayName:'description', width: '25%', enableCellEdit: false}, 
 		                     {field:'user', displayName:'user', width: '10%', enableCellEdit: false}, 
-		                     {field:'from_page', displayName:'from_page', width: '15%', enableCellEdit: false}
+		                     {field:'from_page', displayName:'from_page', width: '15%', enableCellEdit: false}, 
+		                     {
+		                         field: 'dude',
+		                         displayName: 'Dude', width: '15%',
+		                         //headerCellTemplate: myHeaderCellTemplate,
+		                         cellTemplate: '<input type="checkbox" ng-model="row.entity.dude" ng-click="toggle(row.entity.image,row.entity.user)">'
+		                       }
 		        
 		        
 		        ]
 		};
 		
+		$scope.$on('ngGridEventRowSeleted',function(event,row){
+			$scope.selectedRow=row;
+			});
+			
+		$scope.toggle = function(name, value) {
+	        //do something usefull here, you have the name and the new value of dude. Write it to a db or else. 
+	        alert(name + ':' + value);
+	      }
 		
 		$scope.setPagingData = function(data, page, pageSize){	
 			debugger;
