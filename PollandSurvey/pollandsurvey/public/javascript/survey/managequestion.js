@@ -28,6 +28,13 @@ Ext.define('survey.view.list.Project.fieldHelp',{
 	allowBlank: true 
 });
 
+Ext.define('survey.view.list.Project.fieldUpload',{
+	extend: 'Ext.form.field.File',
+	name : 'image_upload',
+	fieldLabel: 'Image', 
+	allowBlank: true 
+});
+
 Ext.define ('survey.view.list.GridQuestions',{
 	extend: 'Ext.grid.Panel',
 	width : '100%',
@@ -464,6 +471,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		
 		main.projectid = Ext.create('survey.view.list.Project.fieldProjectId',{msgTarget: 'side'});
 		
+		main.fileUpload = Ext.create('survey.view.list.Project.fieldUpload',{msgTarget: 'side'});
 		
 		main.questiontypeid  = Ext.create('survey.view.list.Project.fieldQuestionTypeId');
 		
@@ -486,7 +494,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		
 //		
 		 
-		main.items = [main.questionid,main.projectid,main.questiontypeid ,main.dataGrid, main.question, main.fieldSetsHelp,main.choose   ];  
+		main.items = [main.questionid,main.projectid,main.questiontypeid ,main.dataGrid, main.question,main.fileUpload, main.fieldSetsHelp,main.choose   ];  
 		
 		
 		

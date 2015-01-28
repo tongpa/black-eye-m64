@@ -4,6 +4,7 @@
 from tg import expose, flash, require, url, lurl, request, redirect, tmpl_context,validate,response 
 from tg.i18n import ugettext as _, lazy_ugettext as l_
 from tg.exceptions import HTTPFound
+from tg.configuration import AppConfig, config
 from tg import predicates
 from pollandsurvey import model
 from pollandsurvey.controllers.secure import SecureController
@@ -13,6 +14,7 @@ from tgext.admin.controller import AdminController
 
 from pollandsurvey.lib.base import BaseController
 from pollandsurvey.controllers.error import ErrorController
+from pollandsurvey.controllers.utility import Utility
 
 import sys
 import json 
@@ -26,6 +28,9 @@ __all__ = ['SurveyController']
 
 
 class SurveyController(BaseController):
+    
+    def __init__(self):
+        self.utility = Utility();
     
     def _before(self, *args, **kw):
         tmpl_context.project_name = "pollandsurvey"
@@ -166,7 +171,7 @@ class SurveyController(BaseController):
         self.message = "5555";
         
         self.dataValue = kw;
-        
+        print kw;
         if not request.identity:
             login_counter = request.environ.get('repoze.who.logins', 0) + 1
             redirect('/login',
@@ -185,12 +190,40 @@ class SurveyController(BaseController):
             question.help_message = self.dataValue.get('help_message');
             question.id_question_project = self.dataValue.get('id_question_project');
             question.id_question_type = self.dataValue.get('id_question_type');
+            
+            
+            UPLOAD_DIR = config['path_upload_file'] ;
+            
+            
+            
+            
+            
+            
+           
+            
             question.text_label = '';
             question.user_id = user.user_id;
             question.order = 3;
             question.save();
             datagrid  = json.loads(self.dataValue.get('datagrid'));
             
+            
+            print "image : ";
+            imageFile = self.dataValue.get('image_upload');
+            print imageFile.filename;
+            if( imageFile is not None):
+                print "create file";
+                #print imageFile.name; #pass
+                #print imageFile.file; 
+                #print imageFile.filename;
+                #print imageFile.type;
+               
+                self.file_name = imageFile.filename;
+                self.file_data = imageFile.value;
+                self.target_file_name= self.utility.joinPathFileAndCreatePath(UPLOAD_DIR , str(question.id_question), self.file_name);
+                  
+                self.utility.saveFile(self.target_file_name,self.file_data);          
+                
             for basic_datas in datagrid:    
                 basicData = model.BasicData();
                 basicData.id_basic_data_type = 1;
