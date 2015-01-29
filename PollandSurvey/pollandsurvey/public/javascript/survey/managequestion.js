@@ -249,176 +249,7 @@ Ext.define ('survey.view.list.GridQuestions',{
 
 
 
-  
- 
-Ext.define('survey.view.list.GridAnswer', {	
-	extend: 'Ext.grid.Panel',
-	width : '100%',
-	height :  '100%',
-	store : survey.listBasicData,
-	//bufferedRenderer: false,
-	
-	forceFit: true,
-	frame: true,
-	record: null,
-	viewConfig: {
-        emptyText: 'No images to display'
-    },
-    requires: [
-               'Ext.grid.plugin.CellEditing',
-               'Ext.form.field.Text',
-               'Ext.toolbar.TextItem'
-           ],
-    collapsible:false ,
-    setLoadData : function(questionrecord) {
-    	console.log('survey.view.list.GridAnswer'); 
-    	survey.listBasicData.removeAll();
-    	this.record = questionrecord;
-    	//debugger;
-    	if(questionrecord != null){
-	    
-    		survey.listBasicData.load({
-	    		params : {
-	    			questionid : questionrecord.id
-	    		},
-	    		scope : this
-	    	});
-	    	
-    	}
-    	
-    },
-    selType: 'cellmodel',
-   
-    initComponent: function() {
-    	
-    	
-    	 
-    	
-    	
-    	var main = this;
-    	main.editing = Ext.create('Ext.grid.plugin.CellEditing',{clicksToMoveEditor: 1});    	
-    	main.plugins =  [main.editing];
-    	var row = 1;
-    	main.columns = [
-    	                	{xtype: 'rownumberer'},
-    	            {header: 'id', width : '9%', sortable: false, dataIndex: 'id_question' ,hidden : true,menuDisabled: true},
-    	    	   //	{header: 'No.', width : '9%', sortable: false, dataIndex: 'seq',menuDisabled: true},
-    	         	{header: 'Choose', dataIndex: 'value', 
-    	    	   		field : {
-    	    	   			type : 'textfield'
-    	    	   		},
-    	    	   		//editor: 'textfield',  
-    	    	   		width : '70%',   sortable: false,menuDisabled: true}  , 
-    	          
-    	    	    {
-        	            xtype: 'checkcolumn',
-        	            header: 'Answer?',
-        	            dataIndex: 'answer',
-        	            width: '20%',
-        	           
-        	            sortable: false,
-        	           
-        	             sortable: false ,
-        	             handler : function(){
-        	            	 console.log("click");
-        	             },
-        	             listeners : {
-        	            	 checkChange :  
-        	            		 function ( ch, rowIndex, checked, eOpts) {
-        	            		 	 
-        	            		 	
-        	            		 	survey.listBasicData.each(function(record){ 
-        	            		 		 
-        	            		 		record.beginEdit();
-        	            		 		record.set('answer', false);
-        	            		 	    record.modified = false;
-        	            		 	    record.endEdit();
-        	            		 	});
-        	            		 	
-        	            		 	survey.listBasicData.getAt(rowIndex).set('answer', true);
-  
-        	            		 }
-        	            	  
-        	            	 
-        	             }
-    	    	    }   
-    	            
-    	        ];
-    	
-    	main.dockedItems = [{
-            xtype: 'toolbar',
-            items: [{
-                iconCls: 'icon-add',
-                text: 'Add',
-                scope: this,
-                parent : main,
-                handler: this.onAddClick
-            }, {
-            	itemId: 'removeAnswer',
-                iconCls: 'icon-delete',
-                text: 'Delete',
-                //disabled: true,
-                parent : main,
-                scope: this,
-                handler: this.onDeleteClick
-            }]
-        }]  	
-  
-    	 
-    	this.callParent(arguments);    	
-    	//this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
-    } ,
-    
-    listeners: {
-    	'click' : function(){
-    		//alert('test');
-    	},
-        'selectionchange': function(view, records) {
-        	//alert('test');
-        	//this.down('#removeAnswer').setDisabled(!records.length);
-        }
-    },
-    onAddClick : function(bt,ev){
-    	
-    	bt.parent.id_question = 0;
-    	if(bt.parent.record != null){
-    		bt.parent.id_question = bt.parent.record;
-    	}
-    	console.log(this.store.data.length);
-    	 
-    	var r = new Survey.model.listAnswerData({
-    		 
-    		value: 'answer',
-    		answer: false,
-    		seq:   this.store.data.length +1
-    		,id_question : bt.parent.id_question 
-    	});
-    	 
-    	
-    	this.editing.cancelEdit();
-    	rows = this.store.insert(this.store.data.length, r);
-    	console.log(rows);
-    	 
-    	this.editing.startEditByPosition({
-            row: this.store.data.length -1 ,
-            column: 1
-        });
-        
-    },
-    onDeleteClick : function(bt,ev){
-    	
-    	var recordSelected = this.getView().getSelectionModel().getSelection()[0];
-        if (recordSelected) {
-            this.store.remove(recordSelected);
-            
-            
-            
-        }
-        
-        
-    }
-    
-});
+
 
 
 
@@ -445,14 +276,12 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 			form.getForm().loadRecord(questionrecord);
 		}
 		
-		if(projectrecord != null){
-			 	
+		if(projectrecord != null){			 	
 			form.projectid.setValue(projectrecord.id);
 		}
 		
-		
-		if(questiontyperecord != null){
-		 	
+		//type of question
+		if(questiontyperecord != null){		 	
 			form.questiontypeid.setValue(questiontyperecord.id);
 		}
 		
@@ -460,7 +289,8 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		console.log("set data add question");
 		console.log(questionrecord);
 		//load grid question
-		form.choose.setLoadData(questionrecord);
+		form.answerCardPanel.setLoadData(questionrecord);
+		//form.answerCardPanel.choose.setLoadData(questionrecord);
     },
 	initComponent: function() {
 		
@@ -475,7 +305,10 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		
 		main.questiontypeid  = Ext.create('survey.view.list.Project.fieldQuestionTypeId');
 		
+		main.answerCardPanel = Ext.create('survey.view.gui.questiontype.CardPanel');
+		
 		main.dataGrid = Ext.create('Ext.form.field.Hidden',{name : 'datagrid'});
+		
 		main.fieldSetsHelp = Ext.create('Ext.form.FieldSet',{
 			title: 'help',
 	        collapsible: true,
@@ -490,11 +323,11 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 	        items : main.help
 		});
 		
-		main.choose = Ext.create('survey.view.list.GridAnswer');
+		//main.choose = Ext.create('survey.view.list.GridAnswer');
 		
 //		
 		 
-		main.items = [main.questionid,main.projectid,main.questiontypeid ,main.dataGrid, main.question,main.fileUpload, main.fieldSetsHelp,main.choose   ];  
+		main.items = [main.questionid,main.projectid,main.questiontypeid ,main.dataGrid, main.question,main.fileUpload, main.fieldSetsHelp,main.answerCardPanel   ];  
 		
 		
 		

@@ -23,7 +23,7 @@ from sqlalchemy.dialects.mysql import BIT
 from pollandsurvey.model import DeclarativeBase, metadata, DBSession
 import transaction
 __all__ = ['GroupVariables', 'QuestionType', 'QuestionProjectType' ,'BasicDataType', 'QuestionProject','LanguageLabel','Variables','BasicData','BasicQuestion','BasicTextData' 
-           ,'Question', 'QuestionOption']
+           ,'Question', 'QuestionOption', 'BasicMultimediaData']
 
 
 class LanguageLabel(DeclarativeBase):
@@ -827,5 +827,49 @@ class QuestionOption(DeclarativeBase):
     
     
         
+class BasicMultimediaData(DeclarativeBase):   
+    __tablename__ = 'sur_multimedia_data';
+
+    id_basic_data =  Column(Integer,ForeignKey('sur_basic_data.id_basic_data'), index=True, primary_key=True);
+    basic_data = relation('BasicData', backref='sur_multimedia_data_id_basic_data');
     
+    value = Column(String(255),  nullable=False);
+    media_type  = Column(String(255),  nullable=False);
+    media_path_file = Column(String(255),  nullable=False);
+    
+    
+    
+    def __init__(self):
+        self.multi_line = 0;
+        
+    def __str__(self):
+        return '"%s"' % str(self.value )
+    
+    def to_json(self):
+        
+        dict  = {"id": self.id_basic_data, 
+                 "label": self.value,
+                 "media_type": self.media_type,
+                 "media_path_file": self.media_path_file
+                 };
+                 
+        return dict;
+    
+    def save (self):
+        DBSession.add(self); 
+        DBSession.flush() ;
+        
+    def remove(self):
+        DBSession.delete(self); 
+        DBSession.flush() ;
+    
+    @classmethod
+    def getByBasicDataId(cls,idBasicData):
+        return DBSession.query(cls).filter(cls.id_basic_data == str(idBasicData)  ).all();
+    
+    @classmethod
+    def deleteById(cls,idBasicData):
+        
+        DBSession.query(cls).filter(  cls.id_basic_data == str(idBasicData) ).delete();        
+        DBSession.flush() ;   
     

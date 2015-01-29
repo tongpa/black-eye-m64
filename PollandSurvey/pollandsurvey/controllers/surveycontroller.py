@@ -31,6 +31,7 @@ class SurveyController(BaseController):
     
     def __init__(self):
         self.utility = Utility();
+        self.UPLOAD_DIR = config['path_upload_file'] ;
     
     def _before(self, *args, **kw):
         tmpl_context.project_name = "pollandsurvey"
@@ -192,7 +193,7 @@ class SurveyController(BaseController):
             question.id_question_type = self.dataValue.get('id_question_type');
             
             
-            UPLOAD_DIR = config['path_upload_file'] ;
+            
             
             
             
@@ -210,20 +211,53 @@ class SurveyController(BaseController):
             
             print "image : ";
             imageFile = self.dataValue.get('image_upload');
-            print imageFile.filename;
-            if( imageFile is not None):
+            answerimage = self.dataValue.get('answer_image'); 
+            print ('image_upload' in self.dataValue);
+            
+            if( imageFile is not None and imageFile.filename is not None and ('image_upload' in self.dataValue) ):
                 print "create file";
                 #print imageFile.name; #pass
                 #print imageFile.file; 
                 #print imageFile.filename;
                 #print imageFile.type;
-               
+                
                 self.file_name = imageFile.filename;
                 self.file_data = imageFile.value;
-                self.target_file_name= self.utility.joinPathFileAndCreatePath(UPLOAD_DIR , str(question.id_question), self.file_name);
+                self.target_file_name= self.utility.joinPathFileAndCreatePath(self.UPLOAD_DIR , str(question.id_question), self.file_name);
                   
-                self.utility.saveFile(self.target_file_name,self.file_data);          
+                self.utility.saveFile(self.target_file_name,self.file_data);  
                 
+            if (answerimage is not None and (len(answerimage) > 0) and ('image_upload' in self.dataValue)):
+                print "image answer";   
+                print "Len image {0:2}" .format(len(answerimage));  
+                for file in answerimage:
+                    self.file_name = file.filename;
+                    self.file_data = file.value;
+                    self.media_type = file.type;
+                    self.target_file_name= self.utility.joinPathFileAndCreatePath(self.UPLOAD_DIR , str(question.id_question), self.file_name);
+                  
+                    self.utility.saveFile(self.target_file_name,self.file_data); 
+                    
+                    basicData = model.BasicData();
+                    basicData.id_basic_data_type = 3; #image
+                    basicData.save();
+                    
+                    basicMedia = model.BasicMultimediaData();
+                    basicMedia.id_basic_data = basicData.id_basic_data;
+                    basicMedia.value = self.file_name;
+                    basicMedia.media_type = self.media_type;
+                    basicMedia.media_path_file = self.target_file_name;
+                    basicMedia.save();
+                    
+                    basicQuestion = model.BasicQuestion();
+                    basicQuestion.id_question = question.id_question;
+                    basicQuestion.id_basic_data = basicData.id_basic_data;
+                    #basicQuestion.answer =    ({True: True, False: False}[ basic_datas.get('value') in 'true']);
+                    #basicQuestion.order = basic_datas.get('seq');
+                    
+                    basicQuestion.save();
+                    
+                    
             for basic_datas in datagrid:    
                 basicData = model.BasicData();
                 basicData.id_basic_data_type = 1;
