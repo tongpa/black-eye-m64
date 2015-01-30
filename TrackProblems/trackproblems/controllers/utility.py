@@ -7,7 +7,9 @@ log = logging.getLogger(__name__);
 class Utility(object):
     
     def joinPathFileAndCreatePath(self,orig_path,subpath,filename):
+         
         self.target_file_name = os.path.join(os.getcwd(), orig_path , subpath, filename);
+        print self.target_file_name;
         self.createPathFile(self.target_file_name);        
         return self.target_file_name;
     
