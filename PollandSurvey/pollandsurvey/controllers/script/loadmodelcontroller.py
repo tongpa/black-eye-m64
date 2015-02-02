@@ -67,7 +67,15 @@ class ScriptModelController(BaseController):
         
         return dict(survey=BasicQuestion , total = len(BasicQuestion));
     
-    
+    @expose('json')
+    def getBasicMediaData(self, *args, **kw):
+        
+        BasicQuestion = model.BasicQuestion.getBasicMediaById(kw.get('questionid'));
+        BasicQuestion= model.BasicQuestion.convertBasicTextToJson(BasicQuestion);
+       
+        
+        return dict(survey=BasicQuestion , total = len(BasicQuestion));
+        
     @expose('json')
     def getQuestionsData(self, *args, **kw):
         pid = kw.get('projectid');

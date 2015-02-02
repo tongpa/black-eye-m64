@@ -230,6 +230,50 @@ survey.listOptions = new Ext.data.Store({
 	autoLoad : false
 });
 
+
+survey.listBasicMediaData = new Ext.data.Store({
+	model : 'Survey.model.listAnswerData',
+	storeId:'listBasicMediaDataInStore',
+	pageSize: 100,
+	proxy : {
+		 
+		type: 'ajax',
+		url : '/model/getBasicMediaData',    	
+		api: {
+            read: '/model/getBasicMediaData',
+            create: '/survey/createBasicMediaData',
+            update: '/model/createBasicMediaData',
+            destroy: '/model/deleteBasicMediaData'
+        }, 
+        reader:{
+        	type: 'json',
+    		rootProperty : 'survey',
+    		totalProperty : 'total'
+    	},
+        writer: {
+        	type: 'json' ,
+        	writeAllFields: true
+        	 
+           // writeAllFields: false ,
+           // allowSingle :false 
+             
+        },
+        listeners: {
+            exception: function(proxy, response, operation){
+               /* Ext.MessageBox.show({
+                    title: 'REMOTE EXCEPTION',
+                    msg: operation.getError(),
+                    icon: Ext.MessageBox.ERROR,
+                    buttons: Ext.Msg.OK
+                });*/
+            } 
+        }
+	},
+	autoSync: false,
+	autoLoad : false
+});
+
+
 /*
 Ext.define('Survey.store.listProjectid', {
     extend: 'Ext.data.Store',

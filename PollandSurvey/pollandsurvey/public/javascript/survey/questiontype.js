@@ -36,6 +36,59 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 	}
 });
 
+Ext.define('survey.view.gui.questiontype.ImagePanel.ShowImagePanel', {
+	extend : 'Ext.panel.Panel',
+	parentMain : null,
+	layout: {
+	        type: 'hbox',
+	        pack: 'start',
+	        align: 'stretch'
+	    },
+    setLoadData : function(questionrecord) {
+    	console.log('survey.view.gui.questiontype.ImagePanel.ShowImagePanel'); 
+    	//survey.listBasicData.removeAll();
+    	this.record = questionrecord;
+    	//debugger;
+    	if(questionrecord != null){
+	    
+    		survey.listBasicData.load({
+	    		params : {
+	    			questionid : questionrecord.id
+	    		},
+	    		scope : this
+	    	});
+	    	
+    	}
+    	
+    },
+	    setLoadData : function(){
+	    	var form = this;
+	    	form.wrappedImage.setSrc('http://localhost:8081/images/getImage?id=30');
+	    },
+	initComponent: function() {
+		
+		var main = this;
+		main.fileUpload = main.wrappedImage = Ext.create('Ext.Img', {
+  		   anchor: '30%' ,
+  		   flex:1
+  		}); 
+			
+			 
+		main.deletebt = Ext.create('survey.view.gui.questiontype.ImagePanel.RemoveImageBt',{
+			parent : main,
+            scope: this,
+            handler: this.onDeleteClick});
+		
+		main.items = [main.fileUpload,main.deletebt];
+		this.callParent();
+	},
+	onDeleteClick : function(bt,ev){
+		bt.parent.parentMain.remove(bt.parent);
+	}
+});
+
+
+
 
 Ext.define('survey.view.gui.questiontype.ImagePanel', {	
 	extend : 'Ext.panel.Panel',	 
@@ -47,10 +100,30 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
         //,labelWidth: 120
     },
 	frame: false,
+	setLoadData : function(questionrecord) {
+    	console.log('survey.view.gui.questiontype.ImagePanel'); 
+    	//survey.listBasicData.removeAll();
+    	this.record = questionrecord;
+    	//debugger;
+    	if(questionrecord != null){
+	    
+    		survey.listBasicData.load({
+	    		params : {
+	    			questionid : questionrecord.id
+	    		},
+	    		scope : this
+	    	});
+	    	
+    	}
+    	
+    },
+	  
 	initComponent: function() {
     	
     	var main = this;
     	main.fileUpload = Ext.create('survey.view.gui.questiontype.ImagePanel.UploadImagePanel',{parentMain : main});
+    	
+    	
     	
     	
     	main.items = [main.fileUpload];
@@ -84,9 +157,166 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
     } 
 });
 
+
+
+
 ///////////////////////////////////////////////////////////////
+Ext.define('survey.view.gui.questiontype.GridImage', {	
+	extend: 'Ext.grid.Panel',
+	width : '100%',
+	height :  '100%',
+	store : survey.listBasicMediaData,
+	//bufferedRenderer: false,
+	
+	forceFit: true,
+	frame: true,
+	record: null,
+	viewConfig: {
+        emptyText: 'No images to display'
+    },
+    requires: [
+				'Ext.grid.column.Template',
+				'Ext.XTemplate',
+               'Ext.grid.plugin.CellEditing',
+               'Ext.form.field.Text',
+               'Ext.toolbar.TextItem',
+               'Ext.grid.column.UploadFile'
+           ],
+    selType: 'cellmodel',
+    setLoadData : function(questionrecord) {
+    	console.log('survey.view.gui.questiontype.ImagePanel'); 
+    	//survey.listBasicData.removeAll();
+    	this.record = questionrecord;
+    	//debugger;
+    	if(questionrecord != null){
+	    
+    		survey.listBasicMediaData.load({
+	    		params : {
+	    			questionid : questionrecord.id
+	    		},
+	    		scope : this
+	    	});
+	    	
+    	}
+    },
+    initComponent: function() {
+    	var main = this;
+    	
+    	main.columns = [
+    	                {
+    	                	xtype: 'templatecolumn',
+    	                	styleHtmlContent: true,
+    	                    tpl: [
+    	                        ' <div class="photo-answer">',
+    	                        '            <img class="photo-answer" src="http://localhost:8081/images/getSubImage?id={id_basic_data}" width= "30%" height= "30%"/>',
+    	                        ' </div>'
+    	                    ],
+    	                  
+    	                    dataIndex: 'id_basic_data',
+    	                    text: 'Photo'
+    	                   
+    	                },
+    	                {
+    	                	xtype: 'uploadfile',
+    	                	text : 'upload',
+    	                	dataIndex: 'id_basic_data'
+    	                },
+    	                {
+            	            xtype: 'checkcolumn',
+            	            header: 'Answer?',
+            	            dataIndex: 'answer',
+            	            width: '20%',            	           
+            	            sortable: false,
+            	           
+            	             sortable: false ,
+            	             handler : function(){
+            	            	 console.log("click");
+            	             },
+            	             listeners : {
+            	            	 checkChange :  
+            	            		 function ( ch, rowIndex, checked, eOpts) {
+            	            		 	 
+            	            		 	
+            	            		 	survey.listBasicMediaData.each(function(record){ 
+            	            		 		 
+            	            		 		record.beginEdit();
+            	            		 		record.set('answer', false);
+            	            		 	    record.modified = false;
+            	            		 	    record.endEdit();
+            	            		 	});
+            	            		 	
+            	            		 	survey.listBasicMediaData.getAt(rowIndex).set('answer', true);
+      
+            	            		 }
+            	            	  
+            	            	 
+            	             }
+        	    	    } 
+    	             ];
+    	
+    	main.dockedItems = [{
+            xtype: 'toolbar',
+            items: [{
+                iconCls: 'icon-add',
+                text: 'Add',
+                scope: this,
+                parent : main,
+                handler: this.onAddClick
+            }, {
+            	itemId: 'removeAnswer',
+                iconCls: 'icon-delete',
+                text: 'Delete',
+                //disabled: true,
+                parent : main,
+                scope: this,
+                handler: this.onDeleteClick
+            }]
+        }]  
+    	
+    	this.callParent(arguments); 
+    },
+    onAddClick : function(bt,ev){
+    	
+    	bt.parent.id_question = 0;
+    	if(bt.parent.record != null){
+    		bt.parent.id_question = bt.parent.record;
+    	}
+    	console.log(this.store.data.length);
+    	 
+    	var r = new Survey.model.listAnswerData({
+    		 
+    		value: 'answer',
+    		answer: false,
+    		seq:   this.store.data.length +1
+    		,id_question : bt.parent.id_question 
+    	});
+    	debugger; 
+    	
+    	//this.editing.cancelEdit();
+    	rows = this.store.insert(this.store.data.length, r);
+    	console.log(rows);
+    	 
+    	//this.editing.startEditByPosition({
+        //    row: this.store.data.length -1 ,
+        //    column: 1
+        //});
+        
+    },
+    onDeleteClick : function(bt,ev){
+    	
+    	var recordSelected = this.getView().getSelectionModel().getSelection()[0];
+        if (recordSelected) {
+            this.store.remove(recordSelected);
+            
+            
+            
+        }
+        
+        
+    }
+});
 
-
+//////////////////////////////////////////////////////////////
 Ext.define('survey.view.gui.questiontype.GridAnswer', {	
 	extend: 'Ext.grid.Panel',
 	width : '100%',
@@ -279,6 +509,7 @@ Ext.define('survey.view.gui.questiontype.CardPanel', {
     	}
     	 
     	this.choose.setLoadData(questionrecord);
+    	this.images.setLoadData(questionrecord);
     },
 	width : 100,
 	height : 150,
@@ -287,7 +518,9 @@ Ext.define('survey.view.gui.questiontype.CardPanel', {
     	
     	var main = this;
     	
-    	main.images = Ext.create('survey.view.gui.questiontype.ImagePanel');
+    	//main.images = Ext.create('survey.view.gui.questiontype.ImagePanel');
+    	main.images = Ext.create('survey.view.gui.questiontype.GridImage');
+    	
     	main.choose = Ext.create('survey.view.gui.questiontype.GridAnswer');
     	
     	main.layoutpanel = Ext.create('Ext.panel.Panel',{

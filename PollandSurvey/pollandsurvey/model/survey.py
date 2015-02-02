@@ -23,7 +23,7 @@ from sqlalchemy.dialects.mysql import BIT
 from pollandsurvey.model import DeclarativeBase, metadata, DBSession
 import transaction
 __all__ = ['GroupVariables', 'QuestionType', 'QuestionProjectType' ,'BasicDataType', 'QuestionProject','LanguageLabel','Variables','BasicData','BasicQuestion','BasicTextData' 
-           ,'Question', 'QuestionOption', 'BasicMultimediaData']
+           ,'Question', 'QuestionOption', 'BasicMultimediaData','QuestionMedia']
 
 
 class LanguageLabel(DeclarativeBase):
@@ -593,6 +593,47 @@ class QuestionValidation(DeclarativeBase):
         DBSession.delete(self); 
         DBSession.flush() ;
         
+
+class QuestionMedia(DeclarativeBase):
+
+    __tablename__ = 'sur_question_media'
+
+    id_question =  Column(Integer,ForeignKey('sur_question.id_question'), index=True, primary_key=True);
+    quest = relation('Question', backref='sur_question_media_id_question');
+    
+    value = Column(String(255),  nullable=False);
+    media_type  = Column(String(255),  nullable=False);
+    media_path_file = Column(String(255),  nullable=False);
+     
+     
+    
+    def __init__(self):
+        pass;
+        
+    def __str__(self):
+        return '"%s"' % (self.message )
+    
+    @classmethod
+    def getId(cls,act):
+        if act is not None:
+            return DBSession.query(cls).get(act); 
+        else:
+            return DBSession.query(cls).all();       
+    
+    @classmethod
+    def deleteByQuestion(cls,idQuestion):
+        DBSession.query(cls).filter(cls.id_question == str(idQuestion) ).delete();
+        #sql = "delete from sur_question_validation where id_question =" +str(idQuestion) ;
+        #DBSession.execute(sql);
+        DBSession.flush() ;    
+    
+    def delete(self):
+        DBSession.delete(self); 
+        DBSession.flush() ;
+        
+    def save (self):
+        DBSession.add(self); 
+        DBSession.flush() ;
         
 class BasicQuestion(DeclarativeBase):   
     __tablename__ = 'sur_basic_question';
@@ -659,6 +700,17 @@ class BasicQuestion(DeclarativeBase):
             #datad = BasicQuestion()._convertBasicTextToJson( data);
              
         return data;
+    
+    @classmethod
+    def getBasicMediaById(cls,id):
+        data = [];
+        if id is not None:
+             
+            data =  DBSession.query(cls.id_question,cls.answer,BasicMultimediaData.id_basic_data,BasicMultimediaData.value,BasicMultimediaData.media_type,BasicDataType.description,BasicDataType.id_basic_data_type ).join(BasicData).join(BasicMultimediaData).join(BasicDataType).filter(cls.id_question == str(id)).all();
+          
+           
+        return data;
+    
     @classmethod
     def convertBasicTextToJson(self,data):
         value = [];
@@ -865,11 +917,13 @@ class BasicMultimediaData(DeclarativeBase):
     
     @classmethod
     def getByBasicDataId(cls,idBasicData):
-        return DBSession.query(cls).filter(cls.id_basic_data == str(idBasicData)  ).all();
+        return DBSession.query(cls).filter(cls.id_basic_data == str(idBasicData)  ).first();
     
     @classmethod
     def deleteById(cls,idBasicData):
         
         DBSession.query(cls).filter(  cls.id_basic_data == str(idBasicData) ).delete();        
         DBSession.flush() ;   
+        
+     
     

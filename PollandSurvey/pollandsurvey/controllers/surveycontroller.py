@@ -227,8 +227,15 @@ class SurveyController(BaseController):
                   
                 self.utility.saveFile(self.target_file_name,self.file_data);  
                 
+                questionMedia = model.QuestionMedia();
+                questionMedia.id_question = question.id_question;
+                questionMedia.value = self.file_name;
+                questionMedia.media_type = imageFile.type;
+                questionMedia.media_path_file = self.target_file_name;
+                questionMedia.save();
+                
             if (answerimage is not None and (len(answerimage) > 0) and ('image_upload' in self.dataValue)):
-                print "image answer";   
+                 
                 print "Len image {0:2}" .format(len(answerimage));  
                 for file in answerimage:
                     self.file_name = file.filename;

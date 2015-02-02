@@ -246,7 +246,30 @@ Ext.define ('survey.view.list.GridQuestions',{
 });
 
 
-
+Ext.define('survey.view.list.Project.ImageView',{
+	extend : 'Ext.form.Panel',
+	defaults: {
+        anchor: '100%',
+        labelWidth: 100
+    }, 
+    setLoadData : function(){
+    	var form = this;
+    	form.wrappedImage.setSrc('http://localhost:8081/images/getImage?id=30');
+    },
+    initComponent: function() {
+    	
+    	var main = this;
+    	main.fileUpload = Ext.create('survey.view.list.Project.fieldUpload',{msgTarget: 'side'});
+    	main.wrappedImage = Ext.create('Ext.Img', {
+ 		   // src: 'http://www.sencha.com/img/20110215-feat-html5.png',
+    		 
+    		anchor: '30%' 
+ 		    
+ 		});
+    	main.items = [main.wrappedImage,main.fileUpload];
+    	this.callParent();
+    }
+});
 
 
 
@@ -267,7 +290,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
     setLoadData : function (projectrecord,questionrecord, questiontyperecord){
     	
     	console.log('survey.view.list.Project.PAddQuestion');
-    	form = this;
+    	var form = this;
     	form.projectrecord = projectrecord;
 		form.record = questionrecord;
 		form.getForm().reset();
@@ -285,6 +308,9 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 			form.questiontypeid.setValue(questiontyperecord.id);
 		}
 		
+		
+		form.fileUpload.setLoadData();
+		
 //		debugger;
 		console.log("set data add question");
 		console.log(questionrecord);
@@ -301,13 +327,15 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		
 		main.projectid = Ext.create('survey.view.list.Project.fieldProjectId',{msgTarget: 'side'});
 		
-		main.fileUpload = Ext.create('survey.view.list.Project.fieldUpload',{msgTarget: 'side'});
+		main.fileUpload = Ext.create('survey.view.list.Project.ImageView',{msgTarget: 'side'});
 		
 		main.questiontypeid  = Ext.create('survey.view.list.Project.fieldQuestionTypeId');
 		
 		main.answerCardPanel = Ext.create('survey.view.gui.questiontype.CardPanel');
 		
 		main.dataGrid = Ext.create('Ext.form.field.Hidden',{name : 'datagrid'});
+		
+		 
 		
 		main.fieldSetsHelp = Ext.create('Ext.form.FieldSet',{
 			title: 'help',
@@ -327,7 +355,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		
 //		
 		 
-		main.items = [main.questionid,main.projectid,main.questiontypeid ,main.dataGrid, main.question,main.fileUpload, main.fieldSetsHelp,main.answerCardPanel   ];  
+		main.items = [main.questionid,main.projectid,main.questiontypeid ,main.dataGrid, main.question ,main.fileUpload, main.fieldSetsHelp,main.answerCardPanel   ];  
 		
 		
 		

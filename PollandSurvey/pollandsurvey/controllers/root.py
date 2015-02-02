@@ -19,7 +19,7 @@ from pollandsurvey.controllers.surveycontroller import SurveyController;
 from pollandsurvey.controllers.script.loadscriptcontroller import  ScriptController;
 from pollandsurvey.controllers.script.loadmodelcontroller import  ScriptModelController;
 from pollandsurvey.controllers.script.previewcontroller import  PreviewController;
-
+from pollandsurvey.controllers.script.imagescontroller import ImagesController;
 from pollandsurvey.controllers.angularcontroller import AngularController;
 
 
@@ -55,6 +55,7 @@ class RootController(BaseController):
     script = ScriptController();
     model = ScriptModelController();
     
+    images = ImagesController();
     preview =PreviewController();
     
     ang = AngularController();
