@@ -122,4 +122,9 @@ td.patient-label {
     list-style: outside none none;
     
 }
+
+.photo-answer {
+	width: '30%';
+	height: '30%';
+}
 /******/
