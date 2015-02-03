@@ -77,7 +77,7 @@ class SurveyController(BaseController):
         header_message = kw.get('header_message');
         id_question_project_type = kw.get('id_question_project_type');
         name = kw.get('name'); 
-        welcome_text = kw.get('welcome_text'); 
+        #welcome_text = kw.get('welcome_text'); 
         
         if id_question_project is not None or id_question_project != '':
             project = model.QuestionProject.getId(id_question_project);
