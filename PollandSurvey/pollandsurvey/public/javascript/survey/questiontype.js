@@ -4,6 +4,24 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.AnswerImage',{
 	fieldLabel: 'Image', 
 	allowBlank: true 
 });
+
+Ext.define('survey.view.gui.questiontype.ImagePanel.ImageLabel',{
+	extend: 'Ext.form.Label',
+	text : 'No Image.' 
+});
+
+Ext.define('survey.view.gui.questiontype.ImagePanel.ImageFileUploadBt',{
+	extend: 'Ext.form.field.FileButton',
+	name : 'answer_image',
+	text:'Upload Image',
+});
+
+Ext.define('survey.view.gui.questiontype.ImagePanel.CheckboxAnswer',{
+	extend: 'Ext.form.field.Checkbox',
+	name: 'answer'
+});
+
+
 Ext.define('survey.view.gui.questiontype.ImagePanel.RemoveImageBt',{
 	extend: 'Ext.Button',
 	name : 'delete_image',
@@ -22,13 +40,29 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 	initComponent: function() {
 		
 		var main = this;
-		main.fileUpload = Ext.create('survey.view.gui.questiontype.ImagePanel.AnswerImage',{flex:1});
+		
+		main.labelupload = Ext.create('survey.view.gui.questiontype.ImagePanel.ImageLabel');
+		
+		//main.fileUpload = Ext.create('survey.view.gui.questiontype.ImagePanel.AnswerImage',{flex:1});
+		main.fileUpload = Ext.create('survey.view.gui.questiontype.ImagePanel.ImageFileUploadBt',
+				{	parentMain : main,text:'Upload Image',
+					flex:1,
+					listeners: {
+				        scope: this,
+				        change: function(button, e, value) {
+				        	console.log(value);
+				        	main.labelupload.setText(value);
+				        }
+				    }
+		});
+		main.checkbox = Ext.create('survey.view.gui.questiontype.ImagePanel.CheckboxAnswer');
+		
 		main.deletebt = Ext.create('survey.view.gui.questiontype.ImagePanel.RemoveImageBt',{
 			parent : main,
             scope: this,
             handler: this.onDeleteClick});
 		
-		main.items = [main.fileUpload,main.deletebt];
+		main.items = [main.labelupload,main.fileUpload,main.checkbox,main.deletebt];
 		this.callParent();
 	},
 	onDeleteClick : function(bt,ev){
@@ -123,10 +157,10 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
     	var main = this;
     	main.fileUpload = Ext.create('survey.view.gui.questiontype.ImagePanel.UploadImagePanel',{parentMain : main});
     	
+    	 
     	
     	
-    	
-    	main.items = [main.fileUpload];
+    	main.items = [ main.fileUpload ];
     	
     	main.dockedItems = [{
             xtype: 'toolbar',
