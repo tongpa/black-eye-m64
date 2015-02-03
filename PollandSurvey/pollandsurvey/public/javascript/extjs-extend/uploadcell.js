@@ -5,6 +5,9 @@ Ext.define('Ext.grid.column.UploadFile', {
     afterTpl: [
                '<input id="{id}-fileInputEl" data-ref="fileInputEl" class="{childElCls} {inputCls}" ',
                    'type="file" size="1" name="{inputName}" role="{role}" ',
+                   'data-savedtabindex-ext-element-1="none" ',
+                   'data-tabindexsaved="true" ',
+                   
                    '<tpl if="tabIndex != null">tabindex="{tabIndex}"</tpl>',
                '>'
            ], 
@@ -25,7 +28,9 @@ Ext.define('Ext.grid.column.UploadFile', {
     defaultRenderer : function(value, cellValues) {
     	console.log('defaultRenderer');
     	//return '<input type="file"> ';
-    	return this.getTpl('afterTpl').apply(value);
+    	var args = {id : Ext.id(),inputName: 'answer_image',childElCls :'',inputCls:'',role:'button',tabIndex:''}; //x-form-file-input
+    	 
+    	return this.getTpl('afterTpl').apply(args);
     },
     // @private
     applyTriggers: function(triggers) {

@@ -183,6 +183,7 @@ Ext.define('survey.view.gui.questiontype.GridImage', {
                'Ext.grid.column.UploadFile'
            ],
     selType: 'cellmodel',
+    
     setLoadData : function(questionrecord) {
     	console.log('survey.view.gui.questiontype.ImagePanel'); 
     	//survey.listBasicData.removeAll();
@@ -206,52 +207,69 @@ Ext.define('survey.view.gui.questiontype.GridImage', {
     	                {
     	                	xtype: 'templatecolumn',
     	                	styleHtmlContent: true,
+    	                	width: '20%',     
     	                    tpl: [
     	                        ' <div class="photo-answer">',
     	                        '            <img class="photo-answer" src="http://localhost:8081/images/getSubImage?id={id_basic_data}" width= "30%" height= "30%"/>',
     	                        ' </div>'
     	                    ],
-    	                  
     	                    dataIndex: 'id_basic_data',
     	                    text: 'Photo'
-    	                   
     	                },
     	                {
     	                	xtype: 'uploadfile',
     	                	text : 'upload',
-    	                	dataIndex: 'id_basic_data'
+    	                	dataIndex: 'answer_image',
+    	                	width: '40%' 
     	                },
     	                {
             	            xtype: 'checkcolumn',
             	            header: 'Answer?',
             	            dataIndex: 'answer',
             	            width: '20%',            	           
-            	            sortable: false,
-            	           
-            	             sortable: false ,
-            	             handler : function(){
-            	            	 console.log("click");
-            	             },
-            	             listeners : {
-            	            	 checkChange :  
-            	            		 function ( ch, rowIndex, checked, eOpts) {
-            	            		 	 
-            	            		 	
-            	            		 	survey.listBasicMediaData.each(function(record){ 
-            	            		 		 
-            	            		 		record.beginEdit();
-            	            		 		record.set('answer', false);
-            	            		 	    record.modified = false;
-            	            		 	    record.endEdit();
-            	            		 	});
-            	            		 	
-            	            		 	survey.listBasicMediaData.getAt(rowIndex).set('answer', true);
-      
-            	            		 }
-            	            	  
-            	            	 
-            	             }
-        	    	    } 
+	        	             sortable: false ,
+	        	             handler : function(){
+	        	            	 console.log("click");
+	        	             },
+	        	             listeners : {
+	        	            	 checkChange :  
+	        	            		 function ( ch, rowIndex, checked, eOpts) {
+	        	            		  	 
+	        	            		  	main.store.each(function(record){ 	        	            		 		 
+	        	            		 		record.beginEdit();
+	        	            		 		record.set('answer', false);
+	        	            		 	    record.modified = false;
+	        	            		 	    record.endEdit();
+	        	            		 	});
+	        	            		  	main.store.getAt(rowIndex).set('answer', true);
+	        	            		 }
+	        	             }
+        	    	    },
+        	    	    
+        	    	    {	 header: 'Delete?',      
+        	    	    	width: '20%',     
+        	    	          renderer: function(val,meta,rec) {
+        	    	             // generate unique id for an element
+        	    	        	 var parent = main;
+        	    	             var id = Ext.id();
+        	    	             Ext.defer(function() {
+        	    	                Ext.widget('button', {
+        	    	                   renderTo: id,
+        	    	                   text: 'DELETE',
+        	    	                   scale: 'small',
+        	    	                   record : rec,
+        	    	                   iconCls : 'project-remove',
+        	    	                   handler: function(bt,ev) {
+        	    	                      Ext.Msg.alert("Hello World");
+        	    	                      
+        	    	                      parent.store.remove(rec);
+        	    	                      
+        	    	                   }
+        	    	                });
+        	    	             }, 50);
+        	    	             return Ext.String.format('<div id="{0}"></div>', id);
+        	    	          }
+        	    	    }
     	             ];
     	
     	main.dockedItems = [{
@@ -262,7 +280,8 @@ Ext.define('survey.view.gui.questiontype.GridImage', {
                 scope: this,
                 parent : main,
                 handler: this.onAddClick
-            }, {
+            }
+            /*, {
             	itemId: 'removeAnswer',
                 iconCls: 'icon-delete',
                 text: 'Delete',
@@ -270,7 +289,8 @@ Ext.define('survey.view.gui.questiontype.GridImage', {
                 parent : main,
                 scope: this,
                 handler: this.onDeleteClick
-            }]
+            }*/
+            ]
         }]  
     	
     	this.callParent(arguments); 
@@ -290,16 +310,11 @@ Ext.define('survey.view.gui.questiontype.GridImage', {
     		seq:   this.store.data.length +1
     		,id_question : bt.parent.id_question 
     	});
-    	debugger; 
-    	
-    	//this.editing.cancelEdit();
+    	 
+    	 
     	rows = this.store.insert(this.store.data.length, r);
     	console.log(rows);
     	 
-    	//this.editing.startEditByPosition({
-        //    row: this.store.data.length -1 ,
-        //    column: 1
-        //});
         
     },
     onDeleteClick : function(bt,ev){
@@ -511,15 +526,15 @@ Ext.define('survey.view.gui.questiontype.CardPanel', {
     	this.choose.setLoadData(questionrecord);
     	this.images.setLoadData(questionrecord);
     },
-	width : 100,
-	height : 150,
+	width : '100%',
+	height : '100%',
 	frame: false,
 	initComponent: function() {
     	
     	var main = this;
     	
-    	//main.images = Ext.create('survey.view.gui.questiontype.ImagePanel');
-    	main.images = Ext.create('survey.view.gui.questiontype.GridImage');
+    	main.images = Ext.create('survey.view.gui.questiontype.ImagePanel');
+    	//main.images = Ext.create('survey.view.gui.questiontype.GridImage');
     	
     	main.choose = Ext.create('survey.view.gui.questiontype.GridAnswer');
     	

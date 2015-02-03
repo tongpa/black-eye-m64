@@ -25,7 +25,7 @@ Ext.define('Survey.model.listQuestionType', {
 Ext.define('Survey.model.listAnswerData', {
     extend: 'Ext.data.Model',
     idProperty: 'id_basic_data',    
-    fields: ['id_basic_data',   'value','answer','seq','id_question' ] 
+    fields: ['id_basic_data',   'value','answer','seq','id_question' ,'answer_image'] 
     
 });
 

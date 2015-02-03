@@ -234,7 +234,7 @@ class SurveyController(BaseController):
                 questionMedia.media_path_file = self.target_file_name;
                 questionMedia.save();
                 
-            if (answerimage is not None and (len(answerimage) > 0) and ('image_upload' in self.dataValue)):
+            if (answerimage is not None and (len(answerimage) > 0) and ('answer_image' in self.dataValue)):
                  
                 print "Len image {0:2}" .format(len(answerimage));  
                 for file in answerimage:
@@ -294,8 +294,47 @@ class SurveyController(BaseController):
             
             datagrid  = json.loads(self.dataValue.get('datagrid'));
             
-            log.info("show data in grid" );
+            #update image
+            print "image : ";
+            imageFile = self.dataValue.get('image_upload');
+            answerimage = self.dataValue.get('answer_image'); 
+            print ('image_upload' in self.dataValue);
             
+            if( not self.utility.isEmpty(imageFile)  and ('image_upload' in self.dataValue) ):
+                print "create file";
+                #print imageFile.name; #pass
+                #print imageFile.file; 
+                #print imageFile.filename;
+                #print imageFile.type;
+                
+                self.file_name = imageFile.filename;
+                self.file_data = imageFile.value;
+                self.target_file_name= self.utility.joinPathFileAndCreatePath(self.UPLOAD_DIR , str(question.id_question), self.file_name);
+                  
+                self.utility.saveFile(self.target_file_name,self.file_data);  
+                
+                questionMedia = model.QuestionMedia.getId(question.id_question);
+                if(questionMedia is not None):
+                    print "remove old file";
+                    self.utility.removeFile(questionMedia.media_path_file);
+                    
+                    questionMedia.value = self.file_name;
+                    questionMedia.media_type = imageFile.type;
+                    questionMedia.media_path_file = self.target_file_name;
+                    print "update question media";
+                
+                else:
+                    questionMedia = model.QuestionMedia();
+                    questionMedia.id_question = question.id_question;
+                    questionMedia.value = self.file_name;
+                    questionMedia.media_type = imageFile.type;
+                    questionMedia.media_path_file = self.target_file_name;
+                    questionMedia.save();
+                    print "create question media";
+            
+            
+            
+            log.info("show data in grid" );
             for basic_datas in datagrid:   
                 log.info(basic_datas.get('id_question')  );
                 log.info(basic_datas );

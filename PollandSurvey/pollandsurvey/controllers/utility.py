@@ -9,6 +9,11 @@ class Utility(object):
     def __init__(self):
         pass;
     
+    def getDefaultImagePath(self):
+        path = os.getcwd();
+        self.target_file_name = os.path.join(os.getcwd(), path , 'pollandsurvey', 'public','img','survey','not_available.png');
+        return self.target_file_name;
+        
     def joinPathFileAndCreatePath(self,orig_path,subpath,filename):
         self.target_file_name = os.path.join(os.getcwd(), orig_path , subpath, filename);
         print self.target_file_name;
@@ -29,11 +34,27 @@ class Utility(object):
         fp.write(data);
         fp.close();
     
-import ast
-print ast.literal_eval('True')
-print bool('true')
-print bool('false')
+    def removeFile(self,filePath):
+        os.remove( filePath );
+        
+    def isEmpty(self,data):
+        if data is not None:
+            print data;
+            
+            if data == '':
+                return True;
+            else:
+                return False;
+        else:
+            return True;
+#import ast
+#print ast.literal_eval('True')
+#print bool('true')
+#print bool('false')
 
-answer = 'false'
+#answer = 'false'
 
-print ({True: True, False: False}[ answer in 'true'])
+#print ({True: True, False: False}[ answer in 'true'])
+
+u = Utility();
+print u.isEmpty('');

@@ -248,25 +248,45 @@ Ext.define ('survey.view.list.GridQuestions',{
 
 Ext.define('survey.view.list.Project.ImageView',{
 	extend : 'Ext.form.Panel',
+	record : null,
 	defaults: {
         anchor: '100%',
         labelWidth: 100
     }, 
-    setLoadData : function(){
+    setLoadData : function( questionrecord ){
     	var form = this;
-    	form.wrappedImage.setSrc('http://localhost:8081/images/getImage?id=30');
+    	form.record = questionrecord;
+    	form.wrappedImage.setHidden(true);
+    	form.fileUpload.setHidden(true);
+		form.wrappedImage.setSrc('');
+		console.log('load image');
+    	if(questionrecord != null && (questionrecord.data.question_type_name.search("Image") >=0 ) ){
+    		form.wrappedImage.setHidden(false);
+    		form.wrappedImage.setSrc('/images/getImage?id=' + questionrecord.data.id_question);
+    		
+    		form.fileUpload.setHidden(false);
+    	}
+    	 
     },
     initComponent: function() {
     	
     	var main = this;
-    	main.fileUpload = Ext.create('survey.view.list.Project.fieldUpload',{msgTarget: 'side'});
-    	main.wrappedImage = Ext.create('Ext.Img', {
- 		   // src: 'http://www.sencha.com/img/20110215-feat-html5.png',
-    		 
-    		anchor: '30%' 
- 		    
- 		});
-    	main.items = [main.wrappedImage,main.fileUpload];
+    	main.fileUpload = Ext.create('survey.view.list.Project.fieldUpload',{msgTarget: 'side', flex: 3});
+    	main.wrappedImage = Ext.create('Ext.Img', { anchor: '25%',hideLabel: true,title : '' , flex: 1});
+    	main.wrappedImage.setHidden(true);
+    	main.fileUpload.setHidden(true);
+    	
+    	
+    	main.items = [
+    	              {
+    	            	  layout: {
+    	            	        type: 'hbox',
+    	            	        align: 'stretch'
+    	            	    },
+    	            	    items : [main.wrappedImage,main.fileUpload]
+    	              }
+    	              
+    	              ];
     	this.callParent();
     }
 });
@@ -297,6 +317,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		
 		if(questionrecord != null){
 			form.getForm().loadRecord(questionrecord);
+			
 		}
 		
 		if(projectrecord != null){			 	
@@ -307,9 +328,9 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		if(questiontyperecord != null){		 	
 			form.questiontypeid.setValue(questiontyperecord.id);
 		}
+		form.fileUpload.setLoadData(questionrecord);
+		 
 		
-		
-		form.fileUpload.setLoadData();
 		
 //		debugger;
 		console.log("set data add question");
@@ -381,7 +402,11 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 	        			d = null; 
 	        	 	});
 	        		console.log(data);
-	            	
+	            	//for image
+	        		debugger;
+	        		
+	        		var answer_image = document.getElementsByName('answer_image');
+	        		
 	        		main.dataGrid.setValue( Ext.encode(data));
 	        	 
 	        	 
@@ -459,8 +484,8 @@ Ext.define('survey.view.list.Project.winAddQuestion',{
 	layout: 'fit',
 	 
 	modal : true,
-	width : 400,
-	height : 400,
+	width : 500,
+	height : 500,
 	closable: true,
 	 
     closeAction: 'hide',

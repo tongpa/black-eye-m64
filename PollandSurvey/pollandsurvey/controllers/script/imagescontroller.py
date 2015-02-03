@@ -13,6 +13,7 @@ from tgext.admin.controller import AdminController
 
 from pollandsurvey.lib.base import BaseController
 from pollandsurvey.controllers.error import ErrorController
+from pollandsurvey.controllers.utility import Utility;
 
 import sys;
 from datetime import datetime
@@ -32,6 +33,8 @@ __all__ = ['ImagesController']
 class ImagesController(BaseController):
    
     def __init__(self):
+        self.utility = Utility();
+        self.target_file_name = self.utility.getDefaultImagePath();
         pass;
     
     @expose(content_type='image/png')
@@ -43,6 +46,10 @@ class ImagesController(BaseController):
         
         trackImage = model.QuestionMedia.getId(imageId);
         
+     
+        
+       
+        
         if trackImage:
             print trackImage.media_path_file;
             image_file = os.path.join(trackImage.media_path_file );
@@ -52,9 +59,10 @@ class ImagesController(BaseController):
             else:
                 
                 return  file(image_file, "rb").read()
-           
         
-        return file(r"c:\temp\upload\track_feedback\images\27\issue_27.png", "rb").read()
+        
+        
+        return file(self.target_file_name, "rb").read()
     
     @expose(content_type='image/png')
     def getSubImage(self,**kw):
@@ -64,7 +72,8 @@ class ImagesController(BaseController):
         imageId = kw.get('id');
         
         trackImage = model.BasicMultimediaData.getByBasicDataId(imageId);
-        
+        print "orig file path";
+        print os.path.abspath(__file__);
         if trackImage:
             print trackImage.media_path_file;
             image_file = os.path.join(trackImage.media_path_file );
@@ -76,7 +85,7 @@ class ImagesController(BaseController):
                 return  file(image_file, "rb").read()
            
         
-        return file(r"c:\temp\upload\track_feedback\images\27\issue_27.png", "rb").read()
+        return file(self.target_file_name, "rb").read()
      
     
     
