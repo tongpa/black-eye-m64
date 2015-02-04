@@ -12,7 +12,7 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.ImageLabel',{
 
 Ext.define('survey.view.gui.questiontype.ImagePanel.ImageFileUploadBt',{
 	extend: 'Ext.form.field.FileButton',
-	name : 'answer_image',
+	inputName : 'answer_image',
 	text:'Upload Image',
 });
 
@@ -32,6 +32,9 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.RemoveImageBt',{
 Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 	extend : 'Ext.panel.Panel',
 	parentMain : null,
+	accept: ['jpg', 'png', 'gif',  'bmp', 'tif'],  
+	fileslist: [],   
+	isReset: false,
 	 layout: {
 	        type: 'hbox',
 	        pack: 'start',
@@ -42,10 +45,43 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 		var main = this;
 		
 		main.labelupload = Ext.create('survey.view.gui.questiontype.ImagePanel.ImageLabel');
-		
-		//main.fileUpload = Ext.create('survey.view.gui.questiontype.ImagePanel.AnswerImage',{flex:1});
-		main.fileUpload = Ext.create('survey.view.gui.questiontype.ImagePanel.ImageFileUploadBt',
+		main.imageFileUpload = main.wrappedImage = Ext.create('Ext.Img', {
+	  		   anchor: '30%' ,
+	  		   src : '/images/user_1/project_1/question_3/answer_1.png',
+	  		   flex:1
+	  		}); 
+		main.fileUpload = Ext.create('survey.view.gui.questiontype.ImagePanel.AnswerImage',{
+			flex:1,hideLabel :true,width : 50,buttonOnly: true,
+			parent : main,
+			listeners: {
+				scope: this,
+	            'change': function(button, value){
+	            	//debugger;
+	            	//var parent = this.up('form');  
+	            	console.log(value);
+	            	if (!button.parent.isReset) {
+	            		var IsValid = button.parent.fileValidiation(button,value);
+	            		 
+		            	if (!IsValid) { 
+		            		button.parent.isReset = true;
+		            		button.parent.imageFileUpload.setSrc('');
+		            		button.reset( );
+		            		return; } 
+		            	
+		            	button.parent.isReset = false;
+		            	
+		            	//button.parent.imageFileUpload.setSrc('/images/user_1/project_1/question_3/answer_1.png');
+		            	button.parent.imageFileUpload.setSrc(value);
+	            	}else{
+	            		button.parent.isReset = false;
+	            	}
+	                 
+	            } 
+	        }
+			});
+		main.fileUpload1 = Ext.create('survey.view.gui.questiontype.ImagePanel.ImageFileUploadBt',
 				{	parentMain : main,text:'Upload Image',
+					inputName : 'answer_image',
 					flex:1,
 					listeners: {
 				        scope: this,
@@ -55,18 +91,62 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 				        }
 				    }
 		});
-		main.checkbox = Ext.create('survey.view.gui.questiontype.ImagePanel.CheckboxAnswer');
+		main.checkbox = Ext.create('survey.view.gui.questiontype.ImagePanel.CheckboxAnswer',{flex:2});
 		
 		main.deletebt = Ext.create('survey.view.gui.questiontype.ImagePanel.RemoveImageBt',{
 			parent : main,
             scope: this,
+            flex:1,
             handler: this.onDeleteClick});
 		
-		main.items = [main.labelupload,main.fileUpload,main.checkbox,main.deletebt];
+		main.items = [main.imageFileUpload,main.fileUpload,main.checkbox,main.deletebt];
 		this.callParent();
 	},
 	onDeleteClick : function(bt,ev){
 		bt.parent.parentMain.remove(bt.parent);
+	},
+	fileValidiation: function(view, filename){
+		 
+		var isValid = true;  
+	     var indexofPeriod = view.getValue().lastIndexOf("."),  
+	            uploadedExtension = view.getValue().substr(indexofPeriod + 1, view.getValue().length - indexofPeriod); 
+	     
+	 
+	     
+	     if (!Ext.Array.contains(this.accept, uploadedExtension.toLowerCase())) {  
+	         isValid = false;  
+	         // Add the tooltip below to   
+	         // the red exclamation point on the form field  
+	         var erroMsg = Ext.String.format('Translate(Please upload files with an extension of {0} only!)', this.accept.join());  
+	         //me.setActiveError(erroMsg);
+	         console.log(erroMsg);
+	         // Let the user know why the field is red and blank!  
+	         var messageBox = Ext.MessageBox.show({  
+	           title: 'Translate(Add Attachment)',  
+	           msg: erroMsg,  
+	           buttons: Ext.Msg.OK,  
+	           icon: Ext.Msg.WARNING  
+	         });       
+	         //view.setRawValue(null);  
+	         //view.reset();  
+	       }  
+	       for (var i = 0; i < this.fileslist.length; i++) {  
+	         if (this.fileslist[i].indexOf(filename) !== -1) {  
+	           isValid = false;  
+	           var erMsg = Ext.String.format('Translate(The file {0} already added)!', filename);  
+	           console.log(erroMsg);
+	           var messageBox = Ext.MessageBox.show({  
+	             title: 'Translate(Add Attachment)',  
+	             msg: erMsg,  
+	             buttons: Ext.Msg.OK,  
+	             icon: Ext.Msg.INFO  
+	           });  
+	           view.setRawValue(null);  
+	           view.reset();  
+	           break;  
+	         }  
+	       }    
+	       return isValid;  
 	}
 });
 
