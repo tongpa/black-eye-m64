@@ -47,7 +47,8 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 	initComponent: function() {
 		
 		var main = this; 
-		
+		 
+		main.addEvents('onChangeCheckAnswer' );
 		
 		main.labelupload = Ext.create('survey.view.gui.questiontype.ImagePanel.ImageLabel',{margin: '5 0 0 5'});
 		main.imageFileUpload = main.wrappedImage = Ext.create('Ext.Img', {
@@ -125,8 +126,8 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 	            		 	    record.endEdit();
             		 		}
             		 	}
-            		 	
-            		 
+            		 main.fireEvent('onChangeCheckAnswer'); 	
+            		 debugger;
             		  	/*main.store.each(function(record){ 	        	            		 		 
             		 		record.beginEdit();
             		 		record.set('answer', false);
@@ -318,11 +319,12 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
     		this.remove(this.items.getAt(i));
     	}
     	
-    	 
+    	this.rowAt =0;
+    	console.log('start rowAt : ' + this.rowAt); 
     	 
     	this.addHeader(this);
     	this.addFileUpload(this);
-    	this.rowAt =0;
+    	
     	//this.fileUpload.setLoadData(questionrecord);
     },
 	addHeader : function(parent){
@@ -397,18 +399,30 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
     addFileUpload : function(parent){
     	
     	Survey.model.listAnswerData
-    	 this.rowAt = this.rowAt +1;
+    	parent.rowAt = parent.rowAt +1;
     	var r = new Survey.model.listAnswerData({      		 
     		value: 'answer',
     		answer: false,
-    		seq:   this.rowAt  
+    		seq:   parent.rowAt  
     		,id_question : parent.id_question 
     	});    	 
     	rows = this.store.insert(this.store.data.length, r);
     	//rows = survey.listBasicMediaData.insert(survey.listBasicMediaData.data.length, r);
-    	 
+    	console.log('rowAt : ' + parent.rowAt);
+    	console.log(r) ;
     	
-    	var fileUpload = Ext.create('survey.view.gui.questiontype.ImagePanel.UploadImagePanel',{parentMain : parent,store:parent.store,record: r}); 
+    	var fileUpload = Ext.create('survey.view.gui.questiontype.ImagePanel.UploadImagePanel',{
+    		parentMain : parent,
+    		store:parent.store,
+    		record: r,
+    		listeners : {
+           	 'onChangeCheckAnswer' :  function(){
+           		 console.log("onChangeCheckAnswer : test");
+           		 }
+           	 }
+    		
+    		
+    	}); 
     	parent.add(fileUpload);
     }
 });

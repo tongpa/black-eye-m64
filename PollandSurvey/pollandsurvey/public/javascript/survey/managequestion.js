@@ -332,7 +332,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		 
 		
 		
-		debugger;
+ 
 		console.log("set data add question");
 		console.log(questionrecord);
 		
