@@ -10,11 +10,7 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.ImageLabel',{
 	text : 'No Image.' 
 });
 
-Ext.define('survey.view.gui.questiontype.ImagePanel.ImageFileUploadBt',{
-	extend: 'Ext.form.field.FileButton',
-	inputName : 'answer_image',
-	text:'Upload Image',
-});
+ 
 
 Ext.define('survey.view.gui.questiontype.ImagePanel.CheckboxAnswer',{
 	extend: 'Ext.form.field.Checkbox',
@@ -32,27 +28,43 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.RemoveImageBt',{
 Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 	extend : 'Ext.panel.Panel',
 	parentMain : null,
+	store :survey.listBasicMediaData,
 	accept: ['jpg', 'png', 'gif',  'bmp', 'tif'],  
 	fileslist: [],   
 	isReset: false,
-	 layout: {
+	/* layout: {
 	        type: 'hbox',
 	        pack: 'start',
 	        align: 'stretch'
-	    },
+	    },*/
+	setLoadData : function(questionrecord) {
+    	console.log('survey.view.gui.questiontype.ImagePanel.UploadImagePanel'); 
+    	 
+    	
+    	//entMain.remove(bt.parent);
+    	
+    },
 	initComponent: function() {
 		
-		var main = this;
+		var main = this; 
 		
-		main.labelupload = Ext.create('survey.view.gui.questiontype.ImagePanel.ImageLabel');
+		
+		main.labelupload = Ext.create('survey.view.gui.questiontype.ImagePanel.ImageLabel',{margin: '5 0 0 5'});
 		main.imageFileUpload = main.wrappedImage = Ext.create('Ext.Img', {
 	  		   anchor: '30%' ,
 	  		   src : '/images/user_1/project_1/question_3/answer_1.png',
-	  		   flex:1
+	  		//   flex:1,
+	  		   hidden  : true,
+	  		  margin: '5 0 0 5' 
 	  		}); 
+		
+		
 		main.fileUpload = Ext.create('survey.view.gui.questiontype.ImagePanel.AnswerImage',{
-			flex:1,hideLabel :true,width : 50,buttonOnly: true,
+			flex:1,hideLabel :true,
+			//width : 50,
+			buttonOnly: true,
 			parent : main,
+			 margin: '5 0 0 5' ,
 			listeners: {
 				scope: this,
 	            'change': function(button, value){
@@ -71,7 +83,10 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 		            	button.parent.isReset = false;
 		            	
 		            	//button.parent.imageFileUpload.setSrc('/images/user_1/project_1/question_3/answer_1.png');
-		            	button.parent.imageFileUpload.setSrc(value);
+		            	
+		            	//button.parent.imageFileUpload.setSrc(value);
+		            	button.parent.labelupload.setText(value);
+		            	
 	            	}else{
 	            		button.parent.isReset = false;
 	            	}
@@ -79,27 +94,93 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 	            } 
 	        }
 			});
-		main.fileUpload1 = Ext.create('survey.view.gui.questiontype.ImagePanel.ImageFileUploadBt',
-				{	parentMain : main,text:'Upload Image',
-					inputName : 'answer_image',
-					flex:1,
-					listeners: {
-				        scope: this,
-				        change: function(button, e, value) {
-				        	console.log(value);
-				        	main.labelupload.setText(value);
-				        }
-				    }
+	 
+		main.checkbox = Ext.create('survey.view.gui.questiontype.ImagePanel.CheckboxAnswer',{
+			//flex:2
+			 margin: '5 0 0 5' ,
+             listeners : {
+            	 'change' :   
+            		 function ( ch, newValue, oldValue, eOpts) {
+            		 console.log("set other answer is false");
+            		  
+            		 
+            		 	var len = main.store.data.length;
+            		 	for(var i = 0; i < len ; i++){
+            		 		var record = main.store.data[i];
+            		 		if(record == null ){
+            		 			record = main.store.data.items[i];
+            		 		}
+            		 		
+            		 		if(main.record == record){
+            		 			record.beginEdit();
+	            		 		record.set('answer', true);
+	            		 	    record.modified = false;
+	            		 	    record.endEdit();
+            		 		}
+            		 		else{
+            		 		
+	            		 		record.beginEdit();
+	            		 		record.set('answer', false);
+	            		 	    record.modified = false;
+	            		 	    record.endEdit();
+            		 		}
+            		 	}
+            		 	
+            		 
+            		  	/*main.store.each(function(record){ 	        	            		 		 
+            		 		record.beginEdit();
+            		 		record.set('answer', false);
+            		 	    record.modified = false;
+            		 	    record.endEdit();
+            		 	    console.log("set other answer is false");
+            		 	});*/
+            			//debugger; 
+            		  //	main.store.getAt(rowIndex).set('answer', true);
+            		  
+            		 }
+             }
 		});
-		main.checkbox = Ext.create('survey.view.gui.questiontype.ImagePanel.CheckboxAnswer',{flex:2});
 		
 		main.deletebt = Ext.create('survey.view.gui.questiontype.ImagePanel.RemoveImageBt',{
 			parent : main,
             scope: this,
-            flex:1,
+            margin: '5 0 0 5',
+          //  flex:1,
             handler: this.onDeleteClick});
 		
-		main.items = [main.imageFileUpload,main.fileUpload,main.checkbox,main.deletebt];
+		/*main.headImage 
+		main.headUpload  
+		main.headAnswer  
+		main.headDelete */
+		
+		main.panelColumn = Ext.create('Ext.panel.Panel',{
+			layout : 'column',
+			
+			items : [
+			   {
+				   columnWidth: 0.4,
+				   items : [main.labelupload,main.imageFileUpload ]
+			   } ,
+			   {
+				   columnWidth: 0.2,
+				   items : [main.fileUpload]
+			   } ,
+			   {
+				   columnWidth: 0.2,
+				   items : [main.checkbox]
+			   } ,
+			   {
+				   columnWidth: 0.2,frame : true,
+				   items : [main.deletebt]
+			   } 
+			]
+		});
+		
+		
+		
+		main.items = [main.panelColumn];
+		
+		//main.items = [main.labelupload,main.imageFileUpload,main.fileUpload,main.checkbox,main.deletebt];
 		this.callParent();
 	},
 	onDeleteClick : function(bt,ev){
@@ -206,13 +287,14 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.ShowImagePanel', {
 
 Ext.define('survey.view.gui.questiontype.ImagePanel', {	
 	extend : 'Ext.panel.Panel',	 
-	
-	width : 100,
-	height : 150,
+	store :survey.listBasicMediaData,
+	width : '100%',
+	height : '100%',
 	defaults: {
         anchor: '100%'
         //,labelWidth: 120
     },
+    rowAt : 0,
 	frame: false,
 	setLoadData : function(questionrecord) {
     	console.log('survey.view.gui.questiontype.ImagePanel'); 
@@ -227,20 +309,62 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
 	    		},
 	    		scope : this
 	    	});
-	    	
+	    
+    		
+    	} 
+    	console.log(this.items.length);
+    	for(var i = (this.items.length-1 ) ; i >=0; i--){
+    		console.log(this.items.getAt(i));
+    		this.remove(this.items.getAt(i));
     	}
     	
+    	 
+    	 
+    	this.addHeader(this);
+    	this.addFileUpload(this);
+    	this.rowAt =0;
+    	//this.fileUpload.setLoadData(questionrecord);
     },
-	  
+	addHeader : function(parent){
+		
+		parent.headImage = Ext.create('Ext.form.Label',{text: 'Image',margin: '5 0 0 5' });
+		parent.headUpload = Ext.create('Ext.form.Label',{text: 'Upload',margin: '5 0 0 5' });
+		parent.headAnswer = Ext.create('Ext.form.Label',{text: 'Answer?',margin: '5 0 0 5' });
+		parent.headDelete = Ext.create('Ext.form.Label',{text: 'Delete',margin: '5 0 0 5' });
+		var panelColumn = Ext.create('Ext.panel.Panel',{
+			layout : 'column',
+			
+			items : [
+			   {
+				   columnWidth: 0.4,frame : true,
+				   items : [parent.headImage ]
+			   } ,
+			   {
+				   columnWidth: 0.2,frame : true,
+				   items : [parent.headUpload]
+			   } ,
+			   {
+				   columnWidth: 0.2,frame : true,
+				   items : [parent.headAnswer]
+			   } ,
+			   {
+				   columnWidth: 0.2,frame : true,
+				   items : [parent.headDelete]
+			   } 
+			]
+		});
+		parent.add(panelColumn);
+	}  ,
 	initComponent: function() {
     	
     	var main = this;
-    	main.fileUpload = Ext.create('survey.view.gui.questiontype.ImagePanel.UploadImagePanel',{parentMain : main});
+    	//main.fileUpload = Ext.create('survey.view.gui.questiontype.ImagePanel.UploadImagePanel',{parentMain : main,store:main.store});
     	
+    	
+		
     	 
     	
-    	
-    	main.items = [ main.fileUpload ];
+    	//main.items = [ main.fileUpload ]; 
     	
     	main.dockedItems = [{
             xtype: 'toolbar',
@@ -262,13 +386,31 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
     	if(bt.parent.record != null){
     		bt.parent.id_question = bt.parent.record;
     	}
-    	 
     	
-    	var fileUpload = Ext.create('survey.view.gui.questiontype.ImagePanel.UploadImagePanel',{parentMain : bt.parent}); 
-    	bt.parent.add(fileUpload);
+    	
+    	
+    	 
+    	bt.parent.addFileUpload(bt.parent);
     	
         
-    } 
+    },
+    addFileUpload : function(parent){
+    	
+    	Survey.model.listAnswerData
+    	 this.rowAt = this.rowAt +1;
+    	var r = new Survey.model.listAnswerData({      		 
+    		value: 'answer',
+    		answer: false,
+    		seq:   this.rowAt  
+    		,id_question : parent.id_question 
+    	});    	 
+    	rows = this.store.insert(this.store.data.length, r);
+    	//rows = survey.listBasicMediaData.insert(survey.listBasicMediaData.data.length, r);
+    	 
+    	
+    	var fileUpload = Ext.create('survey.view.gui.questiontype.ImagePanel.UploadImagePanel',{parentMain : parent,store:parent.store,record: r}); 
+    	parent.add(fileUpload);
+    }
 });
 
 
@@ -294,7 +436,8 @@ Ext.define('survey.view.gui.questiontype.GridImage', {
                'Ext.grid.plugin.CellEditing',
                'Ext.form.field.Text',
                'Ext.toolbar.TextItem',
-               'Ext.grid.column.UploadFile'
+               'Ext.grid.column.UploadFile',
+               'Ext.form.field.File'
            ],
     selType: 'cellmodel',
     
@@ -330,11 +473,24 @@ Ext.define('survey.view.gui.questiontype.GridImage', {
     	                    dataIndex: 'id_basic_data',
     	                    text: 'Photo'
     	                },
-    	                {
+    	               /* {
     	                	xtype: 'uploadfile',
     	                	text : 'upload',
     	                	dataIndex: 'answer_image',
     	                	width: '40%' 
+    	                },*/
+    	                {
+    	                	xtype: 'widgetcolumn',
+    	                	dataIndex: 'answer_image',
+    	                	width: '40%' ,
+    	                    // This is the widget definition for each cell.
+    	                    // Its "value" setting is taken from the column's dataIndex
+    	                    widget: {
+    	                    	xtype: 'fileuploadfield',
+    	                    	text : 'upload',
+    	                    	name : 'answer_image',
+    	                    	inputType: 'file'
+    	                    }
     	                },
     	                {
             	            xtype: 'checkcolumn',
@@ -626,12 +782,12 @@ Ext.define('survey.view.gui.questiontype.CardPanel', {
 	requires: [
         'Ext.layout.container.Card'
     ],
-    setLoadData : function(questionrecord){
+    setLoadData : function(questionrecord,questiontyperecord){
     	
-    	
-    	if( questionrecord.data.question_type_name.search("Image") >=0 ){
+    	if(( questiontyperecord != null &&  questiontyperecord.data.type.toLowerCase().search("image") >=0) || 
+    		(questionrecord!=null && questionrecord.data.question_type_name.toLowerCase().search("image") >=0)  ){
     		this.layoutpanel.getLayout().setActiveItem(0);
-    	} 
+    	}    
     	else
     	{
     		this.layoutpanel.getLayout().setActiveItem(1);

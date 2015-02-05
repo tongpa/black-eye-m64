@@ -173,6 +173,12 @@ class SurveyController(BaseController):
         
         self.dataValue = kw;
         print kw;
+        print '----------';
+        print args;
+        print '----------';
+        
+    
+        
         if not request.identity:
             login_counter = request.environ.get('repoze.who.logins', 0) + 1
             redirect('/login',

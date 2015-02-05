@@ -332,11 +332,12 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		 
 		
 		
-//		debugger;
+		debugger;
 		console.log("set data add question");
 		console.log(questionrecord);
+		
 		//load grid question
-		form.answerCardPanel.setLoadData(questionrecord);
+		form.answerCardPanel.setLoadData(questionrecord,questiontyperecord);
 		//form.answerCardPanel.choose.setLoadData(questionrecord);
     },
 	initComponent: function() {
@@ -401,17 +402,43 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 	        			data.push(d);
 	        			d = null; 
 	        	 	});
+	        		
+	        		
+	        		var len = survey.listBasicMediaData.data.length;
+        		 	for(var i = 0; i < len ; i++){
+        		 		var record = survey.listBasicMediaData.data[i];
+        		 		if(record == null ){
+        		 			record = survey.listBasicMediaData.data.items[i];
+        		 		}
+        		 		 
+        		 		var d = record.data;
+	        			idQuestion = record.data.id_question;
+	        			d.id_question =  '';
+	        			data.push(d);
+	        			d = null; 
+        		 	}
+	        		
+	        		/*survey.listBasicMediaData.each(function(record){ 
+	        	 		var d = record.data;
+	        			idQuestion = record.data.id_question.data;
+	        			d.id_question = idQuestion;
+	        			data.push(d);
+	        			d = null; 
+	        	 	});*/
+	        		
 	        		console.log(data);
 	            	//for image
-	        		debugger;
+	        		//debugger;
 	        		
-	        		var answer_image = document.getElementsByName('answer_image');
 	        		
+	        		console.log('setValue');
 	        		main.dataGrid.setValue( Ext.encode(data));
 	        	 
-	        	 
+	        		console.log('setValue');
 	             
 	                form.submit({
+	                	scope: this,
+	                	waitMsg: 'Save your Data...',
 	                    success: function(form, action) {
 	                    	//save all question
 	                    	/*
