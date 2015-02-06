@@ -48,7 +48,7 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 		
 		var main = this; 
 		 
-		main.addEvents('onChangeCheckAnswer' );
+		//main.addEvents('onChangeCheckAnswer' );
 		
 		main.labelupload = Ext.create('survey.view.gui.questiontype.ImagePanel.ImageLabel',{margin: '5 0 0 5'});
 		main.imageFileUpload = main.wrappedImage = Ext.create('Ext.Img', {
@@ -416,14 +416,15 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
     		store:parent.store,
     		record: r,
     		listeners : {
-           	 'onChangeCheckAnswer' :  function(){
-           		 console.log("onChangeCheckAnswer : test");
-           		 }
+           	 	'onChangeCheckAnswer' : parent.checkAnswerOnlyOne  
            	 }
     		
     		
     	}); 
     	parent.add(fileUpload);
+    },
+    checkAnswerOnlyOne : function(){
+    	console.log("onChangeCheckAnswer : test");
     }
 });
 
