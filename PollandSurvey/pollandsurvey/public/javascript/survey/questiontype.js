@@ -31,6 +31,14 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 	store :survey.listBasicMediaData,
 	accept: ['jpg', 'png', 'gif',  'bmp', 'tif'],  
 	fileslist: [],   
+	imageUrl : '',
+	record :   new Survey.model.listAnswerData({      		 
+				value: 'answer',
+				answer: 0,
+				seq:  0  
+				,id_question : Ext.id()
+	}),
+	hiddenImage : true,
 	isReset: false,
 	/* layout: {
 	        type: 'hbox',
@@ -50,12 +58,15 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 		 
 		//main.addEvents('onChangeCheckAnswer' );
 		
-		main.labelupload = Ext.create('survey.view.gui.questiontype.ImagePanel.ImageLabel',{margin: '5 0 0 5'});
+		main.labelupload = Ext.create('survey.view.gui.questiontype.ImagePanel.ImageLabel',{margin: '5 0 0 5',hidden : !main.hiddenImage});
 		main.imageFileUpload = main.wrappedImage = Ext.create('Ext.Img', {
-	  		   anchor: '30%' ,
-	  		   src : '/images/user_1/project_1/question_3/answer_1.png',
+	  		   //anchor: '15%' ,
+			width : '15%',
+			height: '15%',
+	  		   src : main.imageUrl, 
+	  		   //'/images/user_1/project_1/question_3/answer_1.png',
 	  		//   flex:1,
-	  		   hidden  : true,
+	  		   hidden  : main.hiddenImage,
 	  		  margin: '5 0 0 5' 
 	  		}); 
 		
@@ -64,6 +75,7 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 			flex:1,hideLabel :true,
 			//width : 50,
 			buttonOnly: true,
+			
 			parent : main,
 			 margin: '5 0 0 5' ,
 			listeners: {
@@ -99,6 +111,7 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 		main.checkbox = Ext.create('survey.view.gui.questiontype.ImagePanel.CheckboxAnswer',{
 			//flex:2
 			 margin: '5 0 0 5' ,
+			 value : main.record.get('answer'),
              listeners : {
             	 'change' :   
             		 function ( ch, newValue, oldValue, eOpts) {
@@ -126,8 +139,9 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 	            		 	    record.endEdit();
             		 		}
             		 	}
-            		 main.fireEvent('onChangeCheckAnswer'); 	
-            		 debugger;
+            		 	if (oldValue == false)
+            		 	{	main.fireEvent('onChangeCheckAnswer',ch, newValue, oldValue, eOpts);  }
+            		 
             		  	/*main.store.each(function(record){ 	        	            		 		 
             		 		record.beginEdit();
             		 		record.set('answer', false);
@@ -185,7 +199,13 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 		this.callParent();
 	},
 	onDeleteClick : function(bt,ev){
+		console.log('onDeleteClick');
+		this.fireEvent('removePanelAnswer',bt.parent);
 		bt.parent.parentMain.remove(bt.parent);
+		
+		//this.fireEvent('removePanelAnswer',bt.parent);
+		//bt.parent.fireEvent('removePanelAnswer',bt.parent);
+		
 	},
 	fileValidiation: function(view, filename){
 		 
@@ -279,7 +299,9 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.ShowImagePanel', {
 		this.callParent();
 	},
 	onDeleteClick : function(bt,ev){
+		//console.log('onDeleteClick');
 		bt.parent.parentMain.remove(bt.parent);
+		//bt.parent.fireEvent('removePanelAnswer',bt.parent);
 	}
 });
 
@@ -295,6 +317,7 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
         anchor: '100%'
         //,labelWidth: 120
     },
+    idFileUploads : [],
     rowAt : 0,
 	frame: false,
 	setLoadData : function(questionrecord) {
@@ -302,29 +325,54 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
     	//survey.listBasicData.removeAll();
     	this.record = questionrecord;
     	//debugger;
-    	if(questionrecord != null){
-	    
-    		survey.listBasicData.load({
-	    		params : {
-	    			questionid : questionrecord.id
-	    		},
-	    		scope : this
-	    	});
-	    
-    		
-    	} 
-    	console.log(this.items.length);
+    	this.haveData = false;
+    	
     	for(var i = (this.items.length-1 ) ; i >=0; i--){
-    		console.log(this.items.getAt(i));
     		this.remove(this.items.getAt(i));
     	}
     	
+    	this.addHeader(this);
     	this.rowAt =0;
     	console.log('start rowAt : ' + this.rowAt); 
+    	if(questionrecord != null){
+    		
+    		console.log('lenght : ' + survey.listBasicMediaData.data.length);
+    		
+    		survey.listBasicMediaData.load({
+	    		params : {
+	    			questionid : questionrecord.id
+	    		},
+	    		scope : this,
+	    		callback: function(records, operation, success){
+	    			 
+	    			if(success){
+	    				debugger;
+	    				this.haveData = records.length > 0;
+	    				console.log(' records.length '  +  records.length); 
+	    				console.log('have Data '  + (this.haveData)); 
+	    				for(var i = 0; i < records.length; i++){
+
+	    					var imageUrl = '/images/getSubImage?id=' + records[i].data.id_basic_data;
+	    					
+	    					this.addFileUpload(this,imageUrl,records[i]);
+	    				}
+	    				console.log('lenght : ' + survey.listBasicMediaData.data.length);
+	    			}
+	    			
+	    			console.log('Add File Upload '  + (!this.haveData)); 
+	    	    	
+	    	    	if (!this.haveData){
+	    	    		 
+	    	    		this.addFileUpload(this);
+	    	    	}
+	    			
+	    			
+	    		}
+	    	});
+    		
+    		
+    	} 
     	 
-    	this.addHeader(this);
-    	this.addFileUpload(this);
-    	
     	//this.fileUpload.setLoadData(questionrecord);
     },
 	addHeader : function(parent){
@@ -392,39 +440,85 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
     	
     	
     	 
-    	bt.parent.addFileUpload(bt.parent);
+    	bt.parent.addFileUpload(bt.parent,null,null);
     	
         
     },
-    addFileUpload : function(parent){
+    addFileUpload : function(parent,urlImage,listAnswerData){
     	
     	Survey.model.listAnswerData
     	parent.rowAt = parent.rowAt +1;
     	var r = new Survey.model.listAnswerData({      		 
     		value: 'answer',
-    		answer: false,
+    		answer: 0,
     		seq:   parent.rowAt  
     		,id_question : parent.id_question 
     	});    	 
-    	rows = this.store.insert(this.store.data.length, r);
+    	
     	//rows = survey.listBasicMediaData.insert(survey.listBasicMediaData.data.length, r);
     	console.log('rowAt : ' + parent.rowAt);
     	console.log(r) ;
+    	var id_FileUpload = Ext.id();
+    	var urlImage = '';
+    	if (listAnswerData != null) {
+    		urlImage =  '/images/getSubImage?id=' + listAnswerData.get('id_basic_data');
+    		r = listAnswerData;
+    		
+    		//rows = this.store.insert(this.store.data.length, r);
+    		
+    		/*r.set('answer',listAnswerData.answer == 1);
+    		r.set('seq',listAnswerData.seq)
+    		r.set('id_basic_data',)
+    		*/
+    	}else
+    	{
+    		rows = this.store.insert(this.store.data.length, r);
+    	}
     	
     	var fileUpload = Ext.create('survey.view.gui.questiontype.ImagePanel.UploadImagePanel',{
+    		id : id_FileUpload,
     		parentMain : parent,
     		store:parent.store,
     		record: r,
+    		imageUrl : urlImage,
+    		hiddenImage : listAnswerData == null ,
     		listeners : {
-           	 	'onChangeCheckAnswer' : parent.checkAnswerOnlyOne  
-           	 }
-    		
-    		
+           	 	'onChangeCheckAnswer' : parent.checkAnswerOnlyOne  ,
+           	 	'removePanelAnswer' : parent.removePanelAnswer
+    		}
     	}); 
+    	
+    	this.idFileUploads.push(id_FileUpload);
     	parent.add(fileUpload);
     },
-    checkAnswerOnlyOne : function(){
-    	console.log("onChangeCheckAnswer : test");
+    checkAnswerOnlyOne : function(ch, newValue, oldValue, eOpts){
+    	 
+    	
+    	for(var i=0; i < this.parentMain.idFileUploads.length ;i++){
+    		var fileUploadPanel  = Ext.getCmp(this.parentMain.idFileUploads[i]);
+    		 
+    		if ( fileUploadPanel.getId() != this.getId()){
+    			 
+    			fileUploadPanel.checkbox.setValue(false);
+    		} 
+    		fileUploadPanel = null;
+    		 
+    	}
+    	//debugger;
+    },
+    removePanelAnswer: function(fileUpload){
+    	console.log('removePanelAnswer');
+    
+    	for(var i=0; i < this.parentMain.idFileUploads.length ;i++){
+    		var fileUploadPanel  = Ext.getCmp(this.parentMain.idFileUploads[i]);
+    	 	if ( fileUploadPanel.getId() == fileUpload.getId()){
+    			 this.parentMain.idFileUploads.splice(i, 1);
+    			 fileUploadPanel = null;
+    			 break;
+    		} 
+    		fileUploadPanel = null;
+    	}
+    	 
     }
 });
 
@@ -457,7 +551,7 @@ Ext.define('survey.view.gui.questiontype.GridImage', {
     selType: 'cellmodel',
     
     setLoadData : function(questionrecord) {
-    	console.log('survey.view.gui.questiontype.ImagePanel'); 
+    	console.log('survey.view.gui.questiontype.GridImage'); 
     	//survey.listBasicData.removeAll();
     	this.record = questionrecord;
     	//debugger;
@@ -591,7 +685,7 @@ Ext.define('survey.view.gui.questiontype.GridImage', {
     	var r = new Survey.model.listAnswerData({
     		 
     		value: 'answer',
-    		answer: false,
+    		answer: 0,
     		seq:   this.store.data.length +1
     		,id_question : bt.parent.id_question 
     	});
@@ -755,7 +849,7 @@ Ext.define('survey.view.gui.questiontype.GridAnswer', {
     	var r = new Survey.model.listAnswerData({
     		 
     		value: 'answer',
-    		answer: false,
+    		answer: 0,
     		seq:   this.store.data.length +1
     		,id_question : bt.parent.id_question 
     	});
@@ -809,6 +903,7 @@ Ext.define('survey.view.gui.questiontype.CardPanel', {
     	}
     	 
     	this.choose.setLoadData(questionrecord);
+    	console.log('call from survey.view.gui.questiontype.CardPanel');
     	this.images.setLoadData(questionrecord);
     },
 	width : '100%',

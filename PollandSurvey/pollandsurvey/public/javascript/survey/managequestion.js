@@ -404,8 +404,15 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 	        	 	});
 	        		
 	        		
+	        		console.log('lenght : ' + survey.listBasicData.data.length);
+	        		
 	        		var len = survey.listBasicMediaData.data.length;
-        		 	for(var i = 0; i < len ; i++){
+	        		
+	        		console.log('lenght listBasicMediaData : ' + survey.listBasicMediaData.data.length);
+        		 	
+	        		debugger;
+	        		
+	        		for(var i = 0; i < len ; i++){
         		 		var record = survey.listBasicMediaData.data[i];
         		 		if(record == null ){
         		 			record = survey.listBasicMediaData.data.items[i];
