@@ -187,10 +187,11 @@ class SurveyController(BaseController):
         user =  request.identity['user']; 
         
         #model.Question.createQuestion(self.dataValue,user.user_id);
-        
+        print "check";
+        print self.dataValue.get('id_question') is None or ( len(self.dataValue.get('id_question')) == 0 );
         
         if(self.dataValue.get('id_question') is None or ( len(self.dataValue.get('id_question')) == 0 )  ):
-         
+            print "---------- add Object---------------------";
             question = model.Question();
          
             question.question = self.dataValue.get('question');
@@ -290,7 +291,7 @@ class SurveyController(BaseController):
                 basicQuestion.save();
         
         else:
-            log.info("-----update--------");
+            print ("-----update--------");
             log.info(self.dataValue.get('id_question'));
             
             question = model.Question.getById(self.dataValue.get('id_question'));
@@ -340,21 +341,27 @@ class SurveyController(BaseController):
             
             
             
-            log.info("show data in grid" );
+            print("show data in grid" );
             for basic_datas in datagrid:   
-                log.info(basic_datas.get('id_question')  );
+                print(basic_datas.get('id_question')  );
                 log.info(basic_datas );
-                if (basic_datas.get('id_question') is None):
+                if (basic_datas.get('id_question') is not None and len( str(basic_datas.get('id_question')).strip() ) > 0  ):
+                    print "update basicQuestion";
                     #update
                     basicText = model.BasicTextData.getId(basic_datas.get('id_basic_data'));
-                    basicText.value = basic_datas.get('value');
+                    if (basicText is not None):
+                        basicText.value = basic_datas.get('value');
                     
-                    basicQuestion = model.BasicQuestion.getByQuestionAndBasic( self.dataValue.get('id_question'), basic_datas.get('id_basic_data'));
+                    print 'id_question : ' + str(basic_datas.get('id_question'));
+                    print 'id_basic_data : ' + str(basic_datas.get('id_basic_data'));
+                    
+                    basicQuestion = model.BasicQuestion.getByQuestionAndBasic( basic_datas.get('id_question'), basic_datas.get('id_basic_data'));
                     basicQuestion.answer =  ({True: 1, False: 0}[ str(basic_datas.get('answer')).lower() in 'true']);
                     basicQuestion.order = basic_datas.get('seq');
                     
                      
                 else:
+                    print "insert basicQuestion";
                     #insert
                     basicData = model.BasicData();
                     basicData.id_basic_data_type = 1;
@@ -463,5 +470,17 @@ class SurveyController(BaseController):
        
         return dict(success=self.success, message = self.message);
     
+    @expose('json')
+    def deleteMediaQuestion(self, came_from=lurl('/'), *args, **kw):
+        reload(sys);
+        sys.setdefaultencoding("utf-8");
+        self.success = True;
+        self.message = "5555";
+        log.info('---------1--------------');
         
+        df = json.loads(request.body, encoding=request.charset);
+        
+        model.QuestionMedia.deleteByQuestion(df.get('id'));
+        
+        return dict(success=self.success, message = self.message);
     

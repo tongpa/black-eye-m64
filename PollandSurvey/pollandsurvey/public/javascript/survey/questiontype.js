@@ -36,7 +36,8 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 				value: 'answer',
 				answer: 0,
 				seq:  0  
-				,id_question : Ext.id()
+				,id_question : Ext.id(),
+	    		answer_image: ''
 	}),
 	hiddenImage : true,
 	isReset: false,
@@ -346,7 +347,7 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
 	    		callback: function(records, operation, success){
 	    			 
 	    			if(success){
-	    				debugger;
+	    				 
 	    				this.haveData = records.length > 0;
 	    				console.log(' records.length '  +  records.length); 
 	    				console.log('have Data '  + (this.haveData)); 
@@ -434,7 +435,8 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
     	
     	bt.parent.id_question = 0;
     	if(bt.parent.record != null){
-    		bt.parent.id_question = bt.parent.record;
+    		bt.parent.id_question = bt.parent.record.get('id_question');
+    		 
     	}
     	
     	
@@ -452,7 +454,8 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
     		value: 'answer',
     		answer: 0,
     		seq:   parent.rowAt  
-    		,id_question : parent.id_question 
+    		,id_question : parent.id_question ,
+    		answer_image: ''
     	});    	 
     	
     	//rows = survey.listBasicMediaData.insert(survey.listBasicMediaData.data.length, r);
@@ -490,6 +493,7 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
     	
     	this.idFileUploads.push(id_FileUpload);
     	parent.add(fileUpload);
+    	debugger;
     },
     checkAnswerOnlyOne : function(ch, newValue, oldValue, eOpts){
     	 
@@ -687,7 +691,8 @@ Ext.define('survey.view.gui.questiontype.GridImage', {
     		value: 'answer',
     		answer: 0,
     		seq:   this.store.data.length +1
-    		,id_question : bt.parent.id_question 
+    		,id_question : bt.parent.id_question ,
+    		answer_image: ''
     	});
     	 
     	 
@@ -851,7 +856,8 @@ Ext.define('survey.view.gui.questiontype.GridAnswer', {
     		value: 'answer',
     		answer: 0,
     		seq:   this.store.data.length +1
-    		,id_question : bt.parent.id_question 
+    		,id_question : bt.parent.id_question ,
+    		answer_image: ''
     	});
     	 
     	
