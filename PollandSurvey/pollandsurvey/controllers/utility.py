@@ -58,3 +58,7 @@ class Utility(object):
 
 u = Utility();
 print u.isEmpty('');
+
+import types
+print type(u'') is types.UnicodeType;
+

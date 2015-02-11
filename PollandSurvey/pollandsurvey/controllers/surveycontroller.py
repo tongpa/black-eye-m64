@@ -18,6 +18,7 @@ from pollandsurvey.controllers.utility import Utility
 
 import sys
 import json 
+import types
 from tg import tmpl_context
 from pollandsurvey.widget.movie_form import create_movie_form
 
@@ -165,7 +166,7 @@ class SurveyController(BaseController):
         #return dict(failed=self.success, message = self.message);
         
     @expose('json')
-    def addQuestion(self, came_from=lurl('/'), *args, **kw):
+    def addQuestion1(self, came_from=lurl('/'), *args, **kw):
         reload(sys);
         sys.setdefaultencoding("utf-8");
         self.success = True;
@@ -438,6 +439,375 @@ class SurveyController(BaseController):
         print kw;
         
         return dict(success=self.success, message = self.message);
+    
+    @expose('json')
+    def addQuestion(self, came_from=lurl('/'), *args, **kw):
+        reload(sys);
+        sys.setdefaultencoding("utf-8");
+        self.success = True;
+        self.message = "5555";
+        
+        self.dataValue = kw;
+        print kw;
+        print '----------';
+        print args;
+        print '----------';
+        
+    
+        
+        if not request.identity:
+            login_counter = request.environ.get('repoze.who.logins', 0) + 1
+            redirect('/login',
+                params=dict(came_from=came_from, __logins=login_counter))
+        
+        user =  request.identity['user']; 
+        
+        #model.Question.createQuestion(self.dataValue,user.user_id);
+        print "check";
+        
+        self.isCreate = self.dataValue.get('id_question') is None or ( len(self.dataValue.get('id_question')) == 0 );
+        
+        self.id_question_type  = self.dataValue.get('id_question_type')
+        #create or update question
+        question = model.Question();
+        if( self.isCreate  ):
+            print "---------- create question---------------------";
+            question.question = self.dataValue.get('question');
+            question.help_message = self.dataValue.get('help_message');
+            question.id_question_project = self.dataValue.get('id_question_project');
+            question.id_question_type = self.id_question_type;
+            
+            question.text_label = '';
+            question.user_id = user.user_id;
+            question.order = 3;
+            question.save();
+            
+            print question.id_question;
+        else:
+            print "---------- update question---------------------";
+            question = model.Question.getById(self.dataValue.get('id_question'));
+            
+            question.help_message = self.dataValue.get('help_message');
+            question.text_label = '';
+            question.question = self.dataValue.get('question');
+            question.user_id = user.user_id;
+        
+        print "save Question";
+            
+        # create or update questionMedia    
+        imageFile = self.dataValue.get('image_upload');
+        if type(imageFile) is types.InstanceType:
+            
+            self.file_name = imageFile.filename;
+            self.file_data = imageFile.value;
+            self.target_file_name= self.utility.joinPathFileAndCreatePath(self.UPLOAD_DIR , str(question.id_question), self.file_name);
+              
+            self.utility.saveFile(self.target_file_name,self.file_data);  
+            
+            questionMedia = model.QuestionMedia.getId(question.id_question);
+            if(questionMedia is None):
+                questionMedia = model.QuestionMedia();
+                questionMedia.id_question = question.id_question;
+            else:
+                self.utility.removeFile(questionMedia.media_path_file);
+                print 'remove file : ' + questionMedia.media_path_file;
+            questionMedia.value = self.file_name;
+            questionMedia.media_type = imageFile.type;
+            questionMedia.media_path_file = self.target_file_name;
+            questionMedia.save();
+            
+            print "save questionMedia"; 
+            
+        #Step 2 create         
+        datagrid  = json.loads(self.dataValue.get('datagrid'));
+        for basic_datas in datagrid:  
+            print basic_datas;
+            self.isCreate = basic_datas.get('id_question') is not None and len( str(basic_datas.get('id_question')).strip() ) > 0 ;
+            
+            basicData = model.BasicData();
+            basicQuestion = model.BasicQuestion();
+            print "----------------------------------------------------------";
+            if (not self.isCreate ):
+                print "create basic data";                
+                basicData.id_basic_data_type = self.id_question_type; #image
+                basicData.save();  
+                
+                print "create basic question";
+                basicQuestion.id_question = question.id_question;
+                basicQuestion.id_basic_data = basicData.id_basic_data;
+                basicQuestion.answer =   basic_datas.get('answer') ;# ({True: True, False: False}[ basic_datas.get('answer') in 'true']);
+                basicQuestion.order = basic_datas.get('seq');                    
+                basicQuestion.save();              
+            else:
+                print "update basic data : " + str( basic_datas.get('id_basic_data'));                
+                basicData.id_basic_data = basic_datas.get('id_basic_data');
+                basicQuestion  = model.BasicQuestion.getByQuestionAndBasic(question.id_question,basicData.id_basic_data);
+                if(basicQuestion):
+                    basicQuestion.answer =   basic_datas.get('answer') ; 
+                    basicQuestion.order = basic_datas.get('seq');    
+                else:
+                    print "error load basicQuestion";
+           
+            print "----------------------------------------------------------";
+            print 'self.id_question_type : ' + str(self.id_question_type)  + ' type : ' + type(self.id_question_type).__name__ ;
+            if (self.id_question_type == '1' or self.id_question_type == '2' or self.id_question_type == '3'):
+                print "case text";
+                basicText = model.BasicTextData();
+                if (not self.isCreate ):
+                    print "create basic text";
+                    basicText.id_basic_data = basicData.id_basic_data;
+                    basicText.value = basic_datas.get('value');
+                    basicText.save();
+                else:
+                    print "update basic text";
+                    basicText = model.BasicTextData.getByBasicDataId(basicData.id_basic_data);
+                    if(basicText):                
+                        basicText.value = basic_datas.get('value');                       
+                    else:
+                        print "error load BasicTextData";    
+                
+            elif (self.id_question_type == '4'):
+                print "case image";
+                answerimage = self.dataValue.get('answer_image');
+                print basic_datas.get('answer_image');
+                print type(answerimage);
+                
+                print 'basicData.id_basic_data : ' + str(basicData.id_basic_data);
+                
+                if (type(answerimage) is types.InstanceType or  type(answerimage) is types.ListType) :
+                    if  type(answerimage) is types.InstanceType:
+                        print 'single file';
+                        print answerimage.type;
+                        file = answerimage;
+                        if (basic_datas.get('answer_image') == file.filename) :
+                            self.file_name = file.filename;
+                            self.file_data = file.value;
+                            self.media_type = file.type;
+                            self.target_file_name= self.utility.joinPathFileAndCreatePath(self.UPLOAD_DIR , str(question.id_question), self.file_name);
+                          
+                            self.utility.saveFile(self.target_file_name,self.file_data); 
+                            
+                            
+                            basicMedia = model.BasicMultimediaData();
+                            basicMedia.id_basic_data = basicData.id_basic_data;
+                            basicMedia.value = self.file_name;
+                            basicMedia.media_type = self.media_type;
+                            basicMedia.media_path_file = self.target_file_name;
+                            basicMedia.save();
+                            
+                    else:
+                        for file in answerimage:
+                            print 'type file';
+                            print file.type;
+                            if (basic_datas.get('answer_image') == file.filename) :
+                                self.file_name = file.filename;
+                                self.file_data = file.value;
+                                self.media_type = file.type;
+                                self.target_file_name= self.utility.joinPathFileAndCreatePath(self.UPLOAD_DIR , str(question.id_question), self.file_name);
+                              
+                                self.utility.saveFile(self.target_file_name,self.file_data); 
+                                
+                                
+                                basicMedia = model.BasicMultimediaData();
+                                basicMedia.id_basic_data = basicData.id_basic_data;
+                                basicMedia.value = self.file_name;
+                                basicMedia.media_type = self.media_type;
+                                basicMedia.media_path_file = self.target_file_name;
+                                basicMedia.save();
+                  
+                else:
+                    print "Other type";
+                pass;
+            """
+            
+            datagrid  = json.loads(self.dataValue.get('datagrid'));
+            
+            
+            print "image : ";
+            imageFile = self.dataValue.get('image_upload');
+            answerimage = self.dataValue.get('answer_image'); 
+            print ('image_upload' in self.dataValue);
+            
+            if( imageFile is not None and imageFile.filename is not None and ('image_upload' in self.dataValue) ):
+                print "create file";
+                #print imageFile.name; #pass
+                #print imageFile.file; 
+                #print imageFile.filename;
+                #print imageFile.type;
+                
+                self.file_name = imageFile.filename;
+                self.file_data = imageFile.value;
+                self.target_file_name= self.utility.joinPathFileAndCreatePath(self.UPLOAD_DIR , str(question.id_question), self.file_name);
+                  
+                self.utility.saveFile(self.target_file_name,self.file_data);  
+                
+                questionMedia = model.QuestionMedia();
+                questionMedia.id_question = question.id_question;
+                questionMedia.value = self.file_name;
+                questionMedia.media_type = imageFile.type;
+                questionMedia.media_path_file = self.target_file_name;
+                questionMedia.save();
+                
+                print "save questionMedia";
+                
+            if (answerimage is not None and (len(answerimage) > 0) and ('answer_image' in self.dataValue)):
+                 
+                print "Len image {0:2}" .format(len(answerimage));  
+                for file in answerimage:
+                    self.file_name = file.filename;
+                    self.file_data = file.value;
+                    self.media_type = file.type;
+                    self.target_file_name= self.utility.joinPathFileAndCreatePath(self.UPLOAD_DIR , str(question.id_question), self.file_name);
+                  
+                    self.utility.saveFile(self.target_file_name,self.file_data); 
+                    
+                    basicData = model.BasicData();
+                    basicData.id_basic_data_type = 3; #image
+                    basicData.save();
+                    
+                    basicMedia = model.BasicMultimediaData();
+                    basicMedia.id_basic_data = basicData.id_basic_data;
+                    basicMedia.value = self.file_name;
+                    basicMedia.media_type = self.media_type;
+                    basicMedia.media_path_file = self.target_file_name;
+                    basicMedia.save();
+                    
+                    basicQuestion = model.BasicQuestion();
+                    basicQuestion.id_question = question.id_question;
+                    basicQuestion.id_basic_data = basicData.id_basic_data;
+                    #basicQuestion.answer =    ({True: True, False: False}[ basic_datas.get('value') in 'true']);
+                    #basicQuestion.order = basic_datas.get('seq');
+                    
+                    basicQuestion.save();
+                    
+                    
+            for basic_datas in datagrid:    
+                basicData = model.BasicData();
+                basicData.id_basic_data_type = 1;
+                basicData.save();
+                
+                basicText = model.BasicTextData();
+                basicText.id_basic_data = basicData.id_basic_data;
+                basicText.value = basic_datas.get('value');
+                basicText.save();
+                
+                basicQuestion = model.BasicQuestion();
+                basicQuestion.id_question = question.id_question;
+                basicQuestion.id_basic_data = basicData.id_basic_data;
+                basicQuestion.answer =    ({True: True, False: False}[ basic_datas.get('value') in 'true']);
+                basicQuestion.order = basic_datas.get('seq');
+                
+                basicQuestion.save();
+        
+        else:
+            print ("-----update--------");
+            log.info(self.dataValue.get('id_question'));
+            
+            question = model.Question.getById(self.dataValue.get('id_question'));
+            question.help_message = self.dataValue.get('help_message');
+            question.text_label = '';
+            question.question = self.dataValue.get('question');
+            
+            datagrid  = json.loads(self.dataValue.get('datagrid'));
+            
+            #update image
+            print "image : ";
+            imageFile = self.dataValue.get('image_upload');
+            answerimage = self.dataValue.get('answer_image'); 
+            print ('image_upload' in self.dataValue);
+            
+            if( not self.utility.isEmpty(imageFile)  and ('image_upload' in self.dataValue) ):
+                print "create file";
+                #print imageFile.name; #pass
+                #print imageFile.file; 
+                #print imageFile.filename;
+                #print imageFile.type;
+                
+                self.file_name = imageFile.filename;
+                self.file_data = imageFile.value;
+                self.target_file_name= self.utility.joinPathFileAndCreatePath(self.UPLOAD_DIR , str(question.id_question), self.file_name);
+                  
+                self.utility.saveFile(self.target_file_name,self.file_data);  
+                
+                questionMedia = model.QuestionMedia.getId(question.id_question);
+                if(questionMedia is not None):
+                    print "remove old file";
+                    self.utility.removeFile(questionMedia.media_path_file);
+                    
+                    questionMedia.value = self.file_name;
+                    questionMedia.media_type = imageFile.type;
+                    questionMedia.media_path_file = self.target_file_name;
+                    print "update question media";
+                
+                else:
+                    questionMedia = model.QuestionMedia();
+                    questionMedia.id_question = question.id_question;
+                    questionMedia.value = self.file_name;
+                    questionMedia.media_type = imageFile.type;
+                    questionMedia.media_path_file = self.target_file_name;
+                    questionMedia.save();
+                    print "create question media";
+            
+            
+            
+            print("show data in grid" );
+            for basic_datas in datagrid:   
+                print(basic_datas.get('id_question')  );
+                log.info(basic_datas );
+                if (basic_datas.get('id_question') is not None and len( str(basic_datas.get('id_question')).strip() ) > 0  ):
+                    print "update basicQuestion";
+                    #update
+                    basicText = model.BasicTextData.getId(basic_datas.get('id_basic_data'));
+                    if (basicText is not None):
+                        basicText.value = basic_datas.get('value');
+                    
+                    print 'id_question : ' + str(basic_datas.get('id_question'));
+                    print 'id_basic_data : ' + str(basic_datas.get('id_basic_data'));
+                    
+                    basicQuestion = model.BasicQuestion.getByQuestionAndBasic( basic_datas.get('id_question'), basic_datas.get('id_basic_data'));
+                    basicQuestion.answer =  ({True: 1, False: 0}[ str(basic_datas.get('answer')).lower() in 'true']);
+                    basicQuestion.order = basic_datas.get('seq');
+                    
+                     
+                else:
+                    print "insert basicQuestion";
+                    #insert
+                    basicData = model.BasicData();
+                    basicData.id_basic_data_type = 1;
+                    basicData.save();
+                    
+                    
+                    basicText = model.BasicTextData();
+                    basicText.id_basic_data = basicData.id_basic_data;
+                    basicText.value = basic_datas.get('value');
+                    basicText.save();
+                    
+                    basicQuestion = model.BasicQuestion();
+                    basicQuestion.id_question = question.id_question;
+                    basicQuestion.id_basic_data = basicData.id_basic_data;
+                    basicQuestion.answer =    ({True: 1, False: 0}[ str(basic_datas.get('answer')).lower() in 'true']);
+                    basicQuestion.order = basic_datas.get('seq');
+                    
+                    basicQuestion.save();
+                    
+                    pass;
+                
+                
+            
+                
+            pass;
+        
+         
+  
+        
+         """
+            
+        print "save object";
+        
+        
+        
+        return dict(success=self.success, message = self.message);
+    
     
     @expose('json')
     def createBasicData(self, came_from=lurl('/'), *args, **kw):

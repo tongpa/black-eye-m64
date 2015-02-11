@@ -100,6 +100,8 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 		            	
 		            	//button.parent.imageFileUpload.setSrc(value);
 		            	button.parent.labelupload.setText(value);
+		            	main.record.set('answer_image',value);
+		            	 
 		            	
 	            	}else{
 	            		button.parent.isReset = false;
@@ -131,6 +133,8 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 	            		 		record.set('answer', true);
 	            		 	    record.modified = false;
 	            		 	    record.endEdit();
+	            		 	    
+	            		 	   main.record.set('answer', true);
             		 		}
             		 		else{
             		 		
@@ -138,6 +142,8 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 	            		 		record.set('answer', false);
 	            		 	    record.modified = false;
 	            		 	    record.endEdit();
+	            		 	    
+	            		 	   main.record.set('answer', false);
             		 		}
             		 	}
             		 	if (oldValue == false)
@@ -363,8 +369,8 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
 	    			console.log('Add File Upload '  + (!this.haveData)); 
 	    	    	
 	    	    	if (!this.haveData){
-	    	    		 
-	    	    		this.addFileUpload(this);
+	    	    		 console.log('Add field upload');
+	    	    		//this.addFileUpload(this);
 	    	    	}
 	    			
 	    			
@@ -447,7 +453,7 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
         
     },
     addFileUpload : function(parent,urlImage,listAnswerData){
-    	
+    	console.log('add data to listBasicMediaData') ;
     	Survey.model.listAnswerData
     	parent.rowAt = parent.rowAt +1;
     	var r = new Survey.model.listAnswerData({      		 
@@ -569,6 +575,7 @@ Ext.define('survey.view.gui.questiontype.GridImage', {
 	    	});
 	    	
     	}
+    	
     },
     initComponent: function() {
     	var main = this;
@@ -680,6 +687,7 @@ Ext.define('survey.view.gui.questiontype.GridImage', {
     },
     onAddClick : function(bt,ev){
     	
+    	console.log('add list answer data');
     	bt.parent.id_question = 0;
     	if(bt.parent.record != null){
     		bt.parent.id_question = bt.parent.record;
@@ -750,7 +758,7 @@ Ext.define('survey.view.gui.questiontype.GridAnswer', {
 	    	});
 	    	
     	}
-    	
+    	//debugger;
     },
     selType: 'cellmodel',
    

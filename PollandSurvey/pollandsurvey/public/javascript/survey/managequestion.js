@@ -282,8 +282,9 @@ Ext.define('survey.view.list.Project.ImageView',{
 		form.wrappedImage.setSrc('');
 		console.log('load image');
 		
-		 
-    	if(questionrecord != null && (questionrecord.data.question_type_name.toLowerCase().search("image") >=0 ) ){
+		  
+    	if(questionrecord != null  ){
+    		//&& (questionrecord.data.question_type_name.toLowerCase().search("image") >=0 )
     		console.log("setShow");
     		form.wrappedImage.setHidden(false);
     		form.wrappedImage.setSrc('/images/getImage?id=' + questionrecord.data.id_question);
@@ -539,22 +540,34 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 	            	
 	            	//var data =survey.listBasicData.getData();
 	            	var data = [];
-	        		survey.listBasicData.each(function(record){ 
-	        	 		var d = record.data;
-	        			idQuestion = record.data.id_question.data;
-	        			d.id_question = idQuestion;
-	        			data.push(d);
+	            	debugger;
+	            	
+	            	var len = survey.listBasicData.data.length; 
+	            	console.log('survey.listBasicData.data.length : ' + len);
+	            	for(var i = 0; i < len ; i++){
+	            		var record = survey.listBasicData.data[i];
+        		 		if(record == null ){
+        		 			record = survey.listBasicData.data.items[i];
+        		 		}
+        		 		
+	            		if (!main.checkInteger(record.id)){
+	            			 record.set('id_question','');
+	            			 record.set('id_basic_data','');
+	            		}
+	            		var d = record.data;
+	            		data.push(d);
+	        			console.log(d);
+	        			
+	        			record = null;  
 	        			d = null; 
-	        	 	});
+	            	}
+
 	        		
+	        		len = survey.listBasicMediaData.data.length;
 	        		
-	        		console.log('lenght : ' + survey.listBasicData.data.length);
-	        		
-	        		var len = survey.listBasicMediaData.data.length;
-	        		
-	        		console.log('lenght listBasicMediaData : ' + survey.listBasicMediaData.data.length);
+	        		console.log('survey.listBasicMediaData.data.length : ' + survey.listBasicMediaData.data.length);
         		 	
-	        		debugger;
+	        		
 	        		
 	        		for(var i = 0; i < len ; i++){
         		 		var record = survey.listBasicMediaData.data[i];
@@ -563,7 +576,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
         		 		}
         		 		 
         		 		var d = record.data;
-	        			idQuestion = record.data.id_question;
+        		 		var idQuestion = record.data.id_question;
 	        			d.id_question='';
 	        			
 	        			if (main.checkInteger(record.id)){
@@ -577,7 +590,20 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 	        			d = null; 
         		 	}
 	        		
-	        		/*survey.listBasicMediaData.each(function(record){ 
+	        		/*
+	        		 * 
+	        		 survey.listBasicData.each(function(record){ 
+	        			
+	        			 
+	        	 		var d = record.data;
+	        			idQuestion = record.data.id_question.data;
+	        			d.id_question = idQuestion;
+	        			data.push(d);
+	        			console.log(d.data);
+	        			debugger; 
+	        			d = null; 
+	        	 	});
+	        		 survey.listBasicMediaData.each(function(record){ 
 	        	 		var d = record.data;
 	        			idQuestion = record.data.id_question.data;
 	        			d.id_question = idQuestion;
