@@ -793,6 +793,7 @@ Ext.define('survey.view.gui.questiontype.GridAnswer', {
     	//this.getStore().data = Ext.create("Ext.util.Collection");
     	 
     	 */
+    	console.log(questionrecord);
     	if(questionrecord != null){
 	    
     		survey.listBasicData.load({
