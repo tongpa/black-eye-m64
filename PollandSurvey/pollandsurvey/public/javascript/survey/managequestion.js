@@ -197,14 +197,24 @@ Ext.define ('survey.view.list.GridQuestions',{
 					    			              		url		: '/survey/deleteQuestion',
 					    			                	method  : 'POST',
 					    			                	jsonData: datajson,	
-					    			                	success: function(response){
-					    			                	    	
-					    			                		grid.getStore().remove(record);
+					    			                	success: function(response, opts){
+					    			                		var resp = Ext.decode(response.responseText); 	
+					    			                		console.log(resp);
+					    			                		if(resp.success){
+					    			                			grid.getStore().remove(record);
 					    			                			//main.resetData();
+					    			                		}
+					    			                		else{
+					    			                			Ext.Msg.alert('Failed', resp.message);
+					    			                		}
 					    			                			
 					    			                			 
-					    			                		}
-					    			                	});
+					    			                		},
+					    			                	failure: function(response, opts) {
+					    			                		console.log('server-side failure with status code ' );
+					    			                	}
+					    			                	
+					    				        	});
 					    				        	 
 					    				        	 
 					    				        }  

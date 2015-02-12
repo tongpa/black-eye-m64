@@ -121,33 +121,34 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
             		 console.log("set other answer is false");
             		  
             		 
-            		 	var len = main.store.data.length;
-            		 	for(var i = 0; i < len ; i++){
-            		 		var record = main.store.data[i];
-            		 		if(record == null ){
-            		 			record = main.store.data.items[i];
-            		 		}
-            		 		
-            		 		if(main.record == record){
-            		 			record.beginEdit();
-	            		 		record.set('answer', true);
-	            		 	    record.modified = false;
-	            		 	    record.endEdit();
-	            		 	    
-	            		 	   main.record.set('answer', true);
-            		 		}
-            		 		else{
-            		 		
-	            		 		record.beginEdit();
-	            		 		record.set('answer', false);
-	            		 	    record.modified = false;
-	            		 	    record.endEdit();
-	            		 	    
-	            		 	   main.record.set('answer', false);
-            		 		}
-            		 	}
             		 	if (oldValue == false)
-            		 	{	main.fireEvent('onChangeCheckAnswer',ch, newValue, oldValue, eOpts);  }
+            		 	{	
+            		 		var len = main.store.data.length;
+            		 		console.log(len);
+            		 		var len = main.store.data.length;
+            		 		
+            		 		
+            		 		main.store.each(function(record){ 	   
+            		 			if(main.record == record){
+            		 				record.beginEdit();
+                    		 		record.set('answer', 1);
+                    		 	    record.modified = false;
+                    		 	    record.endEdit();
+                    		 	    console.log("set other answer is true");
+            		 			}
+            		 			else{
+            		 				record.beginEdit();
+                    		 		record.set('answer', 0);
+                    		 	    record.modified = false;
+                    		 	    record.endEdit();
+                    		 	    console.log("set other answer is false");
+            		 			}
+                		 		
+                		 	});
+            		 		
+            		 		
+            		 		main.fireEvent('onChangeCheckAnswer',ch, newValue, oldValue, eOpts);  
+            		 	}
             		 
             		  	/*main.store.each(function(record){ 	        	            		 		 
             		 		record.beginEdit();
@@ -207,11 +208,48 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 	},
 	onDeleteClick : function(bt,ev){
 		console.log('onDeleteClick');
-		this.fireEvent('removePanelAnswer',bt.parent);
-		bt.parent.parentMain.remove(bt.parent);
-		
-		//this.fireEvent('removePanelAnswer',bt.parent);
-		//bt.parent.fireEvent('removePanelAnswer',bt.parent);
+		main = this;
+		Ext.Msg.show({
+		    title:'Confirm Delete?',
+		    message: 'Do you delete : '  ,
+		    buttons: Ext.Msg.YESNO,
+		    icon: Ext.Msg.QUESTION,
+		    fn: function(btn) {
+		        if (btn === 'yes') {
+		        	
+		        	console.log(bt.parent.record.get('id_basic_data'));
+		        	
+		        	
+		        	 
+		        	Ext.Ajax.request({
+	              		url		: '/survey/deleteQuestionData',
+	              		method: 'POST',
+	                    headers: { 'Content-Type': 'application/json' },
+	                    params : Ext.JSON.encode( {'id' : bt.parent.record.get('id_basic_data') } ),
+	                	success: function(response, opts){
+	                		var resp = Ext.decode(response.responseText); 	
+	                		console.log(resp);
+	                		if(resp.success){
+	                			bt.parent.fireEvent('removePanelAnswer',bt.parent);
+	                			bt.parent.parentMain.remove(bt.parent);
+	                		}
+	                		else{
+	                			Ext.Msg.alert('Failed', resp.message);
+	                		}
+	                		resp = null;	
+	                			 
+	                		},
+	                	failure: function(response, opts) {
+	                		console.log('server-side failure with status code ' );
+	                	}
+	                	
+		        	});
+		        	 
+		        	 
+		        }  
+		    }
+		});
+		 
 		
 	},
 	fileValidiation: function(view, filename){
@@ -453,7 +491,7 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
         
     },
     addFileUpload : function(parent,urlImage,listAnswerData){
-    	console.log('add data to listBasicMediaData') ;
+    	console.log('add data to listAnswerData') ;
     	Survey.model.listAnswerData
     	parent.rowAt = parent.rowAt +1;
     	var r = new Survey.model.listAnswerData({      		 
@@ -499,7 +537,7 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
     	
     	this.idFileUploads.push(id_FileUpload);
     	parent.add(fileUpload);
-    	debugger;
+    	 
     },
     checkAnswerOnlyOne : function(ch, newValue, oldValue, eOpts){
     	 
@@ -507,7 +545,7 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
     	for(var i=0; i < this.parentMain.idFileUploads.length ;i++){
     		var fileUploadPanel  = Ext.getCmp(this.parentMain.idFileUploads[i]);
     		 
-    		if ( fileUploadPanel.getId() != this.getId()){
+    		if ( fileUploadPanel != null && fileUploadPanel.getId() != this.getId()){
     			 
     			fileUploadPanel.checkbox.setValue(false);
     		} 
@@ -521,7 +559,7 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
     
     	for(var i=0; i < this.parentMain.idFileUploads.length ;i++){
     		var fileUploadPanel  = Ext.getCmp(this.parentMain.idFileUploads[i]);
-    	 	if ( fileUploadPanel.getId() == fileUpload.getId()){
+    	 	if ( fileUploadPanel != null && fileUploadPanel.getId() == fileUpload.getId()){
     			 this.parentMain.idFileUploads.splice(i, 1);
     			 fileUploadPanel = null;
     			 break;
@@ -536,6 +574,7 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
 
 
 ///////////////////////////////////////////////////////////////
+ 
 Ext.define('survey.view.gui.questiontype.GridImage', {	
 	extend: 'Ext.grid.Panel',
 	width : '100%',
@@ -627,11 +666,11 @@ Ext.define('survey.view.gui.questiontype.GridImage', {
 	        	            		  	 
 	        	            		  	main.store.each(function(record){ 	        	            		 		 
 	        	            		 		record.beginEdit();
-	        	            		 		record.set('answer', false);
+	        	            		 		record.set('answer', 0);
 	        	            		 	    record.modified = false;
 	        	            		 	    record.endEdit();
 	        	            		 	});
-	        	            		  	main.store.getAt(rowIndex).set('answer', true);
+	        	            		  	main.store.getAt(rowIndex).set('answer', 1);
 	        	            		 }
 	        	             }
         	    	    },
@@ -745,9 +784,198 @@ Ext.define('survey.view.gui.questiontype.GridAnswer', {
     collapsible:false ,
     setLoadData : function(questionrecord) {
     	console.log('survey.view.list.GridAnswer'); 
-    	survey.listBasicData.removeAll();
+    	/*survey.listBasicData.removeAll();
+    	this.getStore().removeAll();
+    	 
+    	console.log('survey.listBasicData.data.length : ' + survey.listBasicData.data.length );
     	this.record = questionrecord;
+    	
+    	//this.getStore().data = Ext.create("Ext.util.Collection");
+    	 
+    	 */
+    	if(questionrecord != null){
+	    
+    		survey.listBasicData.load({
+	    		params : {
+	    			questionid : questionrecord.id
+	    		},
+	    		scope : this
+	    	});
+	    	
+    	}
     	//debugger;
+    },
+    selType: 'cellmodel',
+   
+    initComponent: function() {
+    	
+    	
+    	 
+    	
+    	
+    	var main = this;
+    	//main.editing = Ext.create('Ext.grid.plugin.CellEditing',{clicksToMoveEditor: 1});    	
+    	//main.plugins =  [main.editing];
+    	var row = 1;
+    	main.columns = [
+    	                	{xtype: 'rownumberer'},
+    	            {header: 'id', width : '9%', sortable: false, dataIndex: 'id_question' ,hidden : true,menuDisabled: true},
+    	    	   
+    	         	{header: 'Choose', dataIndex: 'value', 
+    	    	   		field : {
+    	    	   			type : 'textfield'
+    	    	   		},
+    	    	   		//editor: 'textfield',  
+    	    	   		width : '70%',   sortable: false,menuDisabled: true}   
+    	          
+    	    	        
+    	            
+    	        ];
+    	
+    	main.dockedItems = [{
+            xtype: 'toolbar',
+            items: [{
+                iconCls: 'icon-add',
+                text: 'Add',
+                scope: this,
+                parent : main,
+                handler: this.onAddClick
+            }, {
+            	itemId: 'removeAnswer',
+                iconCls: 'icon-delete',
+                text: 'Delete',
+                //disabled: true,
+                parent : main,
+                scope: this,
+                handler: this.onDeleteClick
+            }]
+        }]  	
+  
+    	 
+    	this.callParent(arguments);    	
+    	//this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
+    } ,
+    
+    listeners: {
+    	'click' : function(){
+    		//alert('test');
+    	},
+        'selectionchange': function(view, records) {
+        	//alert('test');
+        	//this.down('#removeAnswer').setDisabled(!records.length);
+        }
+    },
+    onAddClick : function(bt,ev){
+    	
+    	bt.parent.id_question = 0;
+    	if(bt.parent.record != null){
+    		bt.parent.id_question = bt.parent.record;
+    	}
+    	console.log(this.store.data.length);
+    	 
+    	var r = new Survey.model.listAnswerData({
+    		 
+    		value: 'answer',
+    		answer: 0,
+    		seq:   this.store.data.length +1
+    		,id_question : bt.parent.id_question ,
+    		answer_image: ''
+    	});
+    	
+    	 
+    	
+    	//this.editing.cancelEdit();
+    	rows = this.store.insert(this.store.data.length, r);
+    	console.log(rows);
+    	 
+    	/*this.editing.startEditByPosition({
+            row: this.store.data.length -1 ,
+            column: 1
+        });*/
+        
+    },
+    onDeleteClick : function(bt,ev){
+    	
+    	console.log('delete from cell');
+    	 
+    	Ext.Msg.show({
+		    title:'Confirm Delete?',
+		    message: 'Do you delete : '  ,
+		    buttons: Ext.Msg.YESNO,
+		    icon: Ext.Msg.QUESTION,
+		    fn: function(btn) {
+		        if (btn === 'yes') {
+		        	
+		        	var recordSelected = bt.parent.getView().getSelectionModel().getSelection()[0];
+		        	if (recordSelected){
+			        	console.log(recordSelected.get('id_basic_data'));
+			        	Ext.Ajax.request({
+		              		url		: '/survey/deleteQuestionData',
+		              		method: 'POST',
+		                    headers: { 'Content-Type': 'application/json' },
+		                    params : Ext.JSON.encode( {'id' : recordSelected.get('id_basic_data') } ),
+		                	success: function(response, opts){
+		                		var resp = Ext.decode(response.responseText); 	
+		                		console.log(resp);
+		                		if(resp.success){
+		                			bt.parent.store.remove(recordSelected);
+		                		}
+		                		else{
+		                			Ext.Msg.alert('Failed', resp.message);
+		                		}
+		                		resp = null;	
+		                			 
+		                		},
+		                	failure: function(response, opts) {
+		                		console.log('server-side failure with status code ' );
+		                	}
+		                	
+			        	});
+		        	}
+		        	 
+		        	 
+		        }  
+		    }
+		});
+    	 
+        
+    }
+    
+});
+
+
+
+/////////////////////////////////////////////////////////////////
+Ext.define('survey.view.gui.questiontype.GridAnswer1', {	
+	extend: 'Ext.grid.Panel',
+	width : '100%',
+	height :  '100%',
+	store : survey.listBasicData,
+	//bufferedRenderer: false,
+	
+	forceFit: true,
+	frame: true,
+	record: null,
+	viewConfig: {
+        emptyText: 'No images to display'
+    },
+    requires: [
+               'Ext.grid.plugin.CellEditing',
+               'Ext.form.field.Text',
+               'Ext.toolbar.TextItem'
+           ],
+    collapsible:false ,
+    setLoadData : function(questionrecord) {
+    	console.log('survey.view.list.GridAnswer'); 
+    	survey.listBasicData.removeAll();
+    	this.getStore().removeAll();
+    	 
+    	console.log('survey.listBasicData.data.length : ' + survey.listBasicData.data.length );
+    	this.record = questionrecord;
+    	
+    	//this.getStore().data = Ext.create("Ext.util.Collection");
+    	 
+    	 
     	if(questionrecord != null){
 	    
     		survey.listBasicData.load({
@@ -803,12 +1031,12 @@ Ext.define('survey.view.gui.questiontype.GridAnswer', {
         	            		 	survey.listBasicData.each(function(record){ 
         	            		 		 
         	            		 		record.beginEdit();
-        	            		 		record.set('answer', false);
-        	            		 	    record.modified = false;
+        	            		 		record.set('answer', 0);
+        	            		 	    //record.modified = false;
         	            		 	    record.endEdit();
         	            		 	});
         	            		 	
-        	            		 	survey.listBasicData.getAt(rowIndex).set('answer', true);
+        	            		 	survey.listBasicData.getAt(rowIndex).set('answer', 1);
   
         	            		 }
         	            	  
@@ -881,14 +1109,48 @@ Ext.define('survey.view.gui.questiontype.GridAnswer', {
     },
     onDeleteClick : function(bt,ev){
     	
-    	var recordSelected = this.getView().getSelectionModel().getSelection()[0];
-        if (recordSelected) {
-            this.store.remove(recordSelected);
-            
-            
-            
-        }
-        
+    	console.log('delete from cell');
+    	 
+    	Ext.Msg.show({
+		    title:'Confirm Delete?',
+		    message: 'Do you delete : '  ,
+		    buttons: Ext.Msg.YESNO,
+		    icon: Ext.Msg.QUESTION,
+		    fn: function(btn) {
+		        if (btn === 'yes') {
+		        	
+		        	var recordSelected = bt.parent.getView().getSelectionModel().getSelection()[0];
+		        	if (recordSelected){
+			        	console.log(recordSelected.get('id_basic_data'));
+			        	Ext.Ajax.request({
+		              		url		: '/survey/deleteQuestionData',
+		              		method: 'POST',
+		                    headers: { 'Content-Type': 'application/json' },
+		                    params : Ext.JSON.encode( {'id' : recordSelected.get('id_basic_data') } ),
+		                	success: function(response, opts){
+		                		var resp = Ext.decode(response.responseText); 	
+		                		console.log(resp);
+		                		if(resp.success){
+		                			bt.parent.store.remove(recordSelected);
+		                		}
+		                		else{
+		                			Ext.Msg.alert('Failed', resp.message);
+		                		}
+		                		resp = null;	
+		                			 
+		                		},
+		                	failure: function(response, opts) {
+		                		console.log('server-side failure with status code ' );
+		                	}
+		                	
+			        	});
+		        	}
+		        	 
+		        	 
+		        }  
+		    }
+		});
+    	 
         
     }
     
@@ -915,7 +1177,8 @@ Ext.define('survey.view.gui.questiontype.CardPanel', {
     	{
     		this.layoutpanel.getLayout().setActiveItem(1);
     	}
-    	 
+    	
+    	
     	this.choose.setLoadData(questionrecord);
     	console.log('call from survey.view.gui.questiontype.CardPanel');
     	this.images.setLoadData(questionrecord);

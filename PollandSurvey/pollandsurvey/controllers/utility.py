@@ -28,7 +28,24 @@ class Utility(object):
             if(not self.createPathFile(path)):
                 os.makedirs(path);
             return False;
-        
+  
+    
+    def isNumber(self,data):
+        try:
+            float(data)
+            return True
+        except ValueError:
+            pass
+     
+        try:
+            import unicodedata
+            unicodedata.numeric(data)
+            return True
+        except (TypeError, ValueError):
+            pass
+     
+        return False    
+    
     def saveFile(self,filePath,data):
         fp = open(filePath, 'wb' );
         fp.write(data);
@@ -56,9 +73,10 @@ class Utility(object):
 
 #print ({True: True, False: False}[ answer in 'true'])
 
-u = Utility();
-print u.isEmpty('');
+#u = Utility();
+#print u.isEmpty('');
 
-import types
-print type(u'') is types.UnicodeType;
+#print u.isNumber('20');
+#import types
+#print type(u'') is types.UnicodeType;
 

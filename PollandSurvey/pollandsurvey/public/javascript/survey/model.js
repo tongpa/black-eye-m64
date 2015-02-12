@@ -94,12 +94,12 @@ survey.listBasicData = new Ext.data.Store({
 		 
 		type: 'ajax',
 		url : '/model/getBasicData',    	
-		api: {
+	/*	api: {
             read: '/model/getBasicData',
-            create: '/survey/createBasicData',
-            update: '/model/createBasicData',
-            destroy: '/model/deleteBasicData'
-        }, 
+            //create: '/survey/createBasicData',
+            //update: '/model/createBasicData',
+            //destroy: '/model/deleteBasicData'
+        }, */
         reader:{
         	type: 'json',
     		rootProperty : 'survey',
@@ -124,7 +124,7 @@ survey.listBasicData = new Ext.data.Store({
             } 
         }
 	},
-	autoSync: false,
+	autoSync: true,
 	autoLoad : false
 });
 
