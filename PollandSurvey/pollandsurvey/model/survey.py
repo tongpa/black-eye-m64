@@ -286,17 +286,26 @@ class Question(DeclarativeBase):
         
         
         listBasicQuestion = BasicQuestion.getByQuestionId(idQuestion);
+         
         
-        BasicQuestion.deleteByQuestion(idQuestion);
-        
-        for basicQuestion in listBasicQuestion:
-            idBasicData = basicQuestion.id_basic_data;
-            BasicTextData.deleteById(idBasicData);            
-            BasicData.deleteById(idBasicData);
+        try:
+            BasicQuestion.deleteByQuestion(idQuestion);
+            for basicQuestion in listBasicQuestion:
+                idBasicData = basicQuestion.id_basic_data;
+                BasicQuestion.deleteData(idBasicData,deleteBasicQuestion=False);
+                idBasicData =None;
+                
+                
             
-        
-        QuestionValidation.deleteByQuestion(idQuestion);
-        Question.deleteByQuestion(idQuestion);
+            QuestionValidation.deleteByQuestion(idQuestion);
+            QuestionMedia.deleteByQuestion(idQuestion);
+            #delete last
+            Question.deleteByQuestion(idQuestion);
+            
+            return True, 'success';
+        except IntegrityError as  e:
+            print e;  
+            return False, 'Cannot delete.';#e.__str__();
         
     
     
@@ -434,7 +443,7 @@ class Question(DeclarativeBase):
     def getQuestionByProjectId(cls,pid):
         datas = [];
         if pid is not None:
-            data =  DBSession.query(cls,QuestionType).join(QuestionType).filter(cls.id_question_project == str(pid).decode('utf-8')).all();
+            data =  DBSession.query(cls,QuestionType).join(QuestionType).filter(cls.id_question_project == str(pid).decode('utf-8')).order_by(cls.order).all();
             for d,e in data:
                 d.question_type_name = e.description;
                 datas.append(d); 
@@ -672,6 +681,23 @@ class BasicQuestion(DeclarativeBase):
         #sql = "delete from sur_basic_question where id_question =" +str(idQuestion) ;
         #DBSession.execute(sql);
         DBSession.flush() ;
+    
+    @classmethod
+    def deleteData(cls,idBasicData=None,deleteBasicQuestion=True):
+        
+        try:
+            if(deleteBasicQuestion):
+                DBSession.query(cls).filter(  cls.id_basic_data == str(idBasicData)).delete();
+            
+            BasicTextData.deleteById(idBasicData);       
+            BasicMultimediaData.deleteById(idBasicData); 
+            #delete last
+            BasicData.deleteById(idBasicData);
+            
+            return True, 'success';
+        except IntegrityError as  e:
+            print e;  
+            return False, 'Cannot delete.';#e.__str__();
         
     def delete(self):
         DBSession.delete(self); 
@@ -810,7 +836,7 @@ class BasicTextData(DeclarativeBase):
     
     @classmethod
     def getByBasicDataId(cls,idBasicData):
-        return DBSession.query(cls).filter(cls.id_basic_data == str(idBasicData)  ).all();
+        return DBSession.query(cls).filter(cls.id_basic_data == str(idBasicData)  ).first();#all();
     
     @classmethod
     def deleteById(cls,idBasicData):

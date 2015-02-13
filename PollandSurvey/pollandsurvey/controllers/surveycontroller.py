@@ -36,6 +36,16 @@ class SurveyController(BaseController):
     
     def _before(self, *args, **kw):
         tmpl_context.project_name = "pollandsurvey"
+    
+    
+    @expose('pollandsurvey.templates.survey.samplegrid')
+    @require(predicates.in_any_group('voter','managers', msg=l_('Only for voter')))
+    def samplegrid(self, *args, **kw):
+        """Handle the front-page."""
+        reload(sys);
+        sys.setdefaultencoding("utf-8");
+        return dict(page='index')
+    
         
     @expose('pollandsurvey.templates.survey.index')
     @require(predicates.in_any_group('voter','managers', msg=l_('Only for voter')))
@@ -121,6 +131,14 @@ class SurveyController(BaseController):
         return dict(success=self.success, message = self.message);
     
     @expose('json')
+    def saveitems(self, came_from=lurl('/'), *args, **kw):
+        reload(sys);
+        sys.setdefaultencoding("utf-8");
+        self.success = True;
+        self.message = "5555";
+        
+        return dict(success=self.success, message = self.message);
+    @expose('json')
     def saveProject(self, came_from=lurl('/'), *args, **kw):
         reload(sys);
         sys.setdefaultencoding("utf-8");
@@ -165,7 +183,8 @@ class SurveyController(BaseController):
         return dict(success=self.success, message = self.message);
         #return dict(failed=self.success, message = self.message);
         
-    @expose('json')
+    #@expose('json')
+    @expose()
     def addQuestion1(self, came_from=lurl('/'), *args, **kw):
         reload(sys);
         sys.setdefaultencoding("utf-8");
