@@ -23,7 +23,7 @@ from sqlalchemy.dialects.mysql import BIT
 from pollandsurvey.model import DeclarativeBase, metadata, DBSession
 import transaction
 __all__ = ['GroupVariables', 'QuestionType', 'QuestionProjectType' ,'BasicDataType', 'QuestionProject','LanguageLabel','Variables','BasicData','BasicQuestion','BasicTextData' 
-           ,'Question', 'QuestionOption', 'BasicMultimediaData','QuestionMedia']
+           ,'Question', 'QuestionOption', 'BasicMultimediaData','QuestionMedia','QuestionTheme']
 
 
 class LanguageLabel(DeclarativeBase):
@@ -98,6 +98,34 @@ class QuestionType(DeclarativeBase):
             #return DBSession.query(cls).get(act); 
         else:
             return DBSession.query(cls) .all();
+    
+class QuestionTheme(DeclarativeBase):
+    __tablename__ = 'sur_question_theme'
+
+    id_question_theme =  Column(Integer, autoincrement=True, primary_key=True)
+    description = Column(String(255),unique=True, nullable=False)
+    template = Column(String(255),unique=True, nullable=False)
+    active  = Column(BIT, nullable=True, default=1)
+    
+    def __init__(self):
+        self.active = 1;
+        
+    def __str__(self):
+        return '"%s"' % (self.description )
+    
+    @classmethod
+    def getAll(cls,act):
+        if act is not None:
+            return DBSession.query(cls).filter(cls.active == str(act).decode('utf-8')).all();
+            #return DBSession.query(cls).get(act); 
+        else:
+            return DBSession.query(cls) .all();
+        
+    def to_json(self):
+        return {"id_question_theme": self.id_question_theme, "description": self.description, "active": self.active, "template" : self.template };
+    
+    def to_dict(self):
+        return {"id_question_theme": self.id_question_theme, "description": self.description, "active": self.active, "template" : self.template };
     
 class QuestionProjectType(DeclarativeBase):
 
@@ -860,6 +888,10 @@ class QuestionOption(DeclarativeBase):
     id_question_project = Column(   Integer,ForeignKey('sur_question_project.id_question_project'), nullable=False, index=True) ;
     project = relation('QuestionProject', backref='sur_question_option_id_question_project');
     
+    id_question_theme =   Column(   Integer,ForeignKey('sur_question_theme.id_question_theme'), nullable=False, index=True) ;
+    theme = relation('QuestionTheme', backref='sur_question_option_id_question_theme');
+    
+    
     activate_date =  Column(DateTime, nullable=True );
     expire_date =  Column(DateTime, nullable=True );
     
@@ -867,6 +899,8 @@ class QuestionOption(DeclarativeBase):
     footer_message  =  Column(Text, nullable=True );
     welcome_message  =  Column(Text, nullable=True );
     end_message  =  Column(Text, nullable=True );
+    
+    redirect_url =   Column(String(255),  nullable=False);
     
     create_date =  Column(DateTime, nullable=False, default=datetime.now);
     
@@ -886,10 +920,32 @@ class QuestionOption(DeclarativeBase):
         DBSession.delete(self); 
         DBSession.flush() ;
     
+    def to_json(self):
+        
+        dict  = {"id_question_option": self.id_question_option, 
+                 "id_question_project": self.id_question_project,
+                 "id_question_theme": self.id_question_theme,
+                 "theme": self.theme.description ,
+                 "template": self.theme.template ,
+                 "activate_date": self.activate_date ,
+                 "expire_date": self.expire_date ,
+                 "header_message": self.header_message ,
+                 "footer_message": self.footer_message ,
+                 "welcome_message": self.welcome_message ,
+                 "end_message": self.end_message ,
+                 "redirect_url": self.redirect_url 
+                 };
+                 
+        return dict;
     
     @classmethod
     def getByProject(cls,idProject):
-        return DBSession.query(cls).filter(cls.id_question_project == str(idProject)  ).all();
+        
+        option =DBSession.query(cls).filter(cls.id_question_project == str(idProject)  ).all();
+        value = [];
+        for op in option:
+            value.append(op.to_json()); 
+        return value;
     
     @classmethod
     def deleteById(cls,id):

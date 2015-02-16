@@ -21,8 +21,9 @@ Ext.define('survey.view.list.OptionProject', {
     	main.columns = [
     	       	       
     	    	   // {header: 'name', dataIndex: 'name',width : '30%' , sortable: false }  ,
-					{header: 'Activate Date', dataIndex: 'activate_date',width : '30%' , sortable: false }  ,
-					{header: 'Expiration Date', dataIndex: 'expire_date',width : '30%' , sortable: false }  ,
+					{header: 'Activate Date', dataIndex: 'activate_date',width : '25%' , sortable: false }  ,
+					{header: 'Expiration Date', dataIndex: 'expire_date',width : '25%' , sortable: false }  ,
+					{header: 'theme', dataIndex: 'theme',width : '30%' , sortable: false }  ,
 					{header: 'View',  width : '10%',  renderer :main.showbuttonView,  sortable: false  } ,
 					{header: 'Manage',  width : '10%',  renderer :main.showbuttonManage,  sortable: false  } 
 				//	{header: 'State', dataIndex: 'name',width : '30%' , sortable: false } 
@@ -67,7 +68,7 @@ Ext.define('survey.view.list.OptionProject', {
                 text: 'View',// + r.get('name'),
                 width: 75,
                 handler: function () {
-                	debugger;
+                //	debugger;
                 	main.openUrl =  window.location.origin +"/";// window.location.protocol + window.location.host + "/"; 
                 	console.log(main.openUrl);	
                 	 

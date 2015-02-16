@@ -24,8 +24,15 @@
 </head>
 
 <body>
- 
- 
+ 	
+ 	<div class="row">
+	 	<div class="col-md-12">
+	 	
+	 		<center>${header}</center>
+	 		<br/>
+	 	</div>
+ 	</div>
+ 		
 	 <div class="row">
 				
 				<!-- left panel -->
@@ -62,14 +69,16 @@
 							 
 					 	 	 
 						 
-							<form name="myForm" action="/ang/saveQuestion" method ="POST">
+							<form name="myForm" action="${action}" method ="POST">
+								 
 							 <content-item ng-repeat="item in content" content="item"></content-item>
 							 
-							 	<button type="submit" class="btn btn-default">Submit</button>
+							 	<center><button type="submit" class="btn btn-default">Submit</button></center>
 							</form>
 						</div>
 					
 					</div>
+					
 					<script src="${tg.url('/javascript/script/surveyscript.js')}"></script>
 				</div>
 				
@@ -98,7 +107,12 @@
 		</div>
  
 	 
-	         
+	<div class="row">
+	 	<div class="col-md-12">
+	 	<br/>
+	 	<center>${footer}</center>
+	 	</div>
+ 	</div>         
 	
  
  

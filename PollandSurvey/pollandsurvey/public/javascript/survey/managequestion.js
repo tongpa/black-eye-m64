@@ -96,15 +96,15 @@ Ext.define ('survey.view.list.GridQuestions',{
 		           
 	             listeners: {
 	                 drop: function(node, data, overModel, dropPosition, eOpts) {
-	                	 console.log('drop');
+	                	 //console.log('drop');
 	                	
 	                	
 	                	if(dropPosition == 'before'){
-	                		console.log('before');
+	                		//console.log('before');
 	                	}
 	                	else {
 	                		if (dropPosition == 'after'){
-	                			console.log('after');
+	                			//console.log('after');
 	                		}
 	                	}
 	                	count_order =1;
@@ -153,10 +153,10 @@ Ext.define ('survey.view.list.GridQuestions',{
 						            },
 						            afterrender : function( g, eOpts ){
 						            	 
-						            	console.log('afterrender');
+						            	//console.log('afterrender');
 						            },
 						            move: function( g, component, prevIndex, newIndex, eOpts ){
-						            	console.log('move template column');
+						            	//console.log('move template column');
 						            	//debugger;
 						            	
 						            	//main.viewConfig.plugins.dragText = g.tpl;
@@ -184,7 +184,7 @@ Ext.define ('survey.view.list.GridQuestions',{
 					                    
 					                    var datajson = Ext.encode(record.data);
 					                    
-					                    console.log(record);
+					                    //console.log(record);
 					                    Ext.Msg.show({
 					    				    title:'Confirm Delete?',
 					    				    message: 'Do you delete : ' + record.data.question,
@@ -199,7 +199,7 @@ Ext.define ('survey.view.list.GridQuestions',{
 					    			                	jsonData: datajson,	
 					    			                	success: function(response, opts){
 					    			                		var resp = Ext.decode(response.responseText); 	
-					    			                		console.log(resp);
+					    			                		//console.log(resp);
 					    			                		if(resp.success){
 					    			                			grid.getStore().remove(record);
 					    			                			//main.resetData();
@@ -246,11 +246,11 @@ Ext.define ('survey.view.list.GridQuestions',{
 		this.callParent(arguments);  
 	},
 	clickOpenQuenstion : function(){
-		console.log('click1'); 
+		//console.log('click1'); 
 		
 		survey.listQuestionsData.each(function(record){ 
 			 
-			console.log(record) ; 
+			//console.log(record) ; 
 		});
 		
 		survey.listQuestionsData.sync();
@@ -259,10 +259,10 @@ Ext.define ('survey.view.list.GridQuestions',{
     listeners: {
     	render: function(c,m){
     	//	initializePatientDragZone(c);
-        	console.log('render');
+        	//console.log('render');
         },
         beforeselect : function(c,record,index,eOpts){
-        	console.log('beforeselect');
+        	//console.log('beforeselect');
         	//debugger;
         	
         	
@@ -290,12 +290,12 @@ Ext.define('survey.view.list.Project.ImageView',{
  
     	form.fileUpload.reset();
 		form.wrappedImage.setSrc('');
-		console.log('load image');
+		//console.log('load image');
 		
 		  
     	if(questionrecord != null  ){
     		//&& (questionrecord.data.question_type_name.toLowerCase().search("image") >=0 )
-    		console.log("setShow");
+    		//console.log("setShow");
     		form.wrappedImage.setHidden(false);
     		form.wrappedImage.setSrc('/images/getImage?id=' + questionrecord.data.id_question);
     		
@@ -317,7 +317,7 @@ Ext.define('survey.view.list.Project.ImageView',{
 				scope: this,
 	            'change': function(button, value){
 	            	//debugger;
-	            	console.log(value);
+	            	//console.log(value);
 	            	if (!button.parent.isReset) {
 	            		var IsValid = button.parent.fileValidiation(button,value);
 	            		 
@@ -370,10 +370,10 @@ Ext.define('survey.view.list.Project.ImageView',{
     	this.callParent();
     },
 	onDeleteClick : function(bt,ev){
-		console.log('onDeleteClick');
+		//console.log('onDeleteClick');
 		var form = this;
 		
-		debugger;
+		//debugger;
 		
 
 		Ext.Ajax.request({
@@ -383,7 +383,7 @@ Ext.define('survey.view.list.Project.ImageView',{
            params : Ext.JSON.encode( {'id' : this.record.get('id_question')} ),
 		   success: function(response, opts) {
 		      var obj = Ext.decode(response.responseText);
-		      console.log(obj);
+		      //console.log(obj);
 		   },
 		   failure: function(response, opts) {
 		      console.log('server-side failure with status code ' + response.status);
@@ -415,7 +415,7 @@ Ext.define('survey.view.list.Project.ImageView',{
 	         // the red exclamation point on the form field  
 	         var erroMsg = Ext.String.format('Translate(Please upload files with an extension of {0} only!)', this.accept.join());  
 	         //me.setActiveError(erroMsg);
-	         console.log(erroMsg);
+	         //console.log(erroMsg);
 	         // Let the user know why the field is red and blank!  
 	         var messageBox = Ext.MessageBox.show({  
 	           title: 'Translate(Add Attachment)',  
@@ -430,7 +430,7 @@ Ext.define('survey.view.list.Project.ImageView',{
 	         if (this.fileslist[i].indexOf(filename) !== -1) {  
 	           isValid = false;  
 	           var erMsg = Ext.String.format('Translate(The file {0} already added)!', filename);  
-	           console.log(erroMsg);
+	           //console.log(erroMsg);
 	           var messageBox = Ext.MessageBox.show({  
 	             title: 'Translate(Add Attachment)',  
 	             msg: erMsg,  
@@ -464,7 +464,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
     },
     setLoadData : function (projectrecord,questionrecord, questiontyperecord){
     	
-    	console.log('survey.view.list.Project.PAddQuestion');
+    	//console.log('survey.view.list.Project.PAddQuestion');
     	var form = this;
     	form.projectrecord = projectrecord;
 		form.record = questionrecord;
@@ -488,8 +488,8 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		
 		
  
-		console.log("set data add question");
-		console.log(questionrecord);
+		//console.log("set data add question");
+		//console.log(questionrecord);
 		
 		//load grid question
 		form.answerCardPanel.setLoadData(questionrecord,questiontyperecord);
@@ -546,36 +546,35 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 	        disabled: true,
 			handler : function(bt,ev){
 				var form = this.up('form').getForm();
+				
+				console.log('Check Save');
+				
 	            if (form.isValid()) {
 	            	
 	            	//var data =survey.listBasicData.getData();
 	            	var data = [];
-	            	debugger;
 	            	
-	            	var len = survey.listBasicData.data.length; 
-	            	console.log('survey.listBasicData.data.length : ' + len);
+	            	var items = survey.listBasicData.data.items;
+	            	var len = items.length;
+	            	
+	            	console.log('Get Data From Store');
+	            	survey.listBasicData.each(function(record){ 	        	            		 		 
+        		 	   data.push(record.data);
+        		 	});
+	            	
+	            	survey.listBasicData.removeAll();
+	            	
 	            	for(var i = 0; i < len ; i++){
-	            		var record = survey.listBasicData.data[i];
-        		 		if(record == null ){
-        		 			record = survey.listBasicData.data.items[i];
-        		 		}
-        		 		
-	            		if (!main.checkInteger(record.id)){
-	            			 record.set('id_question','');
-	            			 record.set('id_basic_data','');
-	            		}
-	            		var d = record.data;
-	            		data.push(d);
-	        			console.log(d);
-	        			
-	        			record = null;  
-	        			d = null; 
+	            		  if (!main.checkInteger(data[i].id_basic_data)){
+	            			  data[i].id_question = '';
+	            			  data[i].id_basic_data = '';
+	            		  }
 	            	}
-
-	        		
+	            	  
+	            	
 	        		len = survey.listBasicMediaData.data.length;
 	        		
-	        		console.log('survey.listBasicMediaData.data.length : ' + survey.listBasicMediaData.data.length);
+	        		//console.log('survey.listBasicMediaData.data.length : ' + survey.listBasicMediaData.data.length);
         		 	
 	        		
 	        		
@@ -595,61 +594,34 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 	        			 
 	        			
 	        			
-	        			console.log(d);
+	        			//console.log(d);
 	        			data.push(d);
 	        			d = null; 
         		 	}
 	        		
-	        		/*
-	        		 * 
-	        		 survey.listBasicData.each(function(record){ 
-	        			
-	        			 
-	        	 		var d = record.data;
-	        			idQuestion = record.data.id_question.data;
-	        			d.id_question = idQuestion;
-	        			data.push(d);
-	        			console.log(d.data);
-	        			debugger; 
-	        			d = null; 
-	        	 	});
-	        		 survey.listBasicMediaData.each(function(record){ 
-	        	 		var d = record.data;
-	        			idQuestion = record.data.id_question.data;
-	        			d.id_question = idQuestion;
-	        			data.push(d);
-	        			d = null; 
-	        	 	});*/
-	        		
-	        		//console.log(data);
-	            	//for image
-	        		//debugger;
 	        		
 	        		
-	        		console.log('setValue');
 	        		main.dataGrid.setValue( Ext.encode(data));
 	        	 
-	        		console.log('setValue');
-	             
+	        		
+	        		 
 	                form.submit({
 	                	scope: this,
+	                	method: 'POST',
+	                	headers: {
+	                        'Content-Type': 'application/json;charset=utf-8'
+	                    },
 	                	waitMsg: 'Save your Data...',
 	                    success: function(form, action) {
-	                    	//save all question
+	                    	  
+	                    	debugger;
 	                    	/*
-	                    	survey.listBasicData.each(function(record){ 
-	                    	  if(record.id != 0){
-	                    	    record.dirty = false;
-	                    	  }
-	                    	});*/
-	                    	//it is ok.
-	                    	//survey.listBasicData.sync();
-	                    	
 	                    	main.closeWindow(main,bt);
 	                    	
 	                    	//form.reset();
 	                    	Ext.Msg.alert('Success', action.result.message);
 	                    	main.refreshOther();
+	                    	*/
 	                    },
 	                    failure: function(form, action) {
 	                    	 
@@ -725,7 +697,7 @@ Ext.define('survey.view.list.Project.winAddQuestion',{
     },
     
     setLoadData : function(projectrecord,questionrecord, questiontyperecord){
-    	console.log('survey.view.list.Project.winAddQuestion');
+    	//console.log('survey.view.list.Project.winAddQuestion');
     	this.panelQuestion.setLoadData(projectrecord,questionrecord, questiontyperecord);
     },
     
@@ -829,11 +801,8 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
 			listeners : {
 				showEditQuestion : function(cmp,record) {
 					
-					 
-					
-					
 					main.winAddQuestion.show();
-					console.log(record);
+					//console.log(record);
 					main.winAddQuestion.setLoadData(main.record,  record, null);
 					//survey.listProject.reload();
 		        }
@@ -883,7 +852,7 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
     	 
     	bt.parentForm.winAddQuestion.show();
     	
-    	console.log('Add Question');
+    	//console.log('Add Question');
     	 
     	 
     	bt.parentForm.winAddQuestion.setLoadData(bt.parentForm.record, null, bt.record);

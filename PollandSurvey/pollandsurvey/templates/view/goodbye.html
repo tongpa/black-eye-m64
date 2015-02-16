@@ -1,0 +1,93 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <xi:include href="master.html" />
+
+<head>
+  <title>Preview Poll and Survey</title>
+  
+  
+  <style>
+	table, th , td {
+	  border: 1px solid grey;
+	  border-collapse: collapse;
+	  padding: 5px;
+	}
+	table tr:nth-child(odd) {
+	  background-color: #f1f1f1;
+	}
+	table tr:nth-child(even) {
+	  background-color: #ffffff;
+	}
+  </style> 
+</head>
+
+<body>
+ 
+	 <div class="row">
+				
+				<!-- left panel -->
+				<div class="col-md-2">
+					 <div class="well">
+	                    <h4> </h4>
+	                    <div class="input-group">
+	                        
+	                    </div>
+	                    <!-- /.input-group -->
+	                </div>
+				</div>
+				<!-- center panel -->
+				<div class="col-md-8">
+					
+				 
+	                <!-- Content Poll and Survey -->
+	                <div  name='1'>
+	                
+						<div id="container" >
+							<div class="well">
+			                     <form name="nextQuestion" action="${nextQuestion}" method ="POST">
+			                    <div class="input-group clearfix"> 	 
+				                    	<div>
+				                        ${goodbye} 
+				                   		</div>
+				                   		
+			                    </div>
+			                    <center> <button   class="btn btn-default" onclick="window.location='${urlRedirect}'; return false;">Submit</button> </center>
+			                    </form>
+			                </div>
+					 	 	 
+						</div>
+					
+					</div>
+					 
+				</div>
+				
+				<!-- right panel -->
+				<div class="col-md-2">
+					 
+					 
+					 <div class="well">
+	                    <h4> </h4>
+	                    <div class="input-group">
+	                        
+	                    </div>
+	                    <!-- /.input-group -->
+	                </div>
+				 
+	                <div class="well">
+	                    <h4> </h4>
+	                    <div class="input-group">
+	                        
+	                    </div>
+	                    <!-- /.input-group -->
+	                </div> 
+					 
+				</div>
+			
+		</div>
+ 
+	 
+	      
+</body>
+</html>

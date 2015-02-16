@@ -38,7 +38,7 @@ Ext.define('Survey.model.listQuestions',{
 Ext.define('Survey.model.listOptions',{
 	extend: 'Ext.data.Model',
     idProperty: 'id_question_option',    
-    fields: ['id_question_option','id_question_project',   'header_message','footer_message','welcome_message','end_message','activate_date', 'expire_date',	'create_date' ] 
+    fields: ['id_question_option','id_question_project',   'header_message','footer_message','welcome_message','end_message','activate_date', 'expire_date',	'create_date','redirect_url','id_question_theme','theme','template' ] 
 });
 
 
@@ -85,7 +85,7 @@ survey.listProject = new Ext.data.Store({
 	autoLoad : true
 });
 
-
+ 
 survey.listBasicData = new Ext.data.Store({
 	model : 'Survey.model.listAnswerData',
 	storeId:'listBasicDataInStore',
@@ -124,7 +124,7 @@ survey.listBasicData = new Ext.data.Store({
             } 
         }
 	},
-	autoSync: true,
+	autoSync: false,
 	autoLoad : false
 });
 

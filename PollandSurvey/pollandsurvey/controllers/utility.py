@@ -3,6 +3,7 @@ import os.path
 import base64 
 import json 
 import logging;
+import types;
 log = logging.getLogger(__name__); 
 class Utility(object):
 
@@ -56,14 +57,23 @@ class Utility(object):
         
     def isEmpty(self,data):
         if data is not None:
-            print data;
             
             if data == '':
+                return True;
+            elif len(str(data).strip()) == 0:
                 return True;
             else:
                 return False;
         else:
             return True;
+        
+    def spritValue(self,data,value):
+         
+ 
+        if not self.isEmpty(data) and  ( type(data) == types.StringType  or type(data) == types.UnicodeType  )   :
+            
+            return data.lstrip(value).split(value);
+        return data;
 #import ast
 #print ast.literal_eval('True')
 #print bool('true')
@@ -74,8 +84,8 @@ class Utility(object):
 #print ({True: True, False: False}[ answer in 'true'])
 
 #u = Utility();
-#print u.isEmpty('');
-
+#sp =  u.spritValue('/preview/welcome','/');
+#print sp[0];
 #print u.isNumber('20');
 #import types
 #print type(u'') is types.UnicodeType;
