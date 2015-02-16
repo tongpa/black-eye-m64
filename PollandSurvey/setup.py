@@ -46,6 +46,7 @@ install_requires=[
     "tw2.dynforms",
     "tw2.sqla",
     "tw2.jqplugins.jqgrid",
+    "tw2.bootstrap.forms"
     #"tw2.captcha",
     ]
 
