@@ -68,7 +68,9 @@ class PreviewController(BaseController):
                 #check have welcome page
                 if( not self.utility.isEmpty(self.questionOption.welcome_message) ) :
                     redirect(request.path_info + '/welcome?id='+ str(self.questionOption.id_question_option) );
-                    
+                else:
+                    self.template = self.questionOption.theme.template;
+                    override_template(PreviewController.index, self.template) ;    
                     
             elif str(ready).lower() == 'yes':
                 self.header = self.questionOption.header_message;
@@ -204,7 +206,7 @@ class PreviewController(BaseController):
         
         
         self.success = True;
-        self.message = "5555";
+        self.message = "success";
         self.goodbye_message = '';
         self.nextQuestion = '';
         print "project id : " + str(id);

@@ -178,7 +178,7 @@ Ext.define ('survey.view.list.GridQuestions',{
 					                ,text : 'Delete'
 					                , flex: 1
 					                , handler: function(grid, rowIndex, colindex) {
-					                    
+					                      
 					                    var record = grid.getStore().getAt(rowIndex);
 					                    
 					                    
@@ -472,7 +472,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		
 		if(questionrecord != null){
 			form.getForm().loadRecord(questionrecord);
-			
+			 
 		}
 		
 		if(projectrecord != null){			 	
@@ -608,20 +608,20 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 	                form.submit({
 	                	scope: this,
 	                	method: 'POST',
-	                	headers: {
+	                	/*headers: {
 	                        'Content-Type': 'application/json;charset=utf-8'
-	                    },
+	                    },*/
 	                	waitMsg: 'Save your Data...',
 	                    success: function(form, action) {
 	                    	  
-	                    	debugger;
-	                    	/*
+	                    	//debugger;
+	                    	 
 	                    	main.closeWindow(main,bt);
 	                    	
 	                    	//form.reset();
 	                    	Ext.Msg.alert('Success', action.result.message);
 	                    	main.refreshOther();
-	                    	*/
+	                     
 	                    },
 	                    failure: function(form, action) {
 	                    	 

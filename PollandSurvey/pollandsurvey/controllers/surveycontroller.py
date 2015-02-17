@@ -19,6 +19,7 @@ from pollandsurvey.controllers.utility import Utility
 import sys
 import json 
 import types
+from datetime import datetime
 from tg import tmpl_context
 from pollandsurvey.widget.movie_form import create_movie_form
 
@@ -57,7 +58,17 @@ class SurveyController(BaseController):
     
     @expose('json')
     def getProjectByUser(self, *args, **kw):
-        quest_project = model.QuestionProject.getAll(1);
+        reload(sys);
+        sys.setdefaultencoding("utf-8");
+        
+        if not request.identity:
+            login_counter = request.environ.get('repoze.who.logins', 0) + 1
+            redirect('/login',
+                params=dict(came_from=came_from, __logins=login_counter))
+        
+        user =  request.identity['user']; 
+        
+        quest_project = model.QuestionProject.getAllByUser(1,user.user_id);
         
         log.info("getProjectByUser");
         return dict(survey=quest_project , total = len(quest_project));
@@ -79,7 +90,7 @@ class SurveyController(BaseController):
         reload(sys);
         sys.setdefaultencoding("utf-8");
         self.success = True;
-        self.message = "5555";
+        self.message = "success";
         
         id_question_project = kw.get('id_question_project');
         description = kw.get('description');
@@ -113,7 +124,7 @@ class SurveyController(BaseController):
         reload(sys);
         sys.setdefaultencoding("utf-8");
         self.success = True;
-        self.message = "5555";
+        self.message = "success";
         
         self.df = json.loads(request.body, encoding=request.charset);
         
@@ -135,7 +146,7 @@ class SurveyController(BaseController):
         reload(sys);
         sys.setdefaultencoding("utf-8");
         self.success = True;
-        self.message = "5555";
+        self.message = "success";
         
         return dict(success=self.success, message = self.message);
     @expose('json')
@@ -143,7 +154,7 @@ class SurveyController(BaseController):
         reload(sys);
         sys.setdefaultencoding("utf-8");
         self.success = True;
-        self.message = "5555";
+        self.message = "success";
         
         if not request.identity:
             login_counter = request.environ.get('repoze.who.logins', 0) + 1
@@ -189,7 +200,7 @@ class SurveyController(BaseController):
         reload(sys);
         sys.setdefaultencoding("utf-8");
         self.success = True;
-        self.message = "5555";
+        self.message = "success";
         
         self.dataValue = kw;
         print kw;
@@ -447,7 +458,7 @@ class SurveyController(BaseController):
         reload(sys);
         sys.setdefaultencoding("utf-8");
         self.success = True;
-        self.message = "5555";
+        self.message = "success";
         
         self.dataValue = kw;
         print kw;
@@ -650,7 +661,7 @@ class SurveyController(BaseController):
         sys.setdefaultencoding("utf-8");
         
         self.success = True;
-        self.message = "5555";
+        self.message = "success";
         log.info(request);
         log.info(args);
         log.info(kw);
@@ -662,7 +673,7 @@ class SurveyController(BaseController):
         reload(sys);
         sys.setdefaultencoding("utf-8");
         self.success = True;
-        self.message = "5555";
+        self.message = "success";
         log.info('---------1--------------');
         #log.info(request.method );
         #log.info(request.params );
@@ -680,7 +691,7 @@ class SurveyController(BaseController):
         reload(sys);
         sys.setdefaultencoding("utf-8");
         self.success = True;
-        self.message = "5555";
+        self.message = "success";
         log.info('---------1--------------');
         
         df = json.loads(request.body, encoding=request.charset);
@@ -694,12 +705,86 @@ class SurveyController(BaseController):
         reload(sys);
         sys.setdefaultencoding("utf-8");
         self.success = True;
-        self.message = "5555";
+        self.message = "success";
         log.info('---------1--------------');
         
         df = json.loads(request.body, encoding=request.charset);
         # remark : remove file
         self.success,self.message =  model.BasicQuestion.deleteData( df.get('id') , deleteBasicQuestion=True) ;
+        
+        return dict(success=self.success, message = self.message);
+    
+    @expose('json')
+    def addOptions(self, came_from=lurl('/'), *args, **kw):
+        reload(sys);
+        sys.setdefaultencoding("utf-8");
+        self.success = True;
+        self.message = "success";
+        log.info('---------1--------------');
+         
+     
+        print kw;
+        print args;
+        
+        
+        self.option = model.QuestionOption();   
+         
+        if ( not self.utility.isEmpty(kw.get('id_question_option'))):
+            self.option = model.QuestionOption.getId( kw.get('id_question_option')  ); 
+            
+            
+             
+        self.option.id_question_project = kw.get('id_question_project');        
+        self.option.id_question_theme = kw.get('id_question_theme'); 
+        self.option.name_publication = kw.get('name_publication');
+        
+        
+        if (not self.utility.isEmpty(kw.get('activate_date'))):
+            self.option.activate_date =  datetime.strptime(  kw.get('activate_date')  + ' 00:00:00' , '%d/%m/%Y %H:%M:%S') ;
+        
+        if (not self.utility.isEmpty(kw.get('expire_date'))):
+            self.option.expire_date =  datetime.strptime(  kw.get('expire_date')  + ' 23:59:59' , '%d/%m/%Y %H:%M:%S') ;
+       
+        
+        self.option.header_message =kw.get('header_message');
+        self.option.footer_message = kw.get('footer_message');
+        self.option.welcome_message = kw.get('welcome_message');
+        self.option.end_message = kw.get('end_message');
+        
+        self.option.redirect_url =kw.get('redirect_url');
+        
+        if (  self.utility.isEmpty(kw.get('id_question_option'))):
+            print "save option";
+            self.option.save();
+       
+            
+       
+        
+        
+        
+        
+        
+        return dict(success=self.success, message = self.message);
+    
+    
+    @expose('json')
+    def deleteOptions(self, came_from=lurl('/'), *args, **kw):
+        reload(sys);
+        sys.setdefaultencoding("utf-8");
+        
+        self.success = True;
+        self.message = "Save Success";
+        
+        df = json.loads(request.body, encoding=request.charset);
+        
+        print df;
+        print df.get('id_question_option');
+        
+         
+        idQuestion = df.get('id_question_option');
+        
+        self.success, self.message = model.QuestionOption.deleteById(idQuestion);
+
         
         return dict(success=self.success, message = self.message);
     

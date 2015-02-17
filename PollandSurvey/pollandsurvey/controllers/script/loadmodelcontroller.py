@@ -93,6 +93,13 @@ class ScriptModelController(BaseController):
         
         return dict(survey=question , total = len(question));
     
+    @expose('json')
+    def getOptionTheme(self, *args, **kw):
+         
+        question = model.QuestionTheme.getAll(1);
+        
+        return dict(survey=question , total = len(question));
+    
     
     
     

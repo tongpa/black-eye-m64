@@ -230,6 +230,18 @@ class QuestionProject(DeclarativeBase):
         return DBSession.query(cls).get(act); 
            
     @classmethod
+    def getAllByUser(cls,act=1,userid=0):
+        list =[];
+        if act is not None:
+            list =  DBSession.query(cls).filter(cls.active == str(act).decode('utf-8'),cls.user_id == str(userid).decode('utf-8')).all();
+            #return DBSession.query(cls).get(act); 
+        else:
+            list =  DBSession.query(cls).all();
+        
+        for i in list:
+            i.question_project_type;
+        return list;
+    @classmethod
     def getAll(cls,act):
         list =[];
         if act is not None:
@@ -891,7 +903,7 @@ class QuestionOption(DeclarativeBase):
     id_question_theme =   Column(   Integer,ForeignKey('sur_question_theme.id_question_theme'), nullable=False, index=True) ;
     theme = relation('QuestionTheme', backref='sur_question_option_id_question_theme');
     
-    
+    name_publication  = Column(String(255),  nullable=True);
     activate_date =  Column(DateTime, nullable=True );
     expire_date =  Column(DateTime, nullable=True );
     
@@ -927,16 +939,18 @@ class QuestionOption(DeclarativeBase):
                  "id_question_theme": self.id_question_theme,
                  "theme": self.theme.description ,
                  "template": self.theme.template ,
-                 "activate_date": self.activate_date ,
-                 "expire_date": self.expire_date ,
+                 "activate_date": self.activate_date.strftime('%d/%m/%Y') ,
+                 "expire_date": self.expire_date.strftime('%d/%m/%Y') ,
                  "header_message": self.header_message ,
                  "footer_message": self.footer_message ,
                  "welcome_message": self.welcome_message ,
                  "end_message": self.end_message ,
-                 "redirect_url": self.redirect_url 
+                 "redirect_url": self.redirect_url ,
+                 "name_publication": self.name_publication
                  };
                  
         return dict;
+    
     
     @classmethod
     def getByProject(cls,idProject):
@@ -950,14 +964,28 @@ class QuestionOption(DeclarativeBase):
     @classmethod
     def deleteById(cls,id):
         
-        DBSession.query(cls).filter(  cls.id_question_option == str(id) ).delete();        
-        DBSession.flush() ;
-    
-     
+        
+        try:
+            print 'id : ' + str(id);
+            DBSession.query(cls).filter(  cls.id_question_option == str(id) ).delete();
+                    
+            DBSession.flush() ;
+            
+            return True, 'success';
+        except AttributeError as e:
+            print e;
+            return False, 'Cannot delete.';
+        except IntegrityError as  e:
+            print e;  
+            return False, 'Cannot delete.';#e.__str__();
+        
+        
         
     @classmethod
     def getId(cls,act):
         return DBSession.query(cls).get(act); 
+     
+ 
     
     
         

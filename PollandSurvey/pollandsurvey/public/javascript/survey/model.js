@@ -1,5 +1,11 @@
 Ext.namespace("survey");
 
+Ext.define('Survey.model.listOptionTheme',{
+	extend: 'Ext.data.Model',
+    idProperty: 'id_question_theme',    
+    fields: ['id_question_theme',   'description', 'template', 'active' ] 
+});
+
 Ext.define('Survey.model.listProjectid', {
     extend: 'Ext.data.Model',
     idProperty: 'id_question_project',
@@ -38,7 +44,7 @@ Ext.define('Survey.model.listQuestions',{
 Ext.define('Survey.model.listOptions',{
 	extend: 'Ext.data.Model',
     idProperty: 'id_question_option',    
-    fields: ['id_question_option','id_question_project',   'header_message','footer_message','welcome_message','end_message','activate_date', 'expire_date',	'create_date','redirect_url','id_question_theme','theme','template' ] 
+    fields: ['id_question_option','id_question_project','name_publication',   'header_message','footer_message','welcome_message','end_message','activate_date', 'expire_date',	'create_date','redirect_url','id_question_theme','theme','template' ] 
 });
 
 
@@ -186,6 +192,21 @@ survey.listQuestionType = new Ext.data.Store({
 	autoLoad : false
 });
 
+
+survey.listOptionTheme = new Ext.data.Store({
+	model : 'Survey.model.listOptionTheme',
+	storeId : 'listOptionThemeInStore',
+	pageSize : 50,
+	proxy : {
+		type : 'ajax',
+		url : '/model/getOptionTheme',
+		reader : {
+			type : 'json',
+			rootProperty : 'survey'
+		}
+	},
+	autoLoad : false
+});
 
 
 survey.listOptions = new Ext.data.Store({

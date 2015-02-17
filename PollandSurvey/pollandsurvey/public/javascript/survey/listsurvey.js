@@ -28,6 +28,9 @@ Ext.application({
     name: 'survey',
     launch: function() {
     	Ext.tip.QuickTipManager.init();
+    	
+    	
+    	survey.listOptionTheme.load();
    	 
     	var project_view = Ext.create('survey.view.list.Project',{   		 
     		
@@ -75,12 +78,18 @@ Ext.application({
 				    	
 				    	var manage_option = Ext.create('survey.view.list.Project.PManagePublication',{
 				    		width: '100%',   		
-				    		title : 'Options'
+				    		title : 'Publication'
 				    	});
 				    	
 				    	
 				    	var tab_manage = Ext.create('Ext.tab.Panel', {
 				    	    width: '100%',   	
+				    	    defaults: {
+					        	 
+					            labelWidth: 120,
+					            anchor: '100%',
+					            layout: {   type: 'fix' }
+					        },
 				    	    items: [manage_question,manage_variable,manage_option ]
 				    	});
 				    	
@@ -90,6 +99,7 @@ Ext.application({
 				    		bodyPadding: 10,
 				    		id : tabId,
 				    		title : title,
+				    		
 				    		items : [manage_project,tab_manage]
 				    	});
 						

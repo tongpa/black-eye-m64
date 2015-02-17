@@ -67,6 +67,10 @@ class Utility(object):
         else:
             return True;
         
+        
+    def convertToDateTime(self,data,format):
+        pass;
+    
     def spritValue(self,data,value):
          
  
@@ -90,3 +94,7 @@ class Utility(object):
 #import types
 #print type(u'') is types.UnicodeType;
 
+#from datetime import datetime
+#dt_str = '01/02/2015'  + ' 00:00:00' ;
+#dt_obj = datetime.strptime(dt_str, '%d/%m/%Y %H:%M:%S')
+#print dt_obj;
