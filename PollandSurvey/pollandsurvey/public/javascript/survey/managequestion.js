@@ -14,6 +14,12 @@ Ext.define('survey.view.list.Project.fieldQuestionTypeId',{
 	name : 'id_question_type'
 });
 
+Ext.define('survey.view.list.Project.fieldQuestionOrder',{
+	extend: 'Ext.form.field.Hidden',
+	name : 'order'
+});
+ 
+
 Ext.define('survey.view.list.Project.fieldQuestion',{
 	extend: 'Ext.form.field.TextArea',
 	name : 'question',
@@ -55,6 +61,7 @@ Ext.define ('survey.view.list.GridQuestions',{
 	extend: 'Ext.grid.Panel',
 	width : '100%',
 	height :  '100%',
+	 
 	store : survey.listQuestionsData,
 	bufferedRenderer: false,
 	loadMask: true,
@@ -68,6 +75,7 @@ Ext.define ('survey.view.list.GridQuestions',{
      selectedItemClass: 'patient-selected',
      enableDragDrop: true,
      selType: 'rowmodel',
+     stripeRows: true,
     reloadGrid : function(){
     	var main = this;
     	
@@ -115,7 +123,9 @@ Ext.define ('survey.view.list.GridQuestions',{
 	            			count_order =count_order+1;
 	            			
 	            		});
-	            		
+	                	
+	                	this.store.sync();
+	            		console.log('count_order : '+ count_order);
 	                	
 	                	
 	                	 
@@ -132,7 +142,7 @@ Ext.define ('survey.view.list.GridQuestions',{
 							 
 		    	            {
 		    	            	xtype: 'templatecolumn',
-		    	            	width: '90%',
+		    	            	width: '87%',
 		    	                tpl: '<tpl for=".">' +
 				    	                '<div class="patient-source"><table><tbody>' +
 					                    '<tr><td class="patient-label">Question</td><td class="patient-name">{question}</td></tr>' +
@@ -166,13 +176,16 @@ Ext.define ('survey.view.list.GridQuestions',{
 					 	        
 		    	            },
 							{
-					            xtype: 'actioncolumn'
-					            	, width: '9%'
-					            ,  layout: {
+					            xtype: 'actioncolumn', 
+					            width: '12%',
+					            menuDisabled:true,
+							    sortable: false,
+							    renderer: function(a,css,row,d,f,d){}, 
+					            layout: {
 					            	 type: 'hbox',
 					                 align: 'stretch'
-					            }
-					            , items: [{ // Delete button
+					            }, 
+					            items: [{ // Delete button
 					                iconCls : 'icon-delete'
 					                ,tooltip: 'Delete' 
 					                ,text : 'Delete'
@@ -223,8 +236,7 @@ Ext.define ('survey.view.list.GridQuestions',{
 					                    
 					                     
 					                } 
-					            },
-					            '->',
+					            },  '->',
 					            { // Save Button
 					            	iconCls : 'icon-edit'					                
 					                , style: 'margin-left: 5px;'
@@ -238,8 +250,52 @@ Ext.define ('survey.view.list.GridQuestions',{
 					                    
 					                    //Ext.Msg.alert('Save', 'Save user: ' + record.data.question);
 					                }  
+					            }, '->',
+					            {
+					                iconCls: 'move-up',
+					                tooltip: 'Move UP',
+					                handler: function(grid,index,c,d,f,row){
+					                    if(index < 1) return;
+					                    var id = row.data.id;
+					                    var old = index ;
+					                    console.log('orig : ' + (old +1)  );
+					                    //index--;
+					                    index = index -1;
+					                    console.log('new  : ' + (index+1));
+					                     
+					                    grid.store.remove(row, true);
+					                    grid.getStore().insert(index, row);
+					                    
+					                    //row.set('order',10);
+					                    grid.getStore().data.items[old].set('order', (old+1));
+					                    grid.getStore().data.items[index].set('order', (index+1) );
+					                    grid.getStore().sync();
+					                    console.log (id + ' is move up from ' + row.data.order + ' to ' + (index+1));
+					                }
+					            }, '->',
+					            {
+					                iconCls: 'move-down',
+					                tooltip: 'Move Down',
+					                handler: function(grid,index,c,d,f,row)
+					                {
+					                    if(index >= grid.all.endIndex)  return;
+					                    //index++;
+					                    var old = index ;
+					                    console.log('orig : ' + index);
+					                    index = index +1;
+					                    console.log('new  : ' + index);
+					                    
+					                    grid.store.remove(row, true);
+					                    grid.getStore().insert(index, row);
+					                    
+					                    grid.getStore().data.items[old].set('order', (old+1));
+					                    grid.getStore().data.items[index].set('order', (index+1) );
+					                    grid.getStore().sync();
+					                    console.log (id + ' is move down from ' + row.data.order + ' to ' + (index-1));
+					                }
 					            }]
-					        }
+					        } 
+							 
 	    	        ];
 		
 		
@@ -462,13 +518,19 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
         anchor: '100%',
         labelWidth: 100
     },
-    setLoadData : function (projectrecord,questionrecord, questiontyperecord){
+    setLoadData : function (projectrecord,questionrecord, questiontyperecord,numberorder){
     	
     	//console.log('survey.view.list.Project.PAddQuestion');
+    	 
     	var form = this;
     	form.projectrecord = projectrecord;
 		form.record = questionrecord;
 		form.getForm().reset();
+		
+		if (numberorder == null){
+			numberorder =0;
+		}
+		form.order.setValue(numberorder);
 		
 		if(questionrecord != null){
 			form.getForm().loadRecord(questionrecord);
@@ -500,6 +562,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		var main = this;
 		main.questionid = Ext.create('survey.view.list.Project.fieldQuestionId',{msgTarget: 'side'});
 		main.question = Ext.create('survey.view.list.Project.fieldQuestion',{msgTarget: 'side'});
+		main.order = Ext.create('survey.view.list.Project.fieldQuestionOrder',{msgTarget: 'side',value:'0'});
 		main.help = Ext.create('survey.view.list.Project.fieldHelp',{msgTarget: 'side'});
 		
 		main.projectid = Ext.create('survey.view.list.Project.fieldProjectId',{msgTarget: 'side'});
@@ -512,7 +575,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		
 		main.dataGrid = Ext.create('Ext.form.field.Hidden',{name : 'datagrid'});
 		
-		 
+		
 		
 		main.fieldSetsHelp = Ext.create('Ext.form.FieldSet',{
 			title: 'help',
@@ -532,7 +595,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		
 //		
 		 
-		main.items = [main.questionid,main.projectid,main.questiontypeid ,main.dataGrid, main.question ,main.fileUpload, main.fieldSetsHelp,main.answerCardPanel   ];  
+		main.items = [main.questionid,main.projectid,main.order,main.questiontypeid ,main.dataGrid, main.question ,main.fileUpload, main.fieldSetsHelp,main.answerCardPanel   ];  
 		
 		
 		
@@ -696,9 +759,10 @@ Ext.define('survey.view.list.Project.winAddQuestion',{
         titleAlign: 'center' 
     },
     
-    setLoadData : function(projectrecord,questionrecord, questiontyperecord){
+    setLoadData : function(projectrecord,questionrecord, questiontyperecord,numberorder){
     	//console.log('survey.view.list.Project.winAddQuestion');
-    	this.panelQuestion.setLoadData(projectrecord,questionrecord, questiontyperecord);
+    	
+    	this.panelQuestion.setLoadData(projectrecord,questionrecord, questiontyperecord,numberorder);
     },
     
 	initComponent: function() {
@@ -855,7 +919,7 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
     	//console.log('Add Question');
     	 
     	 
-    	bt.parentForm.winAddQuestion.setLoadData(bt.parentForm.record, null, bt.record);
+    	bt.parentForm.winAddQuestion.setLoadData(bt.parentForm.record, null, bt.record,bt.parentForm.gridQuestion.getStore().data.length +1);
     }
     
     

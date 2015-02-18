@@ -127,4 +127,12 @@ td.patient-label {
 	width: '30%';
 	height: '30%';
 }
+
+.move-down {
+    background-image: url('../img/survey/before_each.png') !important;
+} 
+
+.move-up {
+    background-image: url('../img/survey/after_each.png') !important;
+}
 /******/

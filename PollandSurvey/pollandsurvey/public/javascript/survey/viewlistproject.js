@@ -43,6 +43,7 @@ Ext.define('survey.view.list.Project', {
     	
     	main.showWin =  Ext.create('survey.view.list.Project.winAddProject',{
     		url : '/survey/saveProject',
+    		//height : 500,
 			listeners : {
 				refreshOther : function(cmp) {
 					survey.listProject.reload();

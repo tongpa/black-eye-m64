@@ -6,18 +6,34 @@
 </button></span>
 </div> 
 
+
 <div  class="highlight" > 
-	<h2><span>{{content.seq}}. </span>{{content.question}}</h2>
-	<input type="hidden" name="question_{{content.id}}" value="{{content.id}}"/>
-	<div style="padding-left:25px" ng-repeat="answer in content.answer">
-    	<div class="radio">
-    		 <label>
-		        <input name="radio_{{content.id}}" value="{{answer.id}}" ng-model="$parent.selected_radio" ng-change="selectedScore(content.id,answer.id,'radio')"  type="radio" checked="checked" />    
-		        <span> {{answer.label}}</span>
-		      </label>
-    	</div>
-    </div>
-	
+
+	<div class="row">
+	 	<div class="col-md-1">
+	 		<h2><span>{{content.seq}}.</span></h2>
+	 	</div>
+	 	<div class="col-md-11">
+	 		<h2>  {{content.question}}</h2>
+	 	</div>
+ 	</div>
+
+	<div class="row">
+	 	<div class="col-md-1">
+	 		<input type="hidden" name="question_{{content.id}}" value="{{content.id}}"/>
+	 	</div>
+	 	<div class="col-md-11"> <!-- style="padding-left:25px" -->
+	 		<div  ng-repeat="answer in content.answer">
+		    	<div class="radio">
+		    		 <label>
+				        <input name="radio_{{content.id}}" value="{{answer.id}}" ng-model="$parent.selected_radio" ng-change="selectedScore(content.id,answer.id,'radio')"  type="radio" checked="checked" />    
+				        <span> {{answer.label}}</span>
+				      </label>
+		    	</div>
+		    </div>
+	 	</div>
+ 	</div>
+ 
 	{{selected_radio}}
 	 
 </div>

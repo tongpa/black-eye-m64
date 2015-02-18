@@ -4,7 +4,8 @@ var app = angular.module("poll", ['ui.bootstrap']);
 /**controller***/
 	app.controller("pollController", function($scope, $http,$log) {
 		
-		$scope.url = '/ang/getQuestion';
+		//$scope.url = '/ang/getQuestion';
+		$scope.url = 'preview/getDataPreview?idProject=2';
 		$scope.content = [];
 		
 		
@@ -202,7 +203,7 @@ var app = angular.module("poll", ['ui.bootstrap']);
 	    		 	console.log($scope.$parent.countQuestion);
     		 	
 	    		 	
-	    		 	debugger;
+	    		 	//debugger;
 	    	   };
 	    	
 	     };

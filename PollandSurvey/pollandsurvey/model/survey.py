@@ -312,6 +312,8 @@ class Question(DeclarativeBase):
             for answer in self.child:
                 for basicText in  answer.basicData.childenText:                    
                     child.append(basicText.to_json());
+                for basicMedia in  answer.basicData.childenMedia:                    
+                    child.append(basicMedia.to_json());
         
         dict['answer'] = child;
          
@@ -321,6 +323,15 @@ class Question(DeclarativeBase):
         DBSession.add(self); 
         DBSession.flush() ;
     
+    @classmethod
+    def updateOrderById(cls,order,id):
+        try:
+            DBSession.query(cls).filter(cls.id_question == id).update({"order": order}) ; # , synchronize_session='evaluate' 
+            return True, 'success';
+        except IntegrityError as  e:
+            print e;  
+            return False, 'Cannot delete.';#e.__str__();
+        
     @classmethod
     def deleteQuestoin(cls,idQuestion):
         
@@ -454,7 +465,7 @@ class Question(DeclarativeBase):
     
     @classmethod
     def getByProjectId(cls,id):
-        return DBSession.query(cls).filter(cls.id_question_project == str(id).decode('utf-8')).all(); 
+        return DBSession.query(cls).filter(cls.id_question_project == str(id).decode('utf-8')).order_by(cls.order).all(); 
     
     @classmethod
     def getAll(cls,act):
@@ -746,7 +757,9 @@ class BasicQuestion(DeclarativeBase):
     def save (self):
         DBSession.add(self); 
         DBSession.flush() ;
-        
+    
+
+            
     @classmethod
     def getByQuestionId(cls,idQuestion):
         return DBSession.query(cls).filter(cls.id_question == str(idQuestion)  ).all();
@@ -810,6 +823,7 @@ class BasicData(DeclarativeBase):
     
     """list childen link """
     childenText = relation('BasicTextData')  ; 
+    childenMedia = relation('BasicMultimediaData');
     
     def __init__(self):
         pass;
@@ -1010,9 +1024,9 @@ class BasicMultimediaData(DeclarativeBase):
     def to_json(self):
         
         dict  = {"id": self.id_basic_data, 
-                 "label": self.value,
-                 "media_type": self.media_type,
-                 "media_path_file": self.media_path_file
+                 "label": self.value 
+                # , "media_type": self.media_type 
+                # ,"media_path_file": self.media_path_file
                  };
                  
         return dict;

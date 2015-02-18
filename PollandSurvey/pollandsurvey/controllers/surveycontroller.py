@@ -492,7 +492,7 @@ class SurveyController(BaseController):
             
             question.text_label = '';
             question.user_id = user.user_id;
-            question.order = 3;
+            question.order = self.dataValue.get('order');  
             question.save();
             
             print question.id_question;
@@ -668,7 +668,7 @@ class SurveyController(BaseController):
         
         return dict(success=self.success, message = self.message);
     
-    @expose()
+    @expose('json')
     def updateQuestionData(self  , **kw):
         reload(sys);
         sys.setdefaultencoding("utf-8");
@@ -678,10 +678,19 @@ class SurveyController(BaseController):
         #log.info(request.method );
         #log.info(request.params );
         
-        for d in request:
-            log.info(d);
+        df = json.loads(request.body, encoding=request.charset);
+        for d in df:
+            print d.get('id_question');
+            print d.get('order');
+            self.success, self.message = model.Question.updateOrderById(d.get('order'), d.get('id_question'));
+            
+            print self.success;
+            print self.message;
+            
+        #for d in request:
+        #    log.info(d);
+        print df;
         log.info('-----------------------');
-       
         log.info(kw);
        
         return dict(success=self.success, message = self.message);
