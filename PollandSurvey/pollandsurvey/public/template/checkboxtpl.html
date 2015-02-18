@@ -8,19 +8,35 @@
 </div> 
 
 <div class="highlight"> 
-	<h2><span>{{content.seq}}. </span>{{content.question}}  </h2> 
+	<div class="row">
+	 	<div class="col-md-1">
+	 		<h2><span>{{content.seq}}.</span></h2>
+	 	</div>
+	 	<div class="col-md-11">
+	 		<h2><span> {{content.question}}</span></h2>
+	 	</div>
+ 	</div>
 
-	<input type="hidden" name="question_{{content.id}}" value="{{content.id}}"/>
-	
-	<div style="padding-left:25px" ng-repeat="answer in content.answer">
-    	<div class="checkbox">
-    		 <label>
-    		 	<input type="checkbox" name="checkbox_{{answer.id}}" ng-model="selectedData[content.id][answer.id]" ng-change="selectedScore(content.id,answer.id ,'check')"  ng-checked="{{answer.selected}}" value="{{answer.id}}" />
-		           
-		        <span>{{answer.id}} - {{answer.label}} - {{answer.selected}}</span>
-		      </label>
-    	</div>
+	<div class="row">
+	 	<div class="col-md-1">
+	 		<input type="hidden" name="question_{{content.id}}" value="{{content.id}}"/>
+	 	</div>
+	 	<div class="col-md-11"> <!-- style="padding-left:25px"  -->
+	 		<div ng-repeat="answer in content.answer">
+	    	<div class="checkbox">
+	    		 <label>
+	    		 	<input type="checkbox" name="checkbox_{{answer.id}}" ng-model="selectedData[content.id][answer.id]" ng-change="selectedScore(content.id,answer.id ,'check')"  ng-checked="{{answer.selected}}" value="{{answer.id}}" />
+			           
+			        <span>{{answer.id}} - {{answer.label}} - {{answer.selected}}</span>
+			      </label>
+	    	</div>
     </div>
+	 	</div>
+ 	</div> 
+
+	
+	
+	
 	
 	
 </div>
