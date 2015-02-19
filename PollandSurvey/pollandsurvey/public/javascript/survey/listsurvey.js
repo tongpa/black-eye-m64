@@ -10,7 +10,7 @@ Ext.require([
              'Ext.layout.container.Column',
              'Ext.tip.QuickTipManager',           
              'Ext.window.MessageBox',
-             
+             'Ext.util.Observable',
              'Ext.grid.*',
              'Ext.data.*',
              'Ext.util.*',
