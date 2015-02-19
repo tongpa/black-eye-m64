@@ -131,7 +131,7 @@ Ext.define('survey.view.list.OptionProject', {
                 	main.openUrl =  window.location.origin +"/";// window.location.protocol + window.location.host + "/"; 
                 	console.log(main.openUrl);	
                 	 
-                	window.open(main.openUrl + "preview?id=" + r.data.id_question_option,"_blank");
+                	window.open(  "/preview?id=" + r.data.id_question_option,"_blank");
                 	 
                 }
             });
