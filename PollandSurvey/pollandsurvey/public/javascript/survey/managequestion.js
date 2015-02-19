@@ -503,8 +503,7 @@ Ext.define('survey.view.list.Project.ImageView',{
 });
 
 
-
-
+ 
 
 
 Ext.define('survey.view.list.Project.PAddQuestion',{
@@ -670,11 +669,12 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 	        		 
 	                form.submit({
 	                	scope: this,
-	                	method: 'POST',
+	                	method: 'GET',
 	                	/*headers: {
 	                        'Content-Type': 'application/json;charset=utf-8'
+							//'Content-Type' : 'multipart/form-data;'
 	                    },*/
-	                	waitMsg: 'Save your Data...',
+	                	//waitMsg: 'Save your Data...',
 	                    success: function(form, action) {
 	                    	  
 	                    	//debugger;
@@ -690,7 +690,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 	                    	 
 	                    	if (action.response.status = '404'){
 	                    		
-	                    		Ext.Msg.alert('Failed', action.response.statusText);
+	                    		Ext.Msg.alert('Failed', 'page not found :'+ action.response.statusText );
 	                    		main.closeWindow(main,bt);
 	                    		 
 	                    	}
@@ -699,7 +699,8 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 	                    	}
 	                        
 	                    }
-	                });  
+	                });
+			 
 	            }
 			}
 		});

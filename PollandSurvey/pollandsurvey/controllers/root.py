@@ -25,7 +25,7 @@ from pollandsurvey.controllers.angularcontroller import AngularController;
 
 from tg import tmpl_context
 from pollandsurvey.widget.movie_form import create_movie_form 
-
+import sys
 import logging;
 log = logging.getLogger(__name__);
 __all__ = ['RootController']
@@ -62,7 +62,11 @@ class RootController(BaseController):
     
     def _before(self, *args, **kw):
         tmpl_context.project_name = "pollandsurvey"
-
+    
+    @expose('pollandsurvey.templates.about')
+    def about(self, came_from=lurl('/')):
+        return dict(page='about') 
+        
     @expose('pollandsurvey.templates.index')
     def index(self, came_from=lurl('/')):
         """Handle the front-page."""
@@ -78,10 +82,12 @@ class RootController(BaseController):
         
         groups = request.identity['groups'] 
         
-        if 'voter' in groups:
-            
+        if 'voter' in groups:            
             log.info('voter');
             return HTTPFound(location='/survey')
+        else:
+            log.info('other');
+            return  HTTPFound(location='/about')
         
         return dict(page='index')
 
@@ -160,11 +166,19 @@ class RootController(BaseController):
         #print "User id "  ;
         #user =  request.identity['user'];
         #print user.user_id;
+        print 'came_from : ' + came_from;
+        """
         
         if 'voter' in groups:
-            
+            print "voter";
             log.info('voter');
             return HTTPFound(location='/survey')
+        
+        print "other";
+        
+        """
+        
+        
         
         # Do not use tg.redirect with tg.url as it will add the mountpoint
         # of the application twice.
@@ -194,3 +208,26 @@ class RootController(BaseController):
     def create(self, **kw):
         """Create a movie object and save it to the database."""
         redirect("/register")
+        
+        
+    @expose('pollandsurvey.templates.sanpleuploadfile')
+    def sampleupload(self,*args,**kw):
+    
+        return dict(view="sample");
+    
+    @expose('json',content_type="text/plain"  )
+    def addQuestion(self, came_from=lurl('/'), *args, **kw):
+        reload(sys);
+        sys.setdefaultencoding("utf-8");
+        self.success = True;
+        self.message = "success";
+        log.info('---------1--------------');
+         
+     
+        print kw;
+        print args;
+        
+        
+          
+        
+        return dict(success=self.success, message = self.message);

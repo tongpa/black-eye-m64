@@ -78,6 +78,21 @@ class Utility(object):
             
             return data.lstrip(value).split(value);
         return data;
+    
+    def isPartOf(self,first,second):
+        if first is not None and second is not None:
+            first = str(first).lower();
+            second = str(second).lower();
+            self.index = second.rfind(first);
+            print first + " is path of " + second + "  : " + str(self.index);
+            if(self.index >=0):
+                return True;
+            else:
+                return False;
+        
+        return False;
+            
+            
 #import ast
 #print ast.literal_eval('True')
 #print bool('true')
@@ -87,7 +102,9 @@ class Utility(object):
 
 #print ({True: True, False: False}[ answer in 'true'])
 
-#u = Utility();
+u = Utility();
+u.isPartOf('answer_1.png',"""C:\\fakepath\\answer_1.png""");
+
 #sp =  u.spritValue('/preview/welcome','/');
 #print sp[0];
 #print u.isNumber('20');
