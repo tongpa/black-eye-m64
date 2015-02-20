@@ -88,10 +88,7 @@ class PreviewController(BaseController):
                     pass;
              
         return dict(page='view',header = self.header, footer = self.footer, action = self.nextQuestion,template= self.template ); 
-        
          
-        
-        return dict(title="Foobar", mybool=False, someval="foo"  )
         
     
     @expose ("genshi:pollandsurvey.templates.view.firstTemplate")

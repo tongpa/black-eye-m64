@@ -75,48 +75,39 @@ class RootController(BaseController):
         
         if not request.identity:
             login_counter = request.environ.get('repoze.who.logins', 0) + 1
-            redirect('/login',
-                params=dict(came_from=came_from, __logins=login_counter))
+            redirect('/login', params=dict(came_from=came_from, __logins=login_counter))
+        
         userid = request.identity['repoze.who.userid']
         flash(_('Welcome back, %s!') % userid)
         
         groups = request.identity['groups'] 
         
+        self.location = '/about';
         if 'voter' in groups:            
             log.info('voter');
-            return HTTPFound(location='/survey')
-        else:
-            log.info('other');
-            return  HTTPFound(location='/about')
+            self.location = '/survey';
+        log.info('other');
         
-        return dict(page='index')
+        return  HTTPFound(location=self.location)
+        #return dict(page='index')
 
     
  
 
     @expose('pollandsurvey.templates.environ')
+    @require(predicates.has_permission('manage', msg=l_('Only for managers')))
     def environ(self):
         """This method showcases TG's access to the wsgi environment."""
         return dict(page='environ', environment=request.environ)
 
-    @expose('pollandsurvey.templates.data')
-    @expose('json')
-    def data(self, **kw):
-        """This method showcases how you can use the same controller for a data page and a display page"""
-        return dict(page='data', params=kw)
+     
     
     @expose('pollandsurvey.templates.index')
     @require(predicates.has_permission('manage', msg=l_('Only for managers')))
     def manage_permission_only(self, **kw):
         """Illustrate how a page for managers only works."""
-        
-         
-        
-        
-        
-        
-        
         return dict(page='managers stuff')
+
 
     @expose('pollandsurvey.templates.index')
     @require(predicates.is_user('editor', msg=l_('Only for the editor')))
@@ -231,3 +222,5 @@ class RootController(BaseController):
           
         
         return dict(success=self.success, message = self.message);
+    
+    
