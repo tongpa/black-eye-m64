@@ -14,7 +14,8 @@ Ext.define('survey.view.list.Project.btAddProject',{
 
 Ext.define('survey.view.list.Project', {	
 	extend: 'Ext.grid.Panel',
-	 
+	//autoHeight: true, 
+	height:'100%' ,
 	bufferedRenderer: false,
 	disableSelection : true,
 	forceFit: true,
@@ -22,7 +23,8 @@ Ext.define('survey.view.list.Project', {
 	
 	//title : 'Project poll and survey',
 	viewConfig: {
-        emptyText: 'No images to display'
+        emptyText: 'No images to display',
+        forceFit: true 
     },
     collapsible:false ,
     initComponent: function() {
@@ -32,8 +34,8 @@ Ext.define('survey.view.list.Project', {
     	main.columns = [
     	       	       
     	    	    {header: 'name', dataIndex: 'name',width : '30%' , sortable: false }  ,
-    	    	    {header: 'type', dataIndex: 'question_project_type',width : '20%', renderer :main.showprojecttype , sortable: false }  ,
-    	    	    {header: 'create', dataIndex: 'start_date',width : '30%' , sortable: false }   ,
+    	    	    {header: 'type', dataIndex: 'question_project_type',width : '15%', renderer :main.showprojecttype , sortable: false }  ,
+    	    	    {header: 'create', dataIndex: 'start_date',width : '15%' , sortable: false }   ,
     	    	    {header: 'Delete',  width : '10%', renderer :main.deleteButton, sortable: false  } ,
     	    	    {header: 'Manage',  width : '10%',  renderer :main.showbuttonManage,  sortable: false  }       	    	     
     	            

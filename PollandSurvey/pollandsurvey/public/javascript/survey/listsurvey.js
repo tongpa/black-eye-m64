@@ -33,7 +33,7 @@ Ext.application({
     	survey.listOptionTheme.load();
    	 
     	var project_view = Ext.create('survey.view.list.Project',{   		 
-    		
+    		flex: 1,
     	    hidden : false,
     	   // width  : '50%',
     	    //height : 400,
@@ -151,9 +151,7 @@ Ext.application({
     		 renderTo : 'maintenance-app' ,
     		 width : '100%',
     		 height : 1000,
-             layout: {
-                 type: 'border'
-             },
+    		 layout:'fit',
              defaults: {
                  collapsible: true,
                  split: true,
