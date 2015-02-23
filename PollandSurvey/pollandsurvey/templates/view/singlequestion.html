@@ -59,7 +59,7 @@
 	                <!-- Content Poll and Survey -->
 	                <div data-ng-app="poll" name='1'>
 	                
-						<div id="container" ng-controller="pollController">
+						<div id="container" ng-controller="pollController" ng-init="init('${urldata}', '${idproject}')">
 							 
 							 <div class="highlight text-center">
 					 			<pagination 

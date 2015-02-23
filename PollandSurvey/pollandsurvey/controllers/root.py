@@ -21,7 +21,7 @@ from pollandsurvey.controllers.script.loadmodelcontroller import  ScriptModelCon
 from pollandsurvey.controllers.script.previewcontroller import  PreviewController;
 from pollandsurvey.controllers.script.imagescontroller import ImagesController;
 from pollandsurvey.controllers.angularcontroller import AngularController;
-
+from pollandsurvey.controllers.answercontroller import AnswerController;
 
 from tg import tmpl_context
 from pollandsurvey.widget.movie_form import create_movie_form 
@@ -57,6 +57,8 @@ class RootController(BaseController):
     
     images = ImagesController();
     preview =PreviewController();
+    
+    ans = AnswerController();
     
     ang = AngularController();
     
@@ -186,6 +188,11 @@ class RootController(BaseController):
         return HTTPFound(location=came_from)
     
     
+    @expose('pollandsurvey.templates.view.expired')
+    def expired(self,*args,**kw):
+        return dict(page='expired');
+    
+     
     @expose('pollandsurvey.templates.new_form')
     def new(self, **kw):
  

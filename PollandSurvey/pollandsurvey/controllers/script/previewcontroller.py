@@ -32,6 +32,7 @@ __all__ = ['PreviewController']
 class PreviewController(BaseController):
    
     def __init__(self):
+        self.URL_GETDATAQUESTION = '/preview/getDataPreview?idProject={0}';
         self.utility = Utility();
     
     @expose('pollandsurvey.templates.view.multiquestion')
@@ -85,9 +86,10 @@ class PreviewController(BaseController):
                     print self.template; 
                     
                     override_template(PreviewController.index, self.template) 
-                    pass;
-             
-        return dict(page='view',header = self.header, footer = self.footer, action = self.nextQuestion,template= self.template ); 
+                    
+                
+        print 'idproject : ', id;     
+        return dict(page='view',header = self.header, footer = self.footer, action = self.nextQuestion,template= self.template,urldata = self.URL_GETDATAQUESTION.format(id) , idproject = id ); 
          
         
     

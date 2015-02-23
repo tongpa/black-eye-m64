@@ -1,11 +1,14 @@
 var app = angular.module("poll", ['ui.bootstrap']);
-	
+ 
 
 /**controller***/
 	app.controller("pollController", function($scope, $http,$log) {
 		
+		
+		
 		//$scope.url = '/ang/getQuestion';
 		$scope.url = 'preview/getDataPreview?idProject=2';
+		$scope.idProject = '';
 		$scope.content = [];
 		
 		
@@ -13,7 +16,10 @@ var app = angular.module("poll", ['ui.bootstrap']);
 		
 		/**count select Question**/
 		$scope.countQuestion = [];
- 
+		
+		$scope.lastQuestion =  [];
+		
+		
 		/**for paging**/
 		$scope.bigCurrentPage =1;
 		/**max for next page**/
@@ -28,6 +34,14 @@ var app = angular.module("poll", ['ui.bootstrap']);
 		
 		$scope.selected_radio = 1;
 		
+		$scope.init = function(url,idproject){
+			$scope.url = url;
+			$scope.idProject = idproject;
+			console.log(url);
+			console.log(idproject);
+			
+			$scope.fetchContent();
+		}
 		
 		
 		/**function for this controller update Question attempted**/
@@ -37,7 +51,10 @@ var app = angular.module("poll", ['ui.bootstrap']);
 		
 		/**function for this controller for next Question **/
 		$scope.setNextQuestion = function (){
-			  
+			
+			
+			
+			
 			$log.log('Page changed to : ' + ($scope.bigCurrentPage ) );
 			$log.log('Page total to : ' + ($scope.bigTotalItems ) );
 			$scope.numberQuestion = $scope.numberQuestion +1;
@@ -64,8 +81,25 @@ var app = angular.module("poll", ['ui.bootstrap']);
 		    $log.log('countQuestion : ' );
 		    $log.log($scope.countQuestion);
 		    
+		    $log.log('last data ');
+		    $log.log($scope.lastQuestion);
+ 
+		    var data = {value : $scope.lastQuestion[0]};
 		    
+		    $http.post("/ans/saveQuestion",data).success(function(data,status,heafers, config){
+		    	console.log(data);
+		    	if (status == 200 && data.success == true){
+		    		value = $scope.lastQuestion.pop();
+		    	}
+		    	 
+		    }).error(function(data, status, headers, config) {
+		        // called asynchronously if an error occurs
+		        // or server returns response with an error status.
+		      });
 		    
+		    $log.log("save to server:");
+		    
+		   // debugger;
 		  };
 
 		  
@@ -75,6 +109,7 @@ var app = angular.module("poll", ['ui.bootstrap']);
 		
 		/**Query data */
 		$scope.fetchContent = function (){
+			console.log($scope.url);
 	        $http.get($scope.url).success(function(response) {
 	        	$scope.content = response.questions[0].question;
 	        	
@@ -99,7 +134,7 @@ var app = angular.module("poll", ['ui.bootstrap']);
 		};
 		
 
-	    $scope.fetchContent();
+	    
 	    
 	   
 	});
@@ -158,10 +193,13 @@ var app = angular.module("poll", ['ui.bootstrap']);
 	    		 	console.log("id : " + id + ", value : " + value + ", type : " + type  );
 	    		 	qnaObj = new Object();
 	    		 	qnaObj.id = id;
+	    		 	qnaObj.idproject = $scope.$parent.idProject;
 	    		 	qnaObj.value = [];
 	    		 	qnaObj.value.push(value);
 	    		 	qnaObj.type = type;
 	    		 	console.log(qnaObj);
+	    		 	
+	    		 	 
 	    		 	same = false;
 	    		 	angular.forEach( $scope.$parent.countQuestion, function(qna) {
 	    		          if( qna.id === id ) {
@@ -198,10 +236,14 @@ var app = angular.module("poll", ['ui.bootstrap']);
 	    		 	});	    		 	
 	    		 	if (!same) {
 	    		 		$scope.$parent.countQuestion.push(qnaObj);
+	    		 		
 	    		 		$scope.$parent.updateQuestionsAttemptedCount();
 	    		 	}
 	    		 	console.log($scope.$parent.countQuestion);
-    		 	
+	    		 	
+	    		 	$scope.$parent.lastQuestion.push(qnaObj);
+	    		 	console.log($scope.$parent.lastQuestion);
+	    		 	
 	    		 	
 	    		 	//debugger;
 	    	   };
@@ -212,6 +254,9 @@ var app = angular.module("poll", ['ui.bootstrap']);
 	     directive.controller = function($scope) {
 	         $scope.getTemplateUrl = function() {  
 	        	 console.log('gettemplate');
+	        	 
+	        	 
+	        	 
 	        	 return getTemplate($scope.content.type);
 	           
 	         }

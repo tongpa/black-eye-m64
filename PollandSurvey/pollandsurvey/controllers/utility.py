@@ -4,6 +4,7 @@ import base64
 import json 
 import logging;
 import types;
+import datetime;
 log = logging.getLogger(__name__); 
 class Utility(object):
 
@@ -91,6 +92,30 @@ class Utility(object):
                 return False;
         
         return False;
+    
+    def isActiveFromDate(self,data,start,stop):
+        
+        if self.isEmpty(start):
+            return False;
+        
+        if self.isEmpty(data):
+            data = datetime.datetime.today();
+            
+        print 'start : ' , start;    
+        print 'data : ' , data;
+        print 'stop : ' , stop;
+        
+        
+        if self.isEmpty(stop):
+            print 'start < date ', start <= data; 
+            return start <= data;
+        elif start < data <= stop:
+            print 'start < data <= stop :', start < data <= stop;
+            return start < data <= stop;
+        
+        return False;
+            
+        
             
             
 #import ast
@@ -102,8 +127,11 @@ class Utility(object):
 
 #print ({True: True, False: False}[ answer in 'true'])
 
-u = Utility();
-u.isPartOf('answer_1.png',"""C:\\fakepath\\answer_1.png""");
+#u = Utility();
+#u.isPartOf('answer_1.png',"""C:\\fakepath\\answer_1.png""");
+#d2 = datetime.datetime.today() - datetime.timedelta(days=2);
+#d3 = datetime.datetime.today() + datetime.timedelta(days=15);
+#u.isActiveFromDate(None,d2,d3);
 
 #sp =  u.spritValue('/preview/welcome','/');
 #print sp[0];

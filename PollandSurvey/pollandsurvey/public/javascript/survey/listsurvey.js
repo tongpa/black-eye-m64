@@ -31,12 +31,20 @@ Ext.application({
     	
     	
     	survey.listOptionTheme.load();
-   	 
+   	 	
+    	var contact_view = Ext.create('Ext.form.Panel',{
+    		title : 'Contacts',
+    		width: '100%',
+    		html : 'Hello !'
+    	});
+    	
+    	
     	var project_view = Ext.create('survey.view.list.Project',{   		 
     		flex: 1,
     	    hidden : false,
+    	    
     	   // width  : '50%',
-    	    //height : 400,
+    	    height : 800,
 			listeners : {
 				showManage : function(current,record) {
 					
@@ -122,7 +130,7 @@ Ext.application({
     	} );
     	
     	var mainPanelTab = Ext.create('Ext.form.Panel',{
-    		extend : 'Ext.form.Panel',
+    		
     		title : 'Poll and Survey',
     		width: '100%',
     		height : 800,
@@ -135,15 +143,22 @@ Ext.application({
     	var tab_project = Ext.create('Ext.tab.Panel', {
     	    width: '100%',  
     	    height : 800,
+    	    title : 'Project',
     	    layout: {
                 type: 'fix'
             }, 
     	    items: [mainPanelTab ]
     	});
     	
-    	
+    	var tab_main_project = Ext.create('Ext.tab.Panel', {
+    	    width: '100%',  
+    	    height : 800,
+    	   
+    	    layout: {                 type: 'fix'             }, 
+    	    items: [tab_project,contact_view ]
+    	});
     	 
-    	 
+ 
     	
     	
     	 Ext.create('Ext.panel.Panel', {
@@ -178,9 +193,9 @@ Ext.application({
                  xtype: 'panel',
                  layout: 'fit',
                  margins: '5 5 0 0' ,
-                 collapsible:false ,
-                 items: [tab_project ]
-                 // items: [panel]
+                 collapsible:false  
+                ,items: [tab_main_project ]
+                  
              }
              ]
      	});
