@@ -63,3 +63,5 @@ from pollandsurvey.model.auth import User, Group, Permission
 from movie import Movie
 from survey import QuestionType,LanguageLabel,QuestionProject,QuestionProjectType,GroupVariables,Variables,BasicDataType,BasicData,BasicQuestion,BasicTextData,BasicTextData,Question,QuestionValidation
 from survey import QuestionOption,BasicMultimediaData, QuestionMedia,QuestionTheme
+from voter import VoterType,Gender,MarriageStatus,Organization,TelephoneType,AddressType,Position,Telephone,Address,Voter,MemberUser
+from respondent import  Respondents,RespondentReply,ReplyBasicQuestion

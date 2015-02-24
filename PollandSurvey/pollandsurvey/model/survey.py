@@ -14,7 +14,7 @@ from hashlib import sha256
 
 
 from sqlalchemy import Table, ForeignKey, Column,and_
-from sqlalchemy.types import Unicode, Integer, DateTime, Date, Integer, String, Text,Boolean
+from sqlalchemy.types import Unicode,   DateTime, Date, Integer, String, Text,Boolean,BigInteger
 
 from sqlalchemy.util import KeyedTuple;
 from sqlalchemy.orm import relation, synonym, Bundle
@@ -27,9 +27,9 @@ __all__ = ['GroupVariables', 'QuestionType', 'QuestionProjectType' ,'BasicDataTy
 
 
 class LanguageLabel(DeclarativeBase):
-    __tablename__ = 'sur_language_label'
+    __tablename__ = 'sur_m_language_label'
 
-    id_language_label =  Column(Integer, autoincrement=True, primary_key=True);
+    id_language_label =  Column(BigInteger, autoincrement=True, primary_key=True);
     module = Column(String(255), nullable=True);
     default_label = Column(String(255) , nullable=True);
     message_en =  Column(String(255) , nullable=True);
@@ -57,9 +57,9 @@ class LanguageLabel(DeclarativeBase):
      
 
 class GroupVariables(DeclarativeBase):       
-    __tablename__ = 'sur_group_variables'
+    __tablename__ = 'sur_m_group_variables'
 
-    id_group_variables =  Column(Integer, autoincrement=True, primary_key=True)
+    id_group_variables =  Column(BigInteger, autoincrement=True, primary_key=True)
     name = Column(String(255),unique=True, nullable=False)
     description = Column(String(255),unique=True, nullable=False)
     active  = Column(BIT, nullable=True, default=1)
@@ -79,9 +79,9 @@ class GroupVariables(DeclarativeBase):
         
 class QuestionType(DeclarativeBase):
 
-    __tablename__ = 'sur_question_type'
+    __tablename__ = 'sur_m_question_type'
 
-    id_question_type =  Column(Integer, autoincrement=True, primary_key=True)
+    id_question_type =  Column(BigInteger, autoincrement=True, primary_key=True)
     description = Column(String(255),unique=True, nullable=False)
     type = Column(String(255),unique=True, nullable=False)
     active  = Column(BIT, nullable=True, default=1)
@@ -100,9 +100,9 @@ class QuestionType(DeclarativeBase):
             return DBSession.query(cls) .all();
     
 class QuestionTheme(DeclarativeBase):
-    __tablename__ = 'sur_question_theme'
+    __tablename__ = 'sur_m_question_theme'
 
-    id_question_theme =  Column(Integer, autoincrement=True, primary_key=True)
+    id_question_theme =  Column(BigInteger, autoincrement=True, primary_key=True)
     description = Column(String(255),unique=True, nullable=False)
     template = Column(String(255),unique=True, nullable=False)
     active  = Column(BIT, nullable=True, default=1)
@@ -129,9 +129,9 @@ class QuestionTheme(DeclarativeBase):
     
 class QuestionProjectType(DeclarativeBase):
 
-    __tablename__ = 'sur_question_project_type'
+    __tablename__ = 'sur_m_question_project_type'
 
-    id_question_project_type =  Column(Integer, autoincrement=True, primary_key=True)
+    id_question_project_type =  Column(BigInteger, autoincrement=True, primary_key=True)
     description = Column(String(255),unique=True, nullable=False)
     active  = Column(BIT, nullable=True, default=1)
     
@@ -156,9 +156,9 @@ class QuestionProjectType(DeclarativeBase):
         
 class BasicDataType(DeclarativeBase):
 
-    __tablename__ = 'sur_basic_data_type'
+    __tablename__ = 'sur_m_basic_data_type'
 
-    id_basic_data_type =  Column(Integer, autoincrement=True, primary_key=True)
+    id_basic_data_type =  Column(BigInteger, autoincrement=True, primary_key=True)
     description = Column(String(255),unique=True, nullable=False)
     active  = Column(BIT, nullable=True, default=1)
     
@@ -189,14 +189,14 @@ class QuestionProject(DeclarativeBase):
 
     __tablename__ = 'sur_question_project'
 
-    id_question_project =  Column(Integer, autoincrement=True, primary_key=True)
+    id_question_project =  Column(BigInteger, autoincrement=True, primary_key=True)
     name = Column(String(255) , nullable=False)
     description = Column(String(255) , nullable=False)
     
-    user_id = Column(   Integer,ForeignKey('tg_user.user_id'), nullable=False, index=True) ;
+    user_id = Column(   BigInteger,ForeignKey('tg_user.user_id'), nullable=False, index=True) ;
     user = relation('User', backref='sur_question_project_user_id');
     
-    id_question_project_type = Column(   Integer,ForeignKey('sur_question_project_type.id_question_project_type'), nullable=False, index=True) ;
+    id_question_project_type = Column(   BigInteger,ForeignKey('sur_m_question_project_type.id_question_project_type'), nullable=False, index=True) ;
     question_project_type = relation('QuestionProjectType', backref='sur_question_project_id_question_project_type');
     
     
@@ -266,12 +266,12 @@ class Question(DeclarativeBase):
 
     __tablename__ = 'sur_question'
 
-    id_question =  Column(Integer, autoincrement=True, primary_key=True)
+    id_question =  Column(BigInteger, autoincrement=True, primary_key=True)
     
-    id_question_type = Column(   Integer,ForeignKey('sur_question_type.id_question_type'), nullable=False, index=True) ;
+    id_question_type = Column(   BigInteger,ForeignKey('sur_m_question_type.id_question_type'), nullable=False, index=True) ;
     question_type = relation('QuestionType', backref='sur_question_id_question_type');
     
-    id_question_project = Column(   Integer,ForeignKey('sur_question_project.id_question_project'), nullable=False, index=True) ;
+    id_question_project = Column(   BigInteger,ForeignKey('sur_question_project.id_question_project'), nullable=False, index=True) ;
     project = relation('QuestionProject', backref='sur_question_id_question_project');
     
     user_id = Column(   Integer,ForeignKey('tg_user.user_id'), nullable=False, index=True) ;
@@ -280,7 +280,7 @@ class Question(DeclarativeBase):
     question = Column(String(255),  nullable=False);
     help_message = Column(String(255),  nullable=False);
     text_label = Column(String(255),  nullable=False);
-    order =  Column(Integer   );
+    order =  Column(Integer  );
     
     """ relation   """
     child = relation('BasicQuestion');
@@ -548,21 +548,21 @@ class Question(DeclarativeBase):
         
 
 class Variables(DeclarativeBase):
-    __tablename__ = 'sur_variables'
+    __tablename__ = 'sur_m_variables'
     
     
-    id_variables =  Column(Integer, autoincrement=True, primary_key=True)
+    id_variables =  Column(BigInteger, autoincrement=True, primary_key=True)
     name = Column(String(255) , nullable=False)
     description = Column(String(255) , nullable=True)
     
-    id_group_variables = Column(   Integer,ForeignKey('sur_group_variables.id_group_variables'), nullable=False, index=True) ;
+    id_group_variables = Column(   BigInteger,ForeignKey('sur_m_group_variables.id_group_variables'), nullable=False, index=True) ;
     group_variables = relation('GroupVariables', backref='sur_variables_id_group_variables');
      
     table_jm_ref = Column(String(255) , nullable=True)
     field_jm_ref = Column(String(255) , nullable=True)
     
     
-    id_parent = Column(   Integer,ForeignKey('sur_variables.id_variables'), nullable=True, index=True) ;
+    id_parent = Column(   BigInteger,ForeignKey('sur_m_variables.id_variables'), nullable=True, index=True) ;
     #parrent = relation('Variables', backref='sur_variables_id_variables' , remote_side=['sur_variables.id_variables']); #,
     childen = relation('Variables')  
     
@@ -618,7 +618,7 @@ class QuestionValidation(DeclarativeBase):
 
     __tablename__ = 'sur_question_validation'
 
-    id_question =  Column(Integer,ForeignKey('sur_question.id_question'), index=True, primary_key=True);
+    id_question =  Column(BigInteger,ForeignKey('sur_question.id_question'), index=True, primary_key=True);
     quest = relation('Question', backref='sur_question_validation_id_question');
     
     enable_validation  = Column(BIT, nullable=True, default=1);
@@ -658,7 +658,7 @@ class QuestionMedia(DeclarativeBase):
 
     __tablename__ = 'sur_question_media'
 
-    id_question =  Column(Integer,ForeignKey('sur_question.id_question'), index=True, primary_key=True);
+    id_question =  Column(BigInteger,ForeignKey('sur_question.id_question'), index=True, primary_key=True);
     quest = relation('Question', backref='sur_question_media_id_question');
     
     value = Column(String(255),  nullable=False);
@@ -698,14 +698,14 @@ class QuestionMedia(DeclarativeBase):
 class BasicQuestion(DeclarativeBase):   
     __tablename__ = 'sur_basic_question';
 
-    id_question =  Column(Integer,ForeignKey('sur_question.id_question'), index=True, primary_key=True);
+    id_question =  Column(BigInteger,ForeignKey('sur_question.id_question'), index=True, primary_key=True);
     question = relation('Question', backref='sur_basic_question_id_question');
     
-    id_basic_data = Column(   Integer,ForeignKey('sur_basic_data.id_basic_data') , index=True, primary_key=True) ;
+    id_basic_data = Column(   BigInteger,ForeignKey('sur_basic_data.id_basic_data') , index=True, primary_key=True) ;
     question_project_type = relation('BasicData', backref='sur_basic_data_id_basic_data');
     
     answer   = Column(BIT, nullable=True, default=0);
-    order =  Column(Integer   ); 
+    order =  Column(BigInteger   ); 
     basicData  = relation('BasicData')  ;  
     
     
@@ -816,9 +816,9 @@ class BasicData(DeclarativeBase):
 
     __tablename__ = 'sur_basic_data'
 
-    id_basic_data =  Column(Integer, autoincrement=True, primary_key=True)
+    id_basic_data =  Column(BigInteger, autoincrement=True, primary_key=True)
     
-    id_basic_data_type = Column(   Integer,ForeignKey('sur_basic_data_type.id_basic_data_type'), nullable=False, index=True) ;
+    id_basic_data_type = Column(   BigInteger,ForeignKey('sur_m_basic_data_type.id_basic_data_type'), nullable=False, index=True) ;
     basic_data_type = relation('BasicDataType', backref='sur_basic_data_id_basic_data_type');
     
     """list childen link """
@@ -857,7 +857,7 @@ class BasicData(DeclarativeBase):
 class BasicTextData(DeclarativeBase):   
     __tablename__ = 'sur_text_data';
 
-    id_basic_data =  Column(Integer,ForeignKey('sur_basic_data.id_basic_data'), index=True, primary_key=True);
+    id_basic_data =  Column(BigInteger,ForeignKey('sur_basic_data.id_basic_data'), index=True, primary_key=True);
     basic_data = relation('BasicData', backref='sur_text_data_id_basic_data');
     
     value = Column(String(255),  nullable=False);
@@ -908,13 +908,13 @@ class BasicTextData(DeclarativeBase):
 class QuestionOption(DeclarativeBase):   
     __tablename__ = 'sur_question_option';
 
-    id_question_option =  Column(Integer, autoincrement=True, primary_key=True);    
+    id_question_option =  Column(BigInteger, autoincrement=True, primary_key=True);    
     
     
-    id_question_project = Column(   Integer,ForeignKey('sur_question_project.id_question_project'), nullable=False, index=True) ;
+    id_question_project = Column(   BigInteger,ForeignKey('sur_question_project.id_question_project'), nullable=False, index=True) ;
     project = relation('QuestionProject', backref='sur_question_option_id_question_project');
     
-    id_question_theme =   Column(   Integer,ForeignKey('sur_question_theme.id_question_theme'), nullable=False, index=True) ;
+    id_question_theme =   Column(   BigInteger,ForeignKey('sur_m_question_theme.id_question_theme'), nullable=False, index=True) ;
     theme = relation('QuestionTheme', backref='sur_question_option_id_question_theme');
     
     name_publication  = Column(String(255),  nullable=True);
@@ -1006,7 +1006,7 @@ class QuestionOption(DeclarativeBase):
 class BasicMultimediaData(DeclarativeBase):   
     __tablename__ = 'sur_multimedia_data';
 
-    id_basic_data =  Column(Integer,ForeignKey('sur_basic_data.id_basic_data'), index=True, primary_key=True);
+    id_basic_data =  Column(BigInteger,ForeignKey('sur_basic_data.id_basic_data'), index=True, primary_key=True);
     basic_data = relation('BasicData', backref='sur_multimedia_data_id_basic_data');
     
     value = Column(String(255),  nullable=False);
