@@ -23,7 +23,7 @@ Ext.define('survey.view.list.Project.PCreateVariable',{
 		
 		main.tbar =  [{
             xtype:'splitbutton',
-            text: 'Create Questions',
+            text: survey.label.create_variable,
             iconCls: 'add16',
             menu: [{text: 'Menu Button 1'}]
         }];

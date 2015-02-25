@@ -82,14 +82,14 @@ Ext.define('survey.view.gui.questiontype.GridAnswer', {
             xtype: 'toolbar',
             items: [{
                 iconCls: 'icon-add',
-                text: 'Add',
+                text: survey.label.add,
                 scope: this,
                 parent : main,
                 handler: this.onAddClick
             }, {
             	itemId: 'removeAnswer',
                 iconCls: 'icon-delete',
-                text: 'Delete',
+                text: survey.label.delete,
                 //disabled: true,
                 parent : main,
                 scope: this,
@@ -97,7 +97,7 @@ Ext.define('survey.view.gui.questiontype.GridAnswer', {
             }, {
             	itemId: 'refresh',
                // iconCls: 'icon-delete',
-                text: 'Refresh',
+                text: survey.label.refresh,
                 //disabled: true,
                 parent : main,
                 scope: this,
@@ -105,7 +105,7 @@ Ext.define('survey.view.gui.questiontype.GridAnswer', {
             }, {
             	itemId: 'SaveData',
                 // iconCls: 'icon-delete',
-                 text: 'Save',
+                 text: survey.label.save,
                  //disabled: true,
                  parent : main,
                  scope: this,
@@ -174,7 +174,7 @@ Ext.define('survey.view.gui.questiontype.GridAnswer', {
     	 
     	Ext.Msg.show({
 		    title:'Confirm Delete?',
-		    message: 'Do you delete : '  ,
+		    message: survey.message.confirm_delete  ,
 		    buttons: Ext.Msg.YESNO,
 		    icon: Ext.Msg.QUESTION,
 		    fn: function(btn) {
@@ -195,7 +195,7 @@ Ext.define('survey.view.gui.questiontype.GridAnswer', {
 		                			bt.parent.store.remove(recordSelected);
 		                		}
 		                		else{
-		                			Ext.Msg.alert('Failed', resp.message);
+		                			Ext.Msg.alert(  survey.message.failed  , resp.message);
 		                		}
 		                		resp = null;	
 		                			 
@@ -246,7 +246,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		
 		
     	main.btsave = Ext.create('Ext.Button',{		 
-			text : 'Save',
+			text : survey.label.save,
 			//iconCls : 'project-add',
 			formBind: true,  
 	        disabled: true,
@@ -296,26 +296,26 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 	             
 	                form.submit({
 	                	scope: this,
-	                	waitMsg: 'Save your Data...',
+	                	waitMsg: survey.message.waiting_save  ,
 	                    success: function(form, action) {
 	                    	 
 	                    	
 	                     
 	                    	
 	                    	//form.reset();
-	                    	Ext.Msg.alert('Success', action.result.message);
+	                    	Ext.Msg.alert(survey.message.success, action.result.message);
 	                    	 
 	                    },
 	                    failure: function(form, action) {
 	                    	 
 	                    	if (action.response.status = '404'){
 	                    		
-	                    		Ext.Msg.alert('Failed', action.response.statusText);
+	                    		Ext.Msg.alert(survey.message.failed, action.response.statusText);
 	                    		main.closeWindow(main,bt);
 	                    		 
 	                    	}
 	                    	else{
-	                    		Ext.Msg.alert('Success', action.result.message);
+	                    		Ext.Msg.alert(survey.message.success, action.result.message);
 	                    	}
 	                        
 	                    }
@@ -324,7 +324,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 			}
 		});
 		main.btclose = Ext.create('Ext.Button',{		 
-			text : 'Close',
+			text : survey.label.close,
 			
 			hidden : !main.showClose,
 			handler: function (bt,ev){

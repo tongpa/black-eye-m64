@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Main Controller"""
 
-from tg import expose, flash, require, url, lurl, request, redirect, tmpl_context,validate
+from tg import expose, flash, require, url, lurl, request, redirect, tmpl_context,validate  
 from tg.i18n import ugettext as _, lazy_ugettext as l_
 from tg.exceptions import HTTPFound
 from tg import predicates
@@ -188,15 +188,19 @@ class RootController(BaseController):
         return HTTPFound(location=came_from)
     
     
-    @expose('pollandsurvey.templates.view.expired')
+    @expose('pollandsurvey.templates.expired')
     def expired(self,*args,**kw):
         return dict(page='expired');
     
+    @expose('pollandsurvey.templates.thankyou')
+    def thankyou(self,*args,**kw):
+        return dict(page='thankyou');
      
     @expose('pollandsurvey.templates.new_form')
     def new(self, **kw):
- 
-        """Show form to add new movie data record."""
+        
+         
+        
         tmpl_context.form = create_movie_form
         return dict(modelname='Movie', value=kw)
     

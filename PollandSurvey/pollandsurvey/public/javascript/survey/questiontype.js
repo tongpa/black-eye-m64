@@ -1,13 +1,13 @@
 Ext.define('survey.view.gui.questiontype.ImagePanel.AnswerImage',{
 	extend: 'Ext.form.field.File',
 	name : 'answer_image',
-	fieldLabel: 'Image', 
+	fieldLabel: survey.label.image, 
 	allowBlank: true 
 });
 
 Ext.define('survey.view.gui.questiontype.ImagePanel.ImageLabel',{
 	extend: 'Ext.form.Label',
-	text : 'No Image.' 
+	text : survey.label.none_image
 });
 
  
@@ -21,7 +21,7 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.CheckboxAnswer',{
 Ext.define('survey.view.gui.questiontype.ImagePanel.RemoveImageBt',{
 	extend: 'Ext.Button',
 	name : 'delete_image',
-	text : 'Delete',
+	text : survey.label.delete,
 	iconCls: 'icon-delete'
 });
 
@@ -210,8 +210,8 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 		//console.log('onDeleteClick');
 		main = this;
 		Ext.Msg.show({
-		    title:'Confirm Delete?',
-		    message: 'Do you delete : '  ,
+		    title:survey.message.confirm_delete,
+		    message: survey.message.confirm_delete  ,
 		    buttons: Ext.Msg.YESNO,
 		    icon: Ext.Msg.QUESTION,
 		    fn: function(btn) {
@@ -234,7 +234,7 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 	                			bt.parent.parentMain.remove(bt.parent);
 	                		}
 	                		else{
-	                			Ext.Msg.alert('Failed', resp.message);
+	                			Ext.Msg.alert( survey.message.failed , resp.message);
 	                		}
 	                		resp = null;	
 	                			 
@@ -264,12 +264,12 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 	         isValid = false;  
 	         // Add the tooltip below to   
 	         // the red exclamation point on the form field  
-	         var erroMsg = Ext.String.format('Translate(Please upload files with an extension of {0} only!)', this.accept.join());  
+	         var erroMsg = Ext.String.format(survey.message.error_upload_without_extention, this.accept.join());  
 	         //me.setActiveError(erroMsg);
 	         //console.log(erroMsg);
 	         // Let the user know why the field is red and blank!  
 	         var messageBox = Ext.MessageBox.show({  
-	           title: 'Translate(Add Attachment)',  
+	           title: survey.message.upload,  
 	           msg: erroMsg,  
 	           buttons: Ext.Msg.OK,  
 	           icon: Ext.Msg.WARNING  
@@ -280,10 +280,10 @@ Ext.define('survey.view.gui.questiontype.ImagePanel.UploadImagePanel', {
 	       for (var i = 0; i < this.fileslist.length; i++) {  
 	         if (this.fileslist[i].indexOf(filename) !== -1) {  
 	           isValid = false;  
-	           var erMsg = Ext.String.format('Translate(The file {0} already added)!', filename);  
+	           var erMsg = Ext.String.format(survey.message.upload_success, filename);  
 	           //console.log(erroMsg);
 	           var messageBox = Ext.MessageBox.show({  
-	             title: 'Translate(Add Attachment)',  
+	             title: survey.message.upload,  
 	             msg: erMsg,  
 	             buttons: Ext.Msg.OK,  
 	             icon: Ext.Msg.INFO  
@@ -422,10 +422,10 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
     },
 	addHeader : function(parent){
 		
-		parent.headImage = Ext.create('Ext.form.Label',{text: 'Image',margin: '5 0 0 5' });
-		parent.headUpload = Ext.create('Ext.form.Label',{text: 'Upload',margin: '5 0 0 5' });
-		parent.headAnswer = Ext.create('Ext.form.Label',{text: 'Answer?',margin: '5 0 0 5' });
-		parent.headDelete = Ext.create('Ext.form.Label',{text: 'Delete',margin: '5 0 0 5' });
+		parent.headImage = Ext.create('Ext.form.Label',{text: survey.label.image ,margin: '5 0 0 5' });
+		parent.headUpload = Ext.create('Ext.form.Label',{text: survey.label.upload  ,margin: '5 0 0 5' });
+		parent.headAnswer = Ext.create('Ext.form.Label',{text: survey.label.answer  ,margin: '5 0 0 5' });
+		parent.headDelete = Ext.create('Ext.form.Label',{text: survey.label.delete  ,margin: '5 0 0 5' });
 		var panelColumn = Ext.create('Ext.panel.Panel',{
 			layout : 'column',
 			
@@ -465,7 +465,7 @@ Ext.define('survey.view.gui.questiontype.ImagePanel', {
             xtype: 'toolbar',
             items: [{
                 iconCls: 'icon-add',
-                text: 'Add',
+                text:survey.label.add,
                 scope: this,
                 parent : main,
                 handler: this.onAddClick
@@ -630,7 +630,7 @@ Ext.define('survey.view.gui.questiontype.GridImage', {
     	                        ' </div>'
     	                    ],
     	                    dataIndex: 'id_basic_data',
-    	                    text: 'Photo'
+    	                    text:  survey.label.image
     	                },
     	               /* {
     	                	xtype: 'uploadfile',
@@ -653,7 +653,7 @@ Ext.define('survey.view.gui.questiontype.GridImage', {
     	                },
     	                {
             	            xtype: 'checkcolumn',
-            	            header: 'Answer?',
+            	            header: survey.label.answer,
             	            dataIndex: 'answer',
             	            width: '20%',            	           
 	        	             sortable: false ,
@@ -675,7 +675,7 @@ Ext.define('survey.view.gui.questiontype.GridImage', {
 	        	             }
         	    	    },
         	    	    
-        	    	    {	 header: 'Delete?',      
+        	    	    {	 header: survey.label.delete,      
         	    	    	width: '20%',     
         	    	          renderer: function(val,meta,rec) {
         	    	             // generate unique id for an element
@@ -684,12 +684,12 @@ Ext.define('survey.view.gui.questiontype.GridImage', {
         	    	             Ext.defer(function() {
         	    	                Ext.widget('button', {
         	    	                   renderTo: id,
-        	    	                   text: 'DELETE',
+        	    	                   text: survey.label.delete,
         	    	                   scale: 'small',
         	    	                   record : rec,
         	    	                   iconCls : 'project-remove',
         	    	                   handler: function(bt,ev) {
-        	    	                      Ext.Msg.alert("Hello World");
+        	    	                     // Ext.Msg.alert("Hello World");
         	    	                      
         	    	                      parent.store.remove(rec);
         	    	                      
@@ -705,7 +705,7 @@ Ext.define('survey.view.gui.questiontype.GridImage', {
             xtype: 'toolbar',
             items: [{
                 iconCls: 'icon-add',
-                text: 'Add',
+                text: survey.label.add,
                 scope: this,
                 parent : main,
                 handler: this.onAddClick
@@ -820,47 +820,47 @@ Ext.define('survey.view.gui.questiontype.GridAnswer', {
     	var row = 1;
     	main.columns = [
     	                	{xtype: 'rownumberer'},
-    	            {header: 'id', width : '9%', sortable: false, dataIndex: 'id_question' ,hidden : true,menuDisabled: true},
+    	                	{header: 'id', width : '9%', sortable: false, dataIndex: 'id_question' ,hidden : true,menuDisabled: true},
     	    	   //	{header: 'No.', width : '9%', sortable: false, dataIndex: 'seq',menuDisabled: true},
-    	         	{header: 'Choose', dataIndex: 'value', 
-    	    	   		field : {
-    	    	   			type : 'textfield'
-    	    	   		},
-    	    	   		//editor: 'textfield',  
-    	    	   		width : '70%',   sortable: false,menuDisabled: true}  , 
+    	                	{header: 'Choose', dataIndex: 'value', 
+		    	    	   		field : {
+		    	    	   			type : 'textfield'
+		    	    	   		},
+		    	    	   		//editor: 'textfield',  
+		    	    	   		width : '70%',   sortable: false,menuDisabled: true}  , 
     	          
-    	    	    {
-        	            xtype: 'checkcolumn',
-        	            header: 'Answer?',
-        	            dataIndex: 'answer',
-        	            width: '20%',
-        	           
-        	            sortable: false,
-        	           
-        	             sortable: false ,
-        	             handler : function(){
-        	            	 //console.log("click");
-        	             },
-        	             listeners : {
-        	            	 checkChange :  
-        	            		 function ( ch, rowIndex, checked, eOpts) {
-        	            		 	 
-        	            		 	
-        	            		 	survey.listBasicData.each(function(record){ 
-        	            		 		 
-        	            		 		record.beginEdit();
-        	            		 		record.set('answer', 0);
-        	            		 	    //record.modified = false;
-        	            		 	    record.endEdit();
-        	            		 	});
-        	            		 	
-        	            		 	survey.listBasicData.getAt(rowIndex).set('answer', 1);
-  
-        	            		 }
-        	            	  
-        	            	 
-        	             }
-    	    	    }   
+		    	    	   	{
+		        	            xtype: 'checkcolumn',
+		        	            header: survey.label.answer,
+		        	            dataIndex: 'answer',
+		        	            width: '20%',
+		        	           
+		        	            sortable: false,
+		        	           
+		        	             sortable: false ,
+		        	             handler : function(){
+		        	            	 //console.log("click");
+		        	             },
+		        	             listeners : {
+		        	            	 checkChange :  
+		        	            		 function ( ch, rowIndex, checked, eOpts) {
+		        	            		 	 
+		        	            		 	
+		        	            		 	survey.listBasicData.each(function(record){ 
+		        	            		 		 
+		        	            		 		record.beginEdit();
+		        	            		 		record.set('answer', 0);
+		        	            		 	    //record.modified = false;
+		        	            		 	    record.endEdit();
+		        	            		 	});
+		        	            		 	
+		        	            		 	survey.listBasicData.getAt(rowIndex).set('answer', 1);
+		  
+		        	            		 }
+		        	            	  
+		        	            	 
+		        	             }
+		    	    	   }   
     	            
     	        ];
     	
@@ -868,14 +868,14 @@ Ext.define('survey.view.gui.questiontype.GridAnswer', {
             xtype: 'toolbar',
             items: [{
                 iconCls: 'icon-add',
-                text: 'Add',
+                text: survey.label.add,
                 scope: this,
                 parent : main,
                 handler: this.onAddClick
             }, {
             	itemId: 'removeAnswer',
                 iconCls: 'icon-delete',
-                text: 'Delete',
+                text: survey.label.delete,
                 //disabled: true,
                 parent : main,
                 scope: this,
@@ -925,8 +925,8 @@ Ext.define('survey.view.gui.questiontype.GridAnswer', {
     	//console.log('delete from cell');
     	 
     	Ext.Msg.show({
-		    title:'Confirm Delete?',
-		    message: 'Do you delete : '  ,
+		    title: survey.message.confirm_delete,
+		    message: survey.message.confirm_delete  ,
 		    buttons: Ext.Msg.YESNO,
 		    icon: Ext.Msg.QUESTION,
 		    fn: function(btn) {
@@ -947,7 +947,7 @@ Ext.define('survey.view.gui.questiontype.GridAnswer', {
 		                			bt.parent.store.remove(recordSelected);
 		                		}
 		                		else{
-		                			Ext.Msg.alert('Failed', resp.message);
+		                			Ext.Msg.alert(survey.message.failed, resp.message);
 		                		}
 		                		resp = null;	
 		                			 

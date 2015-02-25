@@ -22,6 +22,9 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.dialects.mysql import BIT
 from pollandsurvey.model import DeclarativeBase, metadata, DBSession
 import transaction
+
+from pollandsurvey.model import Voter;
+
 __all__ = ['Respondents','RespondentReply','ReplyBasicQuestion']
 
 class Respondents(DeclarativeBase):
@@ -41,6 +44,8 @@ class Respondents(DeclarativeBase):
     
     id_question_option = Column(   BigInteger,ForeignKey('sur_question_option.id_question_option'), nullable=False, index=True) ;
     question_option = relation('QuestionOption', backref='sur_respondents_id_question_option');
+    
+    finished  = Column(BIT, nullable=True, default=0);
      
     create_date =  Column(DateTime, nullable=False, default=datetime.now); 
     
@@ -50,7 +55,16 @@ class Respondents(DeclarativeBase):
         
     def __str__(self):
         return '"%s"' % (self.position )
-    
+    def save(self):
+        try:
+            DBSession.add(self); 
+            DBSession.flush() ;
+            print "save project"
+            return None;
+        except  IntegrityError:
+            print "Duplicate entry" 
+            return "Duplicate entry"
+        
     @classmethod
     def getAll(cls,act):
         if act is not None:
@@ -65,7 +79,14 @@ class Respondents(DeclarativeBase):
     def to_dict(self):
         return {"id_respondents": self.id_respondents, "id_voter": self.id_voter, "response_ip": self.response_ip, "id_question_project": self.id_question_project , "id_question_option": self.id_question_option
                 , "create_date": self.timezone };
-
+    @classmethod
+    def getByVoterIdAndPublicId(cls,idvoter,idpublic):
+        return DBSession.query(cls).filter(cls.id_voter == str(idvoter), cls.id_question_option == str(idpublic) ).first();
+    
+    @classmethod
+    def getByVoterAndPublicId(cls,idvoter,idpublic):
+        
+        return DBSession.query(cls).outerjoin(Voter, Voter.id_voter == cls.id_voter).filter( cls.id_question_option == str(idpublic) ).first();
 
 class RespondentReply(DeclarativeBase):
 

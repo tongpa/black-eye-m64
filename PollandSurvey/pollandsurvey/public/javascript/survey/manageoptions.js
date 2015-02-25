@@ -22,12 +22,12 @@ Ext.define('survey.view.list.OptionProject', {
     	main.columns = [
     	       	       
     	    	   // {header: 'name', dataIndex: 'name',width : '30%' , sortable: false }  ,
-					{header: 'Activate Date', dataIndex: 'activate_date',width : '20%' , sortable: false }  ,
-					{header: 'Expiration Date', dataIndex: 'expire_date',width : '20%' , sortable: false }  ,
-					{header: 'Theme', dataIndex: 'theme',width : '30%' , sortable: false }  ,
-					{header: 'View',  width : '10%',  renderer :main.showbuttonView,  sortable: false  }  ,
-					{header: 'Delete',  width : '10%',  renderer :main.deletebuttonManage,  sortable: false  } ,
-					{header: 'Manage',  width : '10%',  renderer :main.showbuttonManage,  sortable: false  } 
+					{header: survey.label.start_date  , dataIndex: 'activate_date',width : '20%' , sortable: false }  ,
+					{header: survey.label.expire_date , dataIndex: 'expire_date',width : '20%' , sortable: false }  ,
+					{header: survey.label.theme , dataIndex: 'theme',width : '30%' , sortable: false }  ,
+					{header: survey.label.view ,  width : '10%',  renderer :main.showbuttonView,  sortable: false  }  ,
+					{header: survey.label.delete  ,  width : '10%',  renderer :main.deletebuttonManage,  sortable: false  } ,
+					{header: survey.label.edit ,  width : '10%',  renderer :main.showbuttonManage,  sortable: false  } 
 				//	{header: 'State', dataIndex: 'name',width : '30%' , sortable: false } 
 					//{header: 'view', dataIndex: 'name',width : '30%' , sortable: false }  ,
 					//{header: 'Edit', dataIndex: 'name',width : '30%' , sortable: false }  	
@@ -49,7 +49,7 @@ Ext.define('survey.view.list.OptionProject', {
     	Ext.defer(function () {
             Ext.widget('button', {
                 renderTo: id,
-                text: 'Delete',// + r.get('name'),
+                text: survey.label.delete    ,// + r.get('name'),
                 width: 75,
                 handler: function () {
                 	    
@@ -57,8 +57,8 @@ Ext.define('survey.view.list.OptionProject', {
                 		var datajson = Ext.encode(r.data);
 	                    //console.log(record);
 	                    Ext.Msg.show({
-	    				    title:'Confirm Delete?',
-	    				    message: 'Do you delete : ' + r.data.name_publication,
+	    				    title: survey.message.confirm_delete ,
+	    				    message: survey.message.confirm_delete  + r.data.name_publication,
 	    				    buttons: Ext.Msg.YESNO,
 	    				    icon: Ext.Msg.QUESTION,
 	    				    fn: function(btn) {
@@ -78,7 +78,7 @@ Ext.define('survey.view.list.OptionProject', {
 	    			                			//main.resetData();
 	    			                		}
 	    			                		else{
-	    			                			Ext.Msg.alert('Failed', resp.message);
+	    			                			Ext.Msg.alert(survey.message.failed, resp.message);
 	    			                		}
 	    			                			
 	    			                			 
@@ -104,7 +104,7 @@ Ext.define('survey.view.list.OptionProject', {
         Ext.defer(function () {
             Ext.widget('button', {
                 renderTo: id,
-                text: 'Manage',// + r.get('name'),
+                text: survey.label.edit ,// + r.get('name'),
                 width: 75,
                 handler: function () {
                 	//Ext.Msg.alert('Info', r.get('name'));  
@@ -124,7 +124,7 @@ Ext.define('survey.view.list.OptionProject', {
         Ext.defer(function () {
             Ext.widget('button', {
                 renderTo: id,
-                text: 'View',// + r.get('name'),
+                text: survey.label.view ,// + r.get('name'),
                 width: 75,
                 handler: function () {
                 //	debugger;
@@ -181,7 +181,7 @@ Ext.define('survey.view.list.Project.PManagePublication',{
 		//main.add111 = Ext.create('survey.view.list.Project.AddQuestion',{msgTarget: 'side'});
 		main.showWindowsOption = Ext.create('survey.view.list.Project.Option.winAddOption',{
 			url : '/survey/addOptions',
-			title : 'Add Publication',
+			title : survey.label.create_publication ,
 			titleAlign : 'left',
 			listeners : {
 				refreshOther : function(cmp) {
@@ -194,7 +194,7 @@ Ext.define('survey.view.list.Project.PManagePublication',{
 		});
 		main.tbar =  [{
             xtype:'splitbutton',
-            text: 'Create Publication',
+            text: survey.label.create_publication ,
             iconCls: 'add16',
             handler: function(bt,ev){
             	main.showWindowsOption.show();

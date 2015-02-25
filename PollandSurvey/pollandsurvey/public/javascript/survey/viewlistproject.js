@@ -2,7 +2,7 @@
 
 Ext.define('survey.view.list.Project.btAddProject',{
 	extend: 'Ext.Button',
-	text : 'Add Project',
+	text : survey.label.add_project,
 	iconCls : 'project-add'
 });
 
@@ -33,11 +33,11 @@ Ext.define('survey.view.list.Project', {
     	main.store = survey.listProject; 
     	main.columns = [
     	       	       
-    	    	    {header: 'name', dataIndex: 'name',width : '30%' , sortable: false }  ,
-    	    	    {header: 'type', dataIndex: 'question_project_type',width : '15%', renderer :main.showprojecttype , sortable: false }  ,
-    	    	    {header: 'create', dataIndex: 'start_date',width : '15%' , sortable: false }   ,
-    	    	    {header: 'Delete',  width : '10%', renderer :main.deleteButton, sortable: false  } ,
-    	    	    {header: 'Manage',  width : '10%',  renderer :main.showbuttonManage,  sortable: false  }       	    	     
+    	    	    {header: survey.label.name, dataIndex: 'name',width : '30%' , sortable: false }  ,
+    	    	    {header: survey.label.project_type, dataIndex: 'question_project_type',width : '15%', renderer :main.showprojecttype , sortable: false }  ,
+    	    	    {header: survey.label.start_date , dataIndex: 'start_date',width : '15%' , sortable: false }   ,
+    	    	    {header: survey.label.delete,  width : '10%', renderer :main.deleteButton, sortable: false  } ,
+    	    	    {header: survey.label.edit,  width : '10%',  renderer :main.showbuttonManage,  sortable: false  }       	    	     
     	            
     	        ]   	
     
@@ -80,7 +80,7 @@ Ext.define('survey.view.list.Project', {
         Ext.defer(function () {
             Ext.widget('button', {
                 renderTo: id,
-                text: 'Manage',// + r.get('name'),
+                text: survey.label.edit,// + r.get('name'),
                 width: 75,
                 handler: function () {
                 	//Ext.Msg.alert('Info', r.get('name'));  
@@ -100,7 +100,7 @@ Ext.define('survey.view.list.Project', {
             Ext.widget('button', {
                 renderTo: id,
                 iconCls : 'project-remove',
-                text: 'Delete',// + r.get('name'),
+                text: survey.label.delete,// + r.get('name'),
                 width: 75,
                 record : r,
                 
@@ -135,8 +135,8 @@ Ext.define('survey.view.list.Project', {
     	console.log(datajson);
     	
     	Ext.Msg.show({
-		    title:'Confirm Delete?',
-		    message: 'Do you delete : ' + record.data.name,
+		    title: survey.message.confirm_delete,
+		    message: survey.message.confirm_delete + record.data.name,
 		    buttons: Ext.Msg.YESNO,
 		    icon: Ext.Msg.QUESTION,
 		    fn: function(btn) {

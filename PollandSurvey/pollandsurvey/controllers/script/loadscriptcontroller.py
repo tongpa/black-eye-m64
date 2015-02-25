@@ -38,7 +38,7 @@ class ScriptController(BaseController):
         # of the application twice.
         return HTTPFound(location=came_from)
     
-    @expose(content_type = 'text/plain; charset=windows-874')
+    @expose(content_type = 'text/plain; charset=UTF-8')#charset=windows-874')
     def loadLang(self, lang=None ,**kw):
         reload(sys);
         sys.setdefaultencoding("utf-8");
@@ -49,7 +49,8 @@ class ScriptController(BaseController):
         label = model.LanguageLabel.getAll(1);
         
 
-        str = 'Ext.namespace("opina.locale");\n';
+        str = 'Ext.namespace("survey","survey.label","survey.message");\n';
+        
         for l in label:
             str = str + l.module + '.' + l.default_label + '="'  + l.getLang(language)+'";' + '\n';
             #print str;

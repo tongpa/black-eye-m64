@@ -926,8 +926,10 @@ class QuestionOption(DeclarativeBase):
     welcome_message  =  Column(Text, nullable=True );
     end_message  =  Column(Text, nullable=True );
     
-    redirect_url =   Column(String(255),  nullable=False);
-    
+    redirect_url =   Column(String(255) );
+    gen_code =   Column(String(20)   );
+    show_navigator = Column(BIT, nullable=True, default=0);
+    limit_time  = Column(Integer, nullable=True, default=0);
     create_date =  Column(DateTime, nullable=False, default=datetime.now);
     
     

@@ -23,20 +23,20 @@ Ext.define('survey.view.list.Project.fieldQuestionOrder',{
 Ext.define('survey.view.list.Project.fieldQuestion',{
 	extend: 'Ext.form.field.TextArea',
 	name : 'question',
-	fieldLabel: 'Question', 
+	fieldLabel: survey.label.question  , 
 	allowBlank: false 
 });
 
 Ext.define('survey.view.list.Project.fieldHelp',{
 	extend: 'Ext.form.field.TextArea',
-	name : 'help_message',
-	fieldLabel: 'help', 
+	name :  'help_message',
+	fieldLabel: survey.label.help_message, 
 	allowBlank: true 
 });
 
 Ext.define('survey.view.list.Project.fieldShowLabel',{
 	extend: 'Ext.form.Label',
-	text : 'Image :',
+	text :  survey.label.image  ,
 	margin: '5 0 0 5' ,
 	style : 'color: #666666; font-weight: normal; font-size: 13px'
 });
@@ -44,14 +44,14 @@ Ext.define('survey.view.list.Project.fieldShowLabel',{
 Ext.define('survey.view.list.Project.RemoveImageBt',{
 	extend: 'Ext.Button',
 	name : 'delete_image',
-	text : 'Delete',
+	text : survey.label.delete,
 	iconCls: 'icon-delete'
 });
 
 Ext.define('survey.view.list.Project.fieldUpload',{
 	extend: 'Ext.form.field.File',
 	name : 'image_upload',
-	fieldLabel: 'Image', 
+	fieldLabel: survey.label.image, 
 	buttonOnly: true,
 	hideLabel: true,
 	margin: '5 0 0 5' 
@@ -145,8 +145,8 @@ Ext.define ('survey.view.list.GridQuestions',{
 		    	            	width: '87%',
 		    	                tpl: '<tpl for=".">' +
 				    	                '<div class="patient-source"><table><tbody>' +
-					                    '<tr><td class="patient-label">Question</td><td class="patient-name">{question}</td></tr>' +
-					                    '<tr><td class="patient-label">Question Type</td><td class="patient-name">{question_type_name}</td></tr>' + 
+					                    '<tr><td class="patient-label">'+ survey.label.question +'</td><td class="patient-name">{question}</td></tr>' +
+					                    '<tr><td class="patient-label">'+ survey.label.question_type +'</td><td class="patient-name">{question_type_name}</td></tr>' + 
 					                 
 						                '</tbody></table></div>' +
 						             '</tpl>',
@@ -188,7 +188,7 @@ Ext.define ('survey.view.list.GridQuestions',{
 					            items: [{ // Delete button
 					                iconCls : 'icon-delete'
 					                ,tooltip: 'Delete' 
-					                ,text : 'Delete'
+					                ,text : survey.label.delete
 					                , flex: 1
 					                , handler: function(grid, rowIndex, colindex) {
 					                      
@@ -199,8 +199,8 @@ Ext.define ('survey.view.list.GridQuestions',{
 					                    
 					                    //console.log(record);
 					                    Ext.Msg.show({
-					    				    title:'Confirm Delete?',
-					    				    message: 'Do you delete : ' + record.data.question,
+					    				    title: survey.message.confirm_delete,
+					    				    message: survey.message.confirm_delete + record.data.question,
 					    				    buttons: Ext.Msg.YESNO,
 					    				    icon: Ext.Msg.QUESTION,
 					    				    fn: function(btn) {
@@ -218,7 +218,7 @@ Ext.define ('survey.view.list.GridQuestions',{
 					    			                			//main.resetData();
 					    			                		}
 					    			                		else{
-					    			                			Ext.Msg.alert('Failed', resp.message);
+					    			                			Ext.Msg.alert(survey.message.failed, resp.message);
 					    			                		}
 					    			                			
 					    			                			 
@@ -240,8 +240,8 @@ Ext.define ('survey.view.list.GridQuestions',{
 					            { // Save Button
 					            	iconCls : 'icon-edit'					                
 					                , style: 'margin-left: 5px;'
-					                ,text : 'Edit'
-					                ,tooltip: 'Edit' 
+					                ,text : survey.label.edit
+					                ,tooltip: survey.label.edit
 					                , flex: 1
 					                , handler: function(grid, rowIndex, colindex) {
 					                     
@@ -253,7 +253,7 @@ Ext.define ('survey.view.list.GridQuestions',{
 					            }, '->',
 					            {
 					                iconCls: 'move-up',
-					                tooltip: 'Move UP',
+					                tooltip: survey.label.move_up,
 					                handler: function(grid,index,c,d,f,row){
 					                    if(index < 1) return;
 					                    var id = row.data.id;
@@ -275,7 +275,7 @@ Ext.define ('survey.view.list.GridQuestions',{
 					            }, '->',
 					            {
 					                iconCls: 'move-down',
-					                tooltip: 'Move Down',
+					                tooltip: survey.label.move_down,
 					                handler: function(grid,index,c,d,f,row)
 					                {
 					                    if(index >= grid.all.endIndex)  return;
@@ -342,7 +342,7 @@ Ext.define('survey.view.list.Project.ImageView',{
     	form.record = questionrecord;
     	form.wrappedImage.setHidden(true);
 		form.labelShowFileUpload.setHidden(false); 
-		form.labelShowFileUpload.setText('No Image.');
+		form.labelShowFileUpload.setText(survey.label.none_image);
  
     	form.fileUpload.reset();
 		form.wrappedImage.setSrc('');
@@ -365,7 +365,7 @@ Ext.define('survey.view.list.Project.ImageView',{
     	var main = this;
     	main.labelFileUpload = Ext.create('survey.view.list.Project.fieldShowLabel',{ flex: 1 });
     	main.wrappedImage = Ext.create('Ext.Img', { anchor: '15%',margin: '5 0 0 5', title : '' , flex: 1});    	
-    	main.labelShowFileUpload = Ext.create('survey.view.list.Project.fieldShowLabel',{text : 'No Image.' , flex: 1 });    	
+    	main.labelShowFileUpload = Ext.create('survey.view.list.Project.fieldShowLabel',{text : survey.label.none_image , flex: 1 });    	
     	main.fileUpload = Ext.create('survey.view.list.Project.fieldUpload',{msgTarget: 'side', flex: 2,
     		parent : main,
     		margins:'0',
@@ -450,7 +450,7 @@ Ext.define('survey.view.list.Project.ImageView',{
 		form.wrappedImage.setSrc('');
 		
 		form.labelShowFileUpload.setHidden(false); 
-		form.labelShowFileUpload.setText('No Image.');
+		form.labelShowFileUpload.setText(survey.label.none_image);
 		
 		form.fileUpload.reset();
 		
@@ -469,12 +469,14 @@ Ext.define('survey.view.list.Project.ImageView',{
 	         isValid = false;  
 	         // Add the tooltip below to   
 	         // the red exclamation point on the form field  
-	         var erroMsg = Ext.String.format('Translate(Please upload files with an extension of {0} only!)', this.accept.join());  
+	         
+	         //var erroMsg = Ext.String.format('Please upload files with an extension of {0} only!', this.accept.join());
+	         var erroMsg = Ext.String.format(survey.message.error_upload_without_extention , this.accept.join()); 
 	         //me.setActiveError(erroMsg);
 	         //console.log(erroMsg);
 	         // Let the user know why the field is red and blank!  
 	         var messageBox = Ext.MessageBox.show({  
-	           title: 'Translate(Add Attachment)',  
+	           title: survey.message.upload,  
 	           msg: erroMsg,  
 	           buttons: Ext.Msg.OK,  
 	           icon: Ext.Msg.WARNING  
@@ -485,10 +487,10 @@ Ext.define('survey.view.list.Project.ImageView',{
 	       for (var i = 0; i < this.fileslist.length; i++) {  
 	         if (this.fileslist[i].indexOf(filename) !== -1) {  
 	           isValid = false;  
-	           var erMsg = Ext.String.format('Translate(The file {0} already added)!', filename);  
+	           var erMsg = Ext.String.format(survey.message.upload_success, filename);  
 	           //console.log(erroMsg);
 	           var messageBox = Ext.MessageBox.show({  
-	             title: 'Translate(Add Attachment)',  
+	             title: survey.message.upload,  
 	             msg: erMsg,  
 	             buttons: Ext.Msg.OK,  
 	             icon: Ext.Msg.INFO  
@@ -577,7 +579,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		
 		
 		main.fieldSetsHelp = Ext.create('Ext.form.FieldSet',{
-			title: 'help',
+			title: survey.label.help_message,
 	        collapsible: true,
 	        collapsed: true,
 	         
@@ -602,7 +604,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 		
 		
 		main.btsave = Ext.create('Ext.Button',{		 
-			text : 'Save',
+			text : survey.label.save,
 			//iconCls : 'project-add',
 			formBind: true,  
 	        disabled: true,
@@ -682,7 +684,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 	                    	main.closeWindow(main,bt);
 	                    	
 	                    	//form.reset();
-	                    	Ext.Msg.alert('Success', action.result.message);
+	                    	Ext.Msg.alert(survey.message.success, action.result.message);
 	                    	main.refreshOther();
 	                     
 	                    },
@@ -690,12 +692,12 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 	                    	 
 	                    	if (action.response.status = '404'){
 	                    		
-	                    		Ext.Msg.alert('Failed', 'page not found :'+ action.response.statusText );
+	                    		Ext.Msg.alert(survey.message.failed, survey.message.page_not_found + action.response.statusText );
 	                    		main.closeWindow(main,bt);
 	                    		 
 	                    	}
 	                    	else{
-	                    		Ext.Msg.alert('Success', action.result.message);
+	                    		Ext.Msg.alert(survey.message.success, action.result.message);
 	                    	}
 	                        
 	                    }
@@ -705,7 +707,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 			}
 		});
 		main.btclose = Ext.create('Ext.Button',{		 
-			text : 'Close',
+			text : survey.label.close,
 			
 			hidden : !main.showClose,
 			handler: function (bt,ev){
@@ -741,7 +743,7 @@ Ext.define('survey.view.list.Project.PAddQuestion',{
 
 Ext.define('survey.view.list.Project.winAddQuestion',{
 	extend: 'Ext.window.Window',
-	text : 'Add Question',
+	text : survey.label.create_question,
 	layout: 'fit',
 	 
 	modal : true,
@@ -838,7 +840,7 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
 		
 		main.winAddQuestion = Ext.create('survey.view.list.Project.winAddQuestion',{
 			url : '/survey/addQuestion',
-			title : 'Add Question',
+			title : survey.label.create_question,
 			titleAlign : 'left',
 			listeners : {
 				refreshOther : function(cmp) {
@@ -850,7 +852,7 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
 		});
 		
 		main.SplitBt = Ext.create('Ext.button.Split',{
-			text : 'Create Questions',
+			text : survey.label.create_question,
 			iconCls: 'add16',
 			floating: false
 		});
@@ -913,7 +915,7 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
     } ,
     createQuestion : function(bt,ev){
     	 
-    	bt.parentForm.winAddQuestion.setTitle( 'Add Question' + '-' + bt.record.data.description);
+    	bt.parentForm.winAddQuestion.setTitle( survey.label.create_question + '-' + bt.record.data.description);
     	 
     	bt.parentForm.winAddQuestion.show();
     	

@@ -33,7 +33,7 @@ Ext.application({
     	survey.listOptionTheme.load();
    	 	
     	var contact_view = Ext.create('Ext.form.Panel',{
-    		title : 'Contacts',
+    		title : survey.label.contact,//'Contacts',
     		width: '100%',
     		html : 'Hello !'
     	});
@@ -76,17 +76,17 @@ Ext.application({
 				    	
 				    	var manage_question = Ext.create('survey.view.list.Project.PCreateQuestion',{
 				    		width: '100%',   		
-				    		title : 'Create Questions'
+				    		title : survey.label.create_question
 				    	});
 				    	
 				    	var manage_variable = Ext.create('survey.view.list.Project.PCreateVariable',{
 				    		width: '100%',   		
-				    		title : 'Create variable'
+				    		title : survey.label.create_variable
 				    	});
 				    	
 				    	var manage_option = Ext.create('survey.view.list.Project.PManagePublication',{
 				    		width: '100%',   		
-				    		title : 'Publication'
+				    		title : survey.label.create_publication
 				    	});
 				    	
 				    	
@@ -131,7 +131,7 @@ Ext.application({
     	
     	var mainPanelTab = Ext.create('Ext.form.Panel',{
     		
-    		title : 'Poll and Survey',
+    		title : survey.label.poll_survey,
     		width: '100%',
     		height : 800,
     		bodyPadding: 10,
@@ -143,7 +143,7 @@ Ext.application({
     	var tab_project = Ext.create('Ext.tab.Panel', {
     	    width: '100%',  
     	    height : 800,
-    	    title : 'Project',
+    	    title : survey.label.project,
     	    layout: {
                 type: 'fix'
             }, 

@@ -12,14 +12,14 @@ Ext.define('survey.view.list.Project.Option.IDOption',{
 Ext.define('survey.view.list.Project.Option.optionName',{
 	extend: 'Ext.form.field.Text',
 	name : 'name_publication',
-	fieldLabel: 'Name',
+	fieldLabel: survey.label.name,
 	allowBlank: false 
 });
 
 Ext.define('survey.view.list.Project.Option.startDate',{
 	extend : 'Ext.form.field.Date',
 	name: 'activate_date',
-	fieldLabel: 'Start Date',
+	fieldLabel: survey.label.start_date ,
 	format: 'd/m/Y',
 	allowBlank: false ,
 	editable : false
@@ -28,7 +28,7 @@ Ext.define('survey.view.list.Project.Option.startDate',{
 Ext.define('survey.view.list.Project.Option.finishDate',{
 	extend : 'Ext.form.field.Date',
 	name: 'expire_date',
-	fieldLabel: 'Expire Date',
+	fieldLabel: survey.label.expire_date ,
 	allowBlank: false ,
 	format: 'd/m/Y',
 	editable : false
@@ -37,7 +37,7 @@ Ext.define('survey.view.list.Project.Option.finishDate',{
 Ext.define('survey.view.list.Project.Option.redirectURL',{
 	extend: 'Ext.form.field.Text',
 	name : 'redirect_url',
-	fieldLabel: 'Redirect URL',
+	fieldLabel: survey.label.redirect_url ,
 	allowBlank: true 
 });
 
@@ -50,7 +50,7 @@ Ext.define('survey.view.list.Project.Option.HtmlEditor',{
 Ext.define('survey.view.list.Project.Option.listTheme',{
 	extend : 'Ext.form.ComboBox',
 	name : 'id_question_theme',
-	fieldLabel: 'Theme',
+	fieldLabel: survey.label.theme,
     store: survey.listOptionTheme,
     queryMode: 'local',
     displayField: 'description',
@@ -114,22 +114,22 @@ Ext.define('survey.view.list.Project.Option',{
 		main.tabMessage = Ext.create('Ext.tab.Panel', {
 			items: [
 			        {
-			        	title : 'Welcome Message',
+			        	title : survey.label.welcome_message ,
 			        	layout: 'fit',
 			        	items : [main.welcome_msg]
 			        } ,
 			        {
-			        	title : 'Goodbye Message',
+			        	title : survey.label.goodbye_message ,
 			        	layout: 'fit',
 			        	items : [main.goodbye_msg]
 			        },
 			        {
-			        	title : 'header Message',
+			        	title : survey.label.header_message ,
 			        	layout: 'fit',
 			        	items : [main.header_msg]
 			        },
 			        {
-			        	title : 'footer Message',
+			        	title : survey.label.footer_message ,
 			        	layout: 'fit',
 			        	items : [main.footer_msg]
 			        } 
@@ -143,7 +143,7 @@ Ext.define('survey.view.list.Project.Option',{
 		
 		
 		main.btsave = Ext.create('Ext.Button',{		 
-			text : 'Save',
+			text : survey.label.save ,
 			//iconCls : 'project-add',
 			formBind: true,  
 	        disabled: true,
@@ -163,7 +163,7 @@ Ext.define('survey.view.list.Project.Option',{
 	                	/*headers: {
 	                        'Content-Type': 'application/json;charset=utf-8'
 	                    },*/
-	                	waitMsg: 'Save your Data...',
+	                	waitMsg: survey.message.waiting_save ,
 	                    success: function(form, action) {
 	                    	  
 	                    	//debugger;
@@ -171,7 +171,7 @@ Ext.define('survey.view.list.Project.Option',{
 	                    	main.closeWindow(main,bt);
 	                    	
 	                    	//form.reset();
-	                    	Ext.Msg.alert('Success', action.result.message);
+	                    	Ext.Msg.alert( survey.message.success , action.result.message);
 	                    	main.refreshOther();
 	                     
 	                    },
@@ -179,12 +179,12 @@ Ext.define('survey.view.list.Project.Option',{
 	                    	 
 	                    	if (action.response.status = '404'){
 	                    		
-	                    		Ext.Msg.alert('Failed', action.response.statusText);
+	                    		Ext.Msg.alert( survey.message.failed  , action.response.statusText);
 	                    		main.closeWindow(main,bt);
 	                    		 
 	                    	}
 	                    	else{
-	                    		Ext.Msg.alert('Success', action.result.message);
+	                    		Ext.Msg.alert(survey.message.success , action.result.message);
 	                    	}
 	                        
 	                    }
@@ -193,7 +193,7 @@ Ext.define('survey.view.list.Project.Option',{
 			}
 		});
 		main.btclose = Ext.create('Ext.Button',{		 
-			text : 'Close',
+			text : survey.label.close,
 			
 			hidden : !main.showClose,
 			handler: function (bt,ev){
@@ -225,7 +225,7 @@ Ext.define('survey.view.list.Project.Option',{
 
 Ext.define('survey.view.list.Project.Option.winAddOption',{
 	extend: 'Ext.window.Window',
-	text : 'Add Publication',
+	text : survey.label.create_publication ,
 	layout: 'fit',
 	 
 	modal : true,
