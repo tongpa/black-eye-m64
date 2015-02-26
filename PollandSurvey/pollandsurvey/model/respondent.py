@@ -64,7 +64,10 @@ class Respondents(DeclarativeBase):
         except  IntegrityError:
             print "Duplicate entry" 
             return "Duplicate entry"
-        
+    
+    @classmethod
+    def getId(cls,act):
+        return DBSession.query(cls).get(act);     
     @classmethod
     def getAll(cls,act):
         if act is not None:
@@ -86,7 +89,7 @@ class Respondents(DeclarativeBase):
     @classmethod
     def getByVoterAndPublicId(cls,idvoter,idpublic):
         
-        return DBSession.query(cls).outerjoin(Voter, Voter.id_voter == cls.id_voter).filter( cls.id_question_option == str(idpublic) ).first();
+        return DBSession.query(cls).outerjoin(Voter, Voter.id_voter == cls.id_voter).filter( cls.id_voter == str(idvoter), cls.id_question_option == str(idpublic) ).first();
 
 class RespondentReply(DeclarativeBase):
 
@@ -118,12 +121,20 @@ class RespondentReply(DeclarativeBase):
             #return DBSession.query(cls).get(act); 
         else:
             return DBSession.query(cls) .all();
-        
+    
+    def save (self):
+        DBSession.add(self); 
+        DBSession.flush() ;
+            
     def to_json(self):
         return {"id_resp_reply": self.id_resp_reply, "id_respondents": self.id_respondents, "id_question": self.id_question, "response_date": self.response_date  };
     def to_dict(self):
         return {"id_resp_reply": self.id_resp_reply, "id_respondents": self.id_respondents, "id_question": self.id_question, "response_date": self.response_date  };
        
+    
+    @classmethod
+    def getByRespondentAndQuestion(cls,idResp,idQuestion):
+        return DBSession.query(cls).filter(cls.id_respondents == str(idResp), cls.id_question == str(idQuestion) ).first();
                 
 class ReplyBasicQuestion(DeclarativeBase):
 
@@ -144,6 +155,10 @@ class ReplyBasicQuestion(DeclarativeBase):
     def __str__(self):
         return '"%s"' % (self.position )
     
+    def save (self):
+        DBSession.add(self); 
+        DBSession.flush() ;
+         
     @classmethod
     def getAll(cls,act):
         if act is not None:

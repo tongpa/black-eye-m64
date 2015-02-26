@@ -127,13 +127,13 @@ class Utility(object):
 
 #print ({True: True, False: False}[ answer in 'true'])
 
-u = Utility();
+#u = Utility();
 #u.isPartOf('answer_1.png',"""C:\\fakepath\\answer_1.png""");
 #d2 = datetime.datetime.today() - datetime.timedelta(days=2);
 #d3 = datetime.datetime.today() + datetime.timedelta(days=15);
 #u.isActiveFromDate(None,d2,d3);
 
-sp =  u.spritValue('/preview/welcome','/');
+#sp =  u.spritValue('/preview/welcome','/');
 #print sp[0];
 #print u.isNumber('20');
 #import types
@@ -144,3 +144,11 @@ sp =  u.spritValue('/preview/welcome','/');
 #dt_str = '01/02/2015'  + ' 00:00:00' ;
 #dt_obj = datetime.strptime(dt_str, '%d/%m/%Y %H:%M:%S')
 #print dt_obj;
+
+
+va=[125,548,555];
+print va;
+
+for v in va:
+    print v;
+

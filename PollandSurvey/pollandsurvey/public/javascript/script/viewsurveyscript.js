@@ -9,6 +9,7 @@ var app = angular.module("poll", ['ui.bootstrap']);
 		//$scope.url = '/ang/getQuestion';
 		$scope.url = 'preview/getDataPreview?idProject=2';
 		$scope.idProject = '';
+		$scope.idResp = '';
 		$scope.content = [];
 		
 		
@@ -34,9 +35,11 @@ var app = angular.module("poll", ['ui.bootstrap']);
 		
 		$scope.selected_radio = 1;
 		
-		$scope.init = function(url,idproject){
+		$scope.init = function(url,idproject,idresp){
 			$scope.url = url;
 			$scope.idProject = idproject;
+			$scope.idResp = idresp;
+			
 			console.log(url);
 			console.log(idproject);
 			
@@ -62,6 +65,12 @@ var app = angular.module("poll", ['ui.bootstrap']);
 			{	$scope.bigCurrentPage = $scope.bigCurrentPage +1;
 			 	$scope.pageChanged();
 			}
+			else{
+				if ($scope.bigCurrentPage == $scope.bigTotalItems){
+					$scope.pageChanged();
+				}
+				
+			}
 		}
 		
 		/**function for this controller for next Question **/
@@ -83,9 +92,11 @@ var app = angular.module("poll", ['ui.bootstrap']);
 		    
 		    $log.log('last data ');
 		    $log.log($scope.lastQuestion);
- 
-		    var data = {value : $scope.lastQuestion[0]};
+		  
+		     
 		    
+		    var data = {value : $scope.lastQuestion[0]  };
+		    data.finished =  ($scope.bigCurrentPage == $scope.bigTotalItems);
 		    $http.post("/ans/saveQuestion",data).success(function(data,status,heafers, config){
 		    	console.log(data);
 		    	if (status == 200 && data.success == true){
@@ -194,6 +205,7 @@ var app = angular.module("poll", ['ui.bootstrap']);
 	    		 	qnaObj = new Object();
 	    		 	qnaObj.id = id;
 	    		 	qnaObj.idproject = $scope.$parent.idProject;
+	    		 	qnaObj.idresp = $scope.$parent.idResp;
 	    		 	qnaObj.value = [];
 	    		 	qnaObj.value.push(value);
 	    		 	qnaObj.type = type;

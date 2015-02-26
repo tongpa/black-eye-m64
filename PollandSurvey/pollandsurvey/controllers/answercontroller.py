@@ -22,7 +22,7 @@ import json
 import types
 from datetime import datetime
 from tg import tmpl_context
-from pollandsurvey.widget.movie_form import create_movie_form
+from webhelpers.markdown import Markdown;  
 
 import logging;
 log = logging.getLogger(__name__);
@@ -40,20 +40,21 @@ class AnswerController(BaseController):#RestController): #
         self.URL_HOME = '/';
         self.URL_WELCOME = '/ans/welcome/{0}.html';
         self.URL_REPLY = '/ans/reply/{0}.html';
+        self.URL_GOODBYE = '/ans/thankyou/{0}.html';
         self.UPLOAD_DIR = config['path_upload_file'] ;
         
     
     @expose()
     def _default(self, *args, **kw):
-        return "This page is not ready"
+        return 'This page is not ready'
     
     def _before(self, *args, **kw):
-        tmpl_context.project_name = "pollandsurvey"
+        tmpl_context.project_name = 'pollandsurvey'
     
     @expose('pollandsurvey.templates.view.multiquestion')
     def reply(self,id=0,ready='no', **kw):
         reload(sys);
-        sys.setdefaultencoding("utf-8");
+        sys.setdefaultencoding('utf-8');
         print id,
         print kw;
          
@@ -63,56 +64,11 @@ class AnswerController(BaseController):#RestController): #
         self.template ='';
         
         self.idProject,self.idPublic,self.idVoter = self.__checkExpire(id);
+       
+        self.respondent = self.__checkRespondentFinished(self.idVoter,self.idPublic,idResp=None);
+
+        self.questionOption = self.__checkOptionExpired(self.idPublic);
         
-        """
-        self.value = self.utility.spritValue(id,'.');
-        print self.value;
-        self.idProject =0;
-        self.idPublic = 0;
-        self.idVoter = 0;
-        
-        
-        
-        
-        if(len(self.value)  == 4):
-            self.idProject =self.value[0];
-            self.idPublic = self.value[1];
-            self.idVoter = self.value[2];
-        else:
-            self.idProject =None;
-            self.idPublic = None;
-            self.idVoter = None;
-            
-            log.info('parameter not have 3 parameter : %s', ','.join(self.value));
-            redirect(self.URL_EXPIRED) ;
-        
-        self.voter = model.Voter.getId(self.idVoter);
-        if(self.voter is None):
-            log.info('find not voter in id : %s',self.idVoter);
-            redirect(self.URL_HOME) ;
-        
-        self.project = model.QuestionProject.getId(self.idProject);
-        if(self.project is None):
-            log.info('find not project in id project : %s',self.idProject);
-            redirect(self.URL_HOME) ;
-        """
-            
-            
-            
-        
-        self.respondet = model.Respondents.getByVoterAndPublicId(self.idVoter,self.idPublic);
-        if(self.respondet  is not None and self.respondet.finished == 1):
-            log.info('voter finished in id public : %s',self.idPublic);
-            redirect(self.URL_THANKYOU) ;
-        
-        
-        
-        
-        
-        self.questionOption = model.QuestionOption.getId(self.idPublic);           
-        
-        if  self.questionOption is None or ( not self.utility.isActiveFromDate(None,self.questionOption.activate_date,self.questionOption.expire_date) ):
-            redirect(self.URL_EXPIRED) ;
         
         print "after redirect";
         print "ready : ", ready;     
@@ -143,17 +99,22 @@ class AnswerController(BaseController):#RestController): #
             self.ip=request.environ.get("X_FORWARDED_FOR", request.environ["REMOTE_ADDR"]);
             self.browser = request.environ.get('HTTP_USER_AGENT');
             #save reply
-            if(self.respondet is None):
-                self.respondet = model.Respondents();
-                self.respondet.id_voter = self.idVoter;
-                self.respondet.response_ip = self.ip ;
-                self.respondet.id_question_project = self.idProject;
-                self.respondet.id_question_option = self.idPublic;
-                self.respondet.finished = 0;
-                self.respondet.save();
+            if(self.respondent is None):
+                self.respondent = model.Respondents();
+                self.respondent.id_voter = self.idVoter;
+                self.respondent.response_ip = self.ip ;
+                self.respondent.id_question_project = self.idProject;
+                self.respondent.id_question_option = self.idPublic;
+                self.respondent.finished = 0;
+                self.respondent.save();
                  
                  
-        return dict(page='view',header = self.header, footer = self.footer, action = self.nextQuestion,template= self.template,urldata = self.URL_GETDATAQUESTION.format(self.idPublic), idproject = self.idPublic  ); 
+        return dict(page='view',header = Markdown(self.header).convert() , 
+                    footer = Markdown(self.footer).convert()  , 
+                    action = self.nextQuestion,template= self.template,
+                    urldata = self.URL_GETDATAQUESTION.format(self.idPublic), 
+                    idproject = self.idPublic ,
+                    idresp = self.respondent.id_respondents ); 
             
     @expose('pollandsurvey.templates.view.welcome')
     def welcome(self,id=0,came_from=lurl('/')):
@@ -164,52 +125,10 @@ class AnswerController(BaseController):#RestController): #
         
         self.idProject,self.idPublic,self.idVoter = self.__checkExpire(id);
         
-        """
-        
-        self.value = self.utility.spritValue(id,'.');
-        print self.value;
-        self.idProject =0;
-        self.idPublic = 0;
-        self.idVoter = 0;
-        
-        
-        
-        
-        if(len(self.value)  == 4):
-            self.idProject =self.value[0];
-            self.idPublic = self.value[1];
-            self.idVoter = self.value[2];
-        else:
-            self.idProject =None;
-            self.idPublic = None;
-            self.idVoter = None;
-            
-            log.info('parameter not have 3 parameter[welcome] : %s', ','.join(self.value));
-            redirect(self.URL_EXPIRED) ;
-        
-        self.voter = model.Voter.getId(self.idVoter);
-        if(self.voter is None):
-            log.info('find not voter in id : %s',self.idVoter);
-            redirect(self.URL_HOME) ;
-        
-        self.project = model.QuestionProject.getId(self.idProject);
-        if(self.project is None):
-            log.info('find not project in id project : %s',self.idProject);
-            redirect(self.URL_HOME) ;
-            
-        """
-        
-        
-        
-        
         
         self.welcome_message = '';
-        self.questionOption = model.QuestionOption.getId(self.idPublic);
         
-        
-        if  self.questionOption is None or ( not self.utility.isActiveFromDate(None,self.questionOption.activate_date,self.questionOption.expire_date) ):
-            log.info('project public is expire at id  %s', self.idPublic);
-            redirect(self.URL_EXPIRED) ;
+        self.questionOption = self.__checkOptionExpired(self.idPublic);
                 
         self.welcome_message= self.questionOption.welcome_message;
         self.nextQuestion  = '';
@@ -221,10 +140,39 @@ class AnswerController(BaseController):#RestController): #
             #self.nextQuestion = '/' + 'ans/reply/'+  str(self.questionOption.id_question_option);
             self.nextQuestion = self.URL_REPLY.format(id)
             
-                
+               
             
+        #self.welcome_message
+        return dict(page='view', ready = 'yes',welcome_message = Markdown(self.welcome_message).convert(), nextQuestion= self.nextQuestion);
+    
+    @expose('pollandsurvey.templates.view.goodbye')
+    def thankyou(self,id=0,came_from=lurl('/')):
+        reload(sys);
+        sys.setdefaultencoding("utf-8");
         
-        return dict(page='view', ready = 'yes',welcome_message = self.welcome_message, nextQuestion= self.nextQuestion);
+        log.info('preview id : ' + str(id));
+        
+        self.idProject,self.idPublic,self.idVoter = self.__checkExpire(id);
+        
+        
+        self.welcome_message = '';
+        
+        self.questionOption = self.__checkOptionExpired(self.idPublic);
+                
+        self.welcome_message= self.questionOption.welcome_message;
+        self.nextQuestion  = '';
+         
+        self.urlName = self.utility.spritValue(request.path_info,'/');
+         
+        if(len(self.urlName) >= 1 ) :
+            #self.nextQuestion = '/' + self.urlName[0]+ '?id='+ str(self.questionOption.id_question_option);
+            #self.nextQuestion = '/' + 'ans/reply/'+  str(self.questionOption.id_question_option);
+            self.nextQuestion = self.URL_REPLY.format(id)
+            
+               
+            
+        #self.welcome_message
+        return dict(page='view', ready = 'yes',welcome_message = Markdown(self.welcome_message).convert(), nextQuestion= self.nextQuestion);
     
     @expose('json')
     def getDataPreview(self, came_from=lurl('/'),   *args, **kw): 
@@ -264,13 +212,54 @@ class AnswerController(BaseController):#RestController): #
         sys.setdefaultencoding("utf-8");
         self.df = json.loads(request.body, encoding=request.charset);
         
-        print self.df;
-        print self.df.get('value');
-        print args;
-        print kw ;
-        
-        
-        return dict(success = True);
+        self.value = self.df.get('value');
+        self.finished =self.df.get('finished');
+        self.redirect = '';
+        print 'finished : ' ,self.finished;
+        if(self.value):
+            self.idPublic =  self.value.get('idproject');
+            self.idResp =  self.value.get('idresp');
+            self.idQuestion = self.value.get('id');
+            self.values = self.value.get('value');
+            print self.values;
+            
+            #check 
+            self.questionOption = self.__checkOptionExpired(self.idPublic);
+            
+            self.respondent = self.__checkRespondentFinished( None,  None,self.idResp);
+            
+            if(self.respondent):
+                self.question = model.Question.getById(self.idQuestion);
+                
+                self.respondent.finished = self.finished;
+                if(self.question):
+                    self.respondentreply = model.RespondentReply.getByRespondentAndQuestion(self.idResp,self.idQuestion);
+                    if (self.respondentreply is None):
+                        #save
+                        self.respondentreply = model.RespondentReply();
+                        self.respondentreply.id_respondents = self.idResp;
+                        self.respondentreply.id_question = self.idQuestion;
+                        self.respondentreply.save();
+                        
+                        for v in self.values:
+                            self.replyquestion = model.ReplyBasicQuestion(); 
+                            self.replyquestion.id_resp_reply = self.respondentreply.id_resp_reply;
+                            self.replyquestion.id_basic_data = v;
+                            self.replyquestion.save();
+                        
+                        
+                    else:
+                        log.info('user %s do this question : %s',self.idResp,self.idQuestion);
+                else:
+                    log.info('find not found question id : : %s',self.idQuestion);
+                    
+            else:
+                log.info('find not found respondent id : : %s',self.idResp);
+            
+            if(self.finished):     
+                self.redirect = self.URL_GOODBYE.format(self.idQuestion);
+                
+        return dict(success = True,redirect = self.redirect  );
     
     
     def __checkExpire(self,id):
@@ -307,6 +296,24 @@ class AnswerController(BaseController):#RestController): #
             
         return self.idProject,self.idPublic,self.idVoter;
             
+    def __checkOptionExpired(self,idPublic):
+        self.questionOption = model.QuestionOption.getId( idPublic);           
+        
+        if  self.questionOption is None or ( not self.utility.isActiveFromDate(None,self.questionOption.activate_date,self.questionOption.expire_date) ):
+            redirect(self.URL_EXPIRED) ;
+        
+        return self.questionOption;    
             
+    def __checkRespondentFinished(self,idVoter,idPublic,idResp):
+        self.respondent = None;
+        if(idVoter and idPublic):
+            self.respondent = model.Respondents.getByVoterAndPublicId(idVoter,idPublic);
+        elif (idResp):
+            self.respondent = model.Respondents.getId(idResp);
             
+        if(self.respondent  is not None and self.respondent.finished == 1):
+            log.info('voter finished in id public : %s',self.idPublic);
+            redirect(self.URL_THANKYOU) ;
+            
+        return self.respondent;
    

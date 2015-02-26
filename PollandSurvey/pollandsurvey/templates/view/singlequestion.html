@@ -27,7 +27,7 @@
  	<div class="row">
 	 	<div class="col-md-12">
 	 	
-	 		<center>${header}</center>
+	 		<center> ${Markup(header)}</center>
 	 		<br/>
 	 	</div>
  	</div>
@@ -59,7 +59,7 @@
 	                <!-- Content Poll and Survey -->
 	                <div data-ng-app="poll" name='1'>
 	                
-						<div id="container" ng-controller="pollController" ng-init="init('${urldata}', '${idproject}')">
+						<div id="container" ng-controller="pollController" ng-init="init('${urldata}', '${idproject}','${idresp}')">
 							 
 							 <div class="highlight text-center">
 					 			<pagination 
@@ -132,7 +132,7 @@
 		<div class="row">
 		 	<div class="col-md-12">
 			 	<br/>
-			 	<center>${footer}</center>
+			 	<center>  ${Markup(footer)}</center>
 		 	</div>
  		</div>    
  
