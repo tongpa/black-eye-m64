@@ -5,6 +5,7 @@ import json
 import logging;
 import types;
 import datetime;
+import os.path
 log = logging.getLogger(__name__); 
 class Utility(object):
 
@@ -115,7 +116,14 @@ class Utility(object):
         
         return False;
             
+    def splitNameWithOutExtention(self,value):
+        if (not self.isEmpty(value)):
+            fileName, fileExtension = os.path.splitext(value);
+            fileExtension = None;
+            return fileName;
         
+        return value;
+            
             
             
 #import ast
@@ -127,7 +135,7 @@ class Utility(object):
 
 #print ({True: True, False: False}[ answer in 'true'])
 
-#u = Utility();
+u = Utility();
 #u.isPartOf('answer_1.png',"""C:\\fakepath\\answer_1.png""");
 #d2 = datetime.datetime.today() - datetime.timedelta(days=2);
 #d3 = datetime.datetime.today() + datetime.timedelta(days=15);
@@ -140,15 +148,11 @@ class Utility(object):
 #print type(u'') is types.UnicodeType;
 #sp = u.spritValue("10.2.1", ".");
 #print sp;
+#u.splitNameWithOutExtention('10.2.1.html');
 #from datetime import datetime
 #dt_str = '01/02/2015'  + ' 00:00:00' ;
 #dt_obj = datetime.strptime(dt_str, '%d/%m/%Y %H:%M:%S')
 #print dt_obj;
 
-
-va=[125,548,555];
-print va;
-
-for v in va:
-    print v;
+ 
 

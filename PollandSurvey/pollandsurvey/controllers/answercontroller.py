@@ -23,7 +23,7 @@ import types
 from datetime import datetime
 from tg import tmpl_context
 from webhelpers.markdown import Markdown;  
-
+from posixpath import basename;
 import logging;
 log = logging.getLogger(__name__);
 
@@ -63,16 +63,16 @@ class AnswerController(BaseController):#RestController): #
         self.nextQuestion ='';
         self.template ='';
         
-        self.idProject,self.idPublic,self.idVoter = self.__checkExpire(id);
+        self.idProject,self.idPublic,self.idVoter,self.redirect = self.__checkExpire(id);
        
-        self.respondent = self.__checkRespondentFinished(self.idVoter,self.idPublic,idResp=None);
+        self.respondent,self.redirect = self.__checkRespondentFinished(self.idVoter,self.idPublic,idResp=None);
 
-        self.questionOption = self.__checkOptionExpired(self.idPublic);
+        self.questionOption,self.redirect = self.__checkOptionExpired(self.idPublic);
         
         
         print "after redirect";
         print "ready : ", ready;     
-        print self.questionOption;    
+        print self.questionOption.id_question_option;    
         if str(ready).lower() == 'no':    
             #check have welcome page
             if( not self.utility.isEmpty(self.questionOption.welcome_message) ) :
@@ -123,12 +123,12 @@ class AnswerController(BaseController):#RestController): #
         
         log.info('preview id : ' + str(id));
         
-        self.idProject,self.idPublic,self.idVoter = self.__checkExpire(id);
+        self.idProject,self.idPublic,self.idVoter,self.redirect = self.__checkExpire(id);
         
         
         self.welcome_message = '';
         
-        self.questionOption = self.__checkOptionExpired(self.idPublic);
+        self.questionOption,self.redirect = self.__checkOptionExpired(self.idPublic);
                 
         self.welcome_message= self.questionOption.welcome_message;
         self.nextQuestion  = '';
@@ -152,27 +152,24 @@ class AnswerController(BaseController):#RestController): #
         
         log.info('preview id : ' + str(id));
         
-        self.idProject,self.idPublic,self.idVoter = self.__checkExpire(id);
+        self.idProject,self.idPublic,self.idVoter,self.redirect = self.__checkExpire(id);
         
         
-        self.welcome_message = '';
+        self.goodbye = '';
         
-        self.questionOption = self.__checkOptionExpired(self.idPublic);
+        self.questionOption,self.redirect = self.__checkOptionExpired(self.idPublic);
                 
-        self.welcome_message= self.questionOption.welcome_message;
+        self.goodbye= self.questionOption.end_message;
         self.nextQuestion  = '';
-         
+        self.urlRedirect = ''; 
         self.urlName = self.utility.spritValue(request.path_info,'/');
          
         if(len(self.urlName) >= 1 ) :
-            #self.nextQuestion = '/' + self.urlName[0]+ '?id='+ str(self.questionOption.id_question_option);
-            #self.nextQuestion = '/' + 'ans/reply/'+  str(self.questionOption.id_question_option);
-            self.nextQuestion = self.URL_REPLY.format(id)
+          
+            self.urlRedirect = self.questionOption.redirect_url
             
-               
-            
-        #self.welcome_message
-        return dict(page='view', ready = 'yes',welcome_message = Markdown(self.welcome_message).convert(), nextQuestion= self.nextQuestion);
+    
+        return dict(page='goodbye', ready = 'yes',goodbye = Markdown(self.goodbye).convert(),nextQuestion = self.nextQuestion ,urlRedirect= self.nextQuestion);
     
     @expose('json')
     def getDataPreview(self, came_from=lurl('/'),   *args, **kw): 
@@ -216,6 +213,13 @@ class AnswerController(BaseController):#RestController): #
         self.finished =self.df.get('finished');
         self.redirect = '';
         print 'finished : ' ,self.finished;
+         
+        
+        #from urlparse import urlparse;
+        #parsed = urlparse(request.environ.get("HTTP_REFERER" ))
+        #print 'path url : ', parsed.path
+        
+         
         if(self.value):
             self.idPublic =  self.value.get('idproject');
             self.idResp =  self.value.get('idresp');
@@ -224,9 +228,9 @@ class AnswerController(BaseController):#RestController): #
             print self.values;
             
             #check 
-            self.questionOption = self.__checkOptionExpired(self.idPublic);
+            self.questionOption,self.redirect = self.__checkOptionExpired(self.idPublic,False);
             
-            self.respondent = self.__checkRespondentFinished( None,  None,self.idResp);
+            self.respondent,self.redirect = self.__checkRespondentFinished( None,  None,self.idResp,False);
             
             if(self.respondent):
                 self.question = model.Question.getById(self.idQuestion);
@@ -257,9 +261,9 @@ class AnswerController(BaseController):#RestController): #
                 log.info('find not found respondent id : : %s',self.idResp);
             
             if(self.finished):     
-                self.redirect = self.URL_GOODBYE.format(self.idQuestion);
+                self.redirect = self.URL_GOODBYE.format(   self.utility.splitNameWithOutExtention(basename(request.environ.get("HTTP_REFERER" )))  );
                 
-        return dict(success = True,redirect = self.redirect  );
+        return dict(success = True,redirect = self.redirect, finished = self.finished  );
     
     
     def __checkExpire(self,id):
@@ -269,6 +273,7 @@ class AnswerController(BaseController):#RestController): #
         self.idPublic = 0;
         self.idVoter = 0;
         
+        self.redirect = '';
         
         
         
@@ -282,30 +287,41 @@ class AnswerController(BaseController):#RestController): #
             self.idVoter = None;
             
             log.info('parameter not have 4 parameter : %s', ','.join(self.value));
+            self.redirect = self.URL_EXPIRED;
             redirect(self.URL_EXPIRED) ;
         
         self.voter = model.Voter.getId(self.idVoter);
         if(self.voter is None):
             log.info('find not voter in id : %s',self.idVoter);
+            self.redirect = self.URL_HOME;
             redirect(self.URL_HOME) ;
         
         self.project = model.QuestionProject.getId(self.idProject);
         if(self.project is None):
             log.info('find not project in id project : %s',self.idProject);
+            self.redirect = self.URL_HOME;
             redirect(self.URL_HOME) ;
             
-        return self.idProject,self.idPublic,self.idVoter;
+        return self.idProject,self.idPublic,self.idVoter, self.redirect;
             
-    def __checkOptionExpired(self,idPublic):
+    def __checkOptionExpired(self,idPublic,isRedirect = True):
+        print 'public option id ',idPublic;
         self.questionOption = model.QuestionOption.getId( idPublic);           
-        
+        self.redirect = '';
         if  self.questionOption is None or ( not self.utility.isActiveFromDate(None,self.questionOption.activate_date,self.questionOption.expire_date) ):
-            redirect(self.URL_EXPIRED) ;
+            self.redirect = self.URL_EXPIRED;
+            if (isRedirect):
+                print 'redirect ',self.URL_EXPIRED; 
+                redirect(self.URL_EXPIRED) ;
+      
+                
+        print 'id option : ', self.questionOption.welcome_message;
         
-        return self.questionOption;    
+        return self.questionOption,self.redirect;    
             
-    def __checkRespondentFinished(self,idVoter,idPublic,idResp):
+    def __checkRespondentFinished(self,idVoter,idPublic,idResp,isRedirect = True):
         self.respondent = None;
+        self.redirect = '';
         if(idVoter and idPublic):
             self.respondent = model.Respondents.getByVoterAndPublicId(idVoter,idPublic);
         elif (idResp):
@@ -313,7 +329,9 @@ class AnswerController(BaseController):#RestController): #
             
         if(self.respondent  is not None and self.respondent.finished == 1):
             log.info('voter finished in id public : %s',self.idPublic);
-            redirect(self.URL_THANKYOU) ;
+            self.redirect = self.URL_THANKYOU;
+            if (isRedirect):
+                redirect(self.URL_THANKYOU) ;
             
-        return self.respondent;
+        return self.respondent,self.redirect;
    

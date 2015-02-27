@@ -2,7 +2,7 @@ var app = angular.module("poll", ['ui.bootstrap']);
  
 
 /**controller***/
-	app.controller("pollController", function($scope, $http,$log) {
+	app.controller("pollController", function($scope, $http,$window,$log) {
 		
 		
 		
@@ -94,21 +94,31 @@ var app = angular.module("poll", ['ui.bootstrap']);
 		    $log.log($scope.lastQuestion);
 		  
 		     
+		    if( $scope.lastQuestion.length > 0 ){
 		    
-		    var data = {value : $scope.lastQuestion[0]  };
-		    data.finished =  ($scope.bigCurrentPage == $scope.bigTotalItems);
-		    $http.post("/ans/saveQuestion",data).success(function(data,status,heafers, config){
-		    	console.log(data);
-		    	if (status == 200 && data.success == true){
-		    		value = $scope.lastQuestion.pop();
-		    	}
-		    	 
-		    }).error(function(data, status, headers, config) {
-		        // called asynchronously if an error occurs
-		        // or server returns response with an error status.
-		      });
-		    
-		    $log.log("save to server:");
+			    var data = {value : $scope.lastQuestion[0]  };
+			    data.finished =  ($scope.bigCurrentPage == $scope.bigTotalItems);
+			    $http.post("/ans/saveQuestion",data).success(function(data,status,heafers, config){
+			    	console.log(data);
+			    	if (status == 200 && data.success == true){
+			    		value = $scope.lastQuestion.pop(); //remove data;
+			    		console.log('finished : ' + data.finished);
+			    		if(data.finished){
+			    			$log.log('redirect : ' + data.redirect);
+			    			//$location.path('http://www.google.com');
+			    			$window.location.href = data.redirect;
+			    			//$location.url('http://www.google.com');
+			    		}
+			    	}
+			    	 
+			    }).error(function(data, status, headers, config) {
+			        // called asynchronously if an error occurs
+			        // or server returns response with an error status.
+			      });
+			    
+			    $log.log("save to server:");
+			    
+		    }
 		    
 		   // debugger;
 		  };
