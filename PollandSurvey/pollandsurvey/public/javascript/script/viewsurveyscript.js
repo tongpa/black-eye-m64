@@ -40,8 +40,8 @@ var app = angular.module("poll", ['ui.bootstrap']);
 			$scope.idProject = idproject;
 			$scope.idResp = idresp;
 			
-			console.log(url);
-			console.log(idproject);
+			//console.log(url);
+			//console.log(idproject);
 			
 			$scope.fetchContent();
 		}
@@ -58,8 +58,8 @@ var app = angular.module("poll", ['ui.bootstrap']);
 			
 			
 			
-			$log.log('Page changed to : ' + ($scope.bigCurrentPage ) );
-			$log.log('Page total to : ' + ($scope.bigTotalItems ) );
+			//$log.log('Page changed to : ' + ($scope.bigCurrentPage ) );
+			//$log.log('Page total to : ' + ($scope.bigTotalItems ) );
 			$scope.numberQuestion = $scope.numberQuestion +1;
 			if( $scope.bigCurrentPage < $scope.bigTotalItems)
 			{	$scope.bigCurrentPage = $scope.bigCurrentPage +1;
@@ -81,17 +81,17 @@ var app = angular.module("poll", ['ui.bootstrap']);
 		  /**function for this controller for next Question **/
 		$scope.pageChanged = function() {
 		  	
-		    $log.log('Page changed to : ' + ($scope.bigCurrentPage -1) );
+		   // $log.log('Page changed to : ' + ($scope.bigCurrentPage -1) );
 		    $scope.contentQuestion = [];
 		    $scope.contentQuestion.push($scope.content[($scope.bigCurrentPage-1) ]);
 		    
-		    $log.log($scope.contentQuestion);
+		  //  $log.log($scope.contentQuestion);
 		    
-		    $log.log('countQuestion : ' );
-		    $log.log($scope.countQuestion);
+		  //  $log.log('countQuestion : ' );
+		  //  $log.log($scope.countQuestion);
 		    
-		    $log.log('last data ');
-		    $log.log($scope.lastQuestion);
+		  //  $log.log('last data ');
+		 //   $log.log($scope.lastQuestion);
 		  
 		     
 		    if( $scope.lastQuestion.length > 0 ){
@@ -99,12 +99,12 @@ var app = angular.module("poll", ['ui.bootstrap']);
 			    var data = {value : $scope.lastQuestion[0]  };
 			    data.finished =  ($scope.bigCurrentPage == $scope.bigTotalItems);
 			    $http.post("/ans/saveQuestion",data).success(function(data,status,heafers, config){
-			    	console.log(data);
+			    //	console.log(data);
 			    	if (status == 200 && data.success == true){
 			    		value = $scope.lastQuestion.pop(); //remove data;
-			    		console.log('finished : ' + data.finished);
+			    	//	console.log('finished : ' + data.finished);
 			    		if(data.finished){
-			    			$log.log('redirect : ' + data.redirect);
+			    	//		$log.log('redirect : ' + data.redirect);
 			    			//$location.path('http://www.google.com');
 			    			$window.location.href = data.redirect;
 			    			//$location.url('http://www.google.com');
@@ -116,7 +116,7 @@ var app = angular.module("poll", ['ui.bootstrap']);
 			        // or server returns response with an error status.
 			      });
 			    
-			    $log.log("save to server:");
+			 //   $log.log("save to server:");
 			    
 		    }
 		    
@@ -130,7 +130,7 @@ var app = angular.module("poll", ['ui.bootstrap']);
 		
 		/**Query data */
 		$scope.fetchContent = function (){
-			console.log($scope.url);
+		//	console.log($scope.url);
 	        $http.get($scope.url).success(function(response) {
 	        	$scope.content = response.questions[0].question;
 	        	
@@ -143,7 +143,7 @@ var app = angular.module("poll", ['ui.bootstrap']);
 	        	if($scope.bigTotalItem >10){
 	        		$scope.maxSize = 5
 	        	}
-	        	$log.log('Nomber to: ' + $scope.bigTotalItems);
+	        	//$log.log('Nomber to: ' + $scope.bigTotalItems);
 	        	
 	        	
 	        	 
@@ -151,7 +151,7 @@ var app = angular.module("poll", ['ui.bootstrap']);
 		};
 	
 		$scope.selectedScore  = function(idQuestion){
-			$log.log('Page changed to: ' + id);
+		//	$log.log('Page changed to: ' + id);
 		};
 		
 
@@ -211,7 +211,7 @@ var app = angular.module("poll", ['ui.bootstrap']);
 	    	 var qnaObj = new Object();
 	    	 $scope.selectedScore = function(id,value, type){
 	    		    
-	    		 	console.log("id : " + id + ", value : " + value + ", type : " + type  );
+	    		// 	console.log("id : " + id + ", value : " + value + ", type : " + type  );
 	    		 	qnaObj = new Object();
 	    		 	qnaObj.id = id;
 	    		 	qnaObj.idproject = $scope.$parent.idProject;
@@ -261,10 +261,10 @@ var app = angular.module("poll", ['ui.bootstrap']);
 	    		 		
 	    		 		$scope.$parent.updateQuestionsAttemptedCount();
 	    		 	}
-	    		 	console.log($scope.$parent.countQuestion);
+	    	//	 	console.log($scope.$parent.countQuestion);
 	    		 	
 	    		 	$scope.$parent.lastQuestion.push(qnaObj);
-	    		 	console.log($scope.$parent.lastQuestion);
+	    	//	 	console.log($scope.$parent.lastQuestion);
 	    		 	
 	    		 	
 	    		 	//debugger;
