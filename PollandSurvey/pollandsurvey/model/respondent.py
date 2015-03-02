@@ -172,4 +172,43 @@ class ReplyBasicQuestion(DeclarativeBase):
     def to_dict(self):
         return {"id_resp_reply": self.id_resp_reply, "id_basic_data": self.id_basic_data, "answer_text": self.answer_text  };
                 
+class Invitation(DeclarativeBase):
+
+    __tablename__ = 'sur_invitation'
+
+    id_invitation =  Column(BigInteger, autoincrement=True, primary_key=True)
+    from_name = Column(String(255) )
+    subject = Column(String(255) )
+    id_question_project = Column(   BigInteger,ForeignKey('sur_question_project.id_question_project'), nullable=False, index=True) ;
+    question_project = relation('QuestionProject', backref='sur_invitation_id_question_project');
+    
+    content = Column(Text )
+ 
+    create_date =  Column(DateTime, nullable=False, default=datetime.now); 
+    update_date =  Column(DateTime, nullable=False );
+    
+    def __init__(self):
+        pass;
+        
+    def __str__(self):
+        return '"%s"' % (self.position )
+    def save(self):
+        try:
+            DBSession.add(self); 
+            DBSession.flush() ;
+            print "save project"
+            return None;
+        except  IntegrityError:
+            print "Duplicate entry" 
+            return "Duplicate entry"
+    
+    @classmethod
+    def getId(cls,act):
+        return DBSession.query(cls).get(act);    
+    
+    def to_json(self):
+        return {"id_invitation": self.id_invitation, "from_name": self.from_name, "subject": self.subject, "id_question_project": self.id_question_project, "content": self.content, "create_date": self.create_date   };
+    def to_dict(self):
+        return {"id_invitation": self.id_invitation, "from_name": self.from_name, "subject": self.subject, "id_question_project": self.id_question_project, "content": self.content, "create_date": self.create_date   };
+       
             

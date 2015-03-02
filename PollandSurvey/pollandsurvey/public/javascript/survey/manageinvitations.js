@@ -1,7 +1,7 @@
  
 
 
-Ext.define('survey.view.list.OptionProject', {	
+Ext.define('survey.view.list.InvitaionsProject', {	
 	extend: 'Ext.grid.Panel',
 	width : '100%',
 	height :  '100%',
@@ -20,17 +20,12 @@ Ext.define('survey.view.list.OptionProject', {
     	var main = this;
     	main.store = survey.listOptions; 
     	main.columns = [
-    	       	       
-    	    	   // {header: 'name', dataIndex: 'name',width : '30%' , sortable: false }  ,
-					{header: survey.label.start_date  , dataIndex: 'activate_date',width : '20%' , sortable: false }  ,
-					{header: survey.label.expire_date , dataIndex: 'expire_date',width : '20%' , sortable: false }  ,
-					{header: survey.label.theme , dataIndex: 'theme',width : '30%' , sortable: false }  ,
-					{header: survey.label.view ,  width : '10%',  renderer :main.showbuttonView,  sortable: false  }  ,
+					{header: survey.label.email_title  , dataIndex: 'subject',width : '20%' , sortable: false }  ,
+					{header: survey.label.start_date , dataIndex: 'create_date',width : '20%' , sortable: false }  ,
+					{header: survey.label.update_date , dataIndex: 'update_date',width : '30%' , sortable: false }  ,
+					 
 					{header: survey.label.delete  ,  width : '10%',  renderer :main.deletebuttonManage,  sortable: false  } ,
-					{header: survey.label.edit ,  width : '10%',  renderer :main.showbuttonManage,  sortable: false  } 
-				//	{header: 'State', dataIndex: 'name',width : '30%' , sortable: false } 
-					//{header: 'view', dataIndex: 'name',width : '30%' , sortable: false }  ,
-					//{header: 'Edit', dataIndex: 'name',width : '30%' , sortable: false }  	
+					{header: survey.label.edit ,  width : '10%',  renderer :main.showbuttonManage,  sortable: false  }   
     	        ]
       
     	 
@@ -40,7 +35,8 @@ Ext.define('survey.view.list.OptionProject', {
     } ,
     listeners: {
         'selectionchange': function(view, records) {
-            grid.down('#removeEmployee').setDisabled(!records.length);
+        	console.log('selectionchange');
+          //  grid.down('#removeEmployee').setDisabled(!records.length);
         }
     } ,
     deletebuttonManage : function(value,m,r){
@@ -66,7 +62,7 @@ Ext.define('survey.view.list.OptionProject', {
 	    				         
 	    				        	 
 	    				        	Ext.Ajax.request({
-	    			              		url		: '/survey/deleteOptions',
+	    			              		url		: '/survey/deleteInvitation',
 	    			                	method  : 'POST',
 	    			                	jsonData: datajson,	
 	    			                	success: function(response, opts){
@@ -142,7 +138,7 @@ Ext.define('survey.view.list.OptionProject', {
  
  
  
-Ext.define('survey.view.list.Project.PManagePublication',{
+Ext.define('survey.view.list.Project.PManageInvitations',{
 	//extend : 'Ext.panel.Panel', 	 
 	extend : 'Ext.form.Panel',
 	layout: 'fit',
@@ -179,9 +175,9 @@ Ext.define('survey.view.list.Project.PManagePublication',{
 		
 		var main = this;
 		//main.add111 = Ext.create('survey.view.list.Project.AddQuestion',{msgTarget: 'side'});
-		main.showWindowsOption = Ext.create('survey.view.list.Project.Option.winAddOption',{
-			url : '/survey/addOptions',
-			title : survey.label.create_publication ,
+		main.showWindowsOption = Ext.create('survey.view.list.Project.Invitation.winAddInvitation',{
+			url : '/survey/addInvitation',
+			title : survey.label.create_invitation ,
 			titleAlign : 'left',
 			listeners : {
 				refreshOther : function(cmp) {
@@ -193,10 +189,9 @@ Ext.define('survey.view.list.Project.PManagePublication',{
 			
 		});
 		main.tbar =  [{
-            xtype:'splitbutton',
-            text: survey.label.create_publication ,
+            xtype:'button',
+            text: survey.label.create_invitation ,
             iconCls: 'project-add',
-            //iconCls: 'add16',
             handler: function(bt,ev){
             	main.showWindowsOption.show();
 				//console.log(record);
@@ -205,7 +200,7 @@ Ext.define('survey.view.list.Project.PManagePublication',{
             //,            menu: [{text: 'Menu Button 1'}]
         }];
 		
-		main.showListOption = Ext.create('survey.view.list.OptionProject',{
+		main.showListOption = Ext.create('survey.view.list.InvitaionsProject',{
 			listeners : {
 				showManageOption : function(grid,optionsrecord) {
 					main.showWindowsOption.show();

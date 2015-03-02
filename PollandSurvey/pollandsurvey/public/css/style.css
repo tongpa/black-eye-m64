@@ -135,4 +135,19 @@ td.patient-label {
 .move-up {
     background-image: url('../img/survey/after_each.png') !important;
 }
+.icon-invitation {
+    background-image: url('../img/survey/invitation_icon.png') !important;
+}
+.icon-question {
+    background-image: url('../img/survey/question_icon.png') !important;
+}
+.icon-publication {
+    background-image: url('../img/survey/publication_icon.png') !important;
+}
+.icon-survey {
+    background-image: url('../img/survey/survey_icon.png') !important;
+}
+.icon-demographic {
+    background-image: url('../img/survey/demographics_icon.png') !important;
+}
 /******/

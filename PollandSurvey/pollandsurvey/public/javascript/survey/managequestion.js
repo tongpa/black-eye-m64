@@ -853,7 +853,8 @@ Ext.define('survey.view.list.Project.PCreateQuestion',{
 		
 		main.SplitBt = Ext.create('Ext.button.Split',{
 			text : survey.label.create_question,
-			iconCls: 'add16',
+			//iconCls: 'add16',
+			iconCls : 'project-add',
 			floating: false
 		});
 		

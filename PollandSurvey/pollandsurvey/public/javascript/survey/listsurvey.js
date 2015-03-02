@@ -76,29 +76,43 @@ Ext.application({
 				    	
 				    	var manage_question = Ext.create('survey.view.list.Project.PCreateQuestion',{
 				    		width: '100%',   		
-				    		title : survey.label.create_question
+				    		title : survey.label.create_question,
+				    		iconMask: true,
+			        		iconCls: "icon-question"
 				    	});
 				    	
 				    	var manage_variable = Ext.create('survey.view.list.Project.PCreateVariable',{
 				    		width: '100%',   		
-				    		title : survey.label.create_variable
+				    		title : survey.label.create_variable,
+				    		iconMask: true,
+			        		iconCls: "icon-demographic"
 				    	});
 				    	
 				    	var manage_option = Ext.create('survey.view.list.Project.PManagePublication',{
 				    		width: '100%',   		
-				    		title : survey.label.create_publication
+				    		title : survey.label.create_publication,
+				    		iconMask: true,
+				    		iconCls: "icon-publication"
+				    	});
+				    	
+				    	var manage_invitation = Ext.create('survey.view.list.Project.PManageInvitations',{
+				    		width: '100%',   		
+				    		title : survey.label.create_invitation,
+				    		iconMask: true,
+			        		iconCls: "icon-invitation"
 				    	});
 				    	
 				    	
 				    	var tab_manage = Ext.create('Ext.tab.Panel', {
-				    	    width: '100%',   	
+				    	    width: '100%',   
+				    	    
 				    	    defaults: {
 					        	 
 					            labelWidth: 120,
 					            anchor: '100%',
 					            layout: {   type: 'fix' }
 					        },
-				    	    items: [manage_question,manage_variable,manage_option ]
+				    	    items: [manage_question,manage_variable,manage_option,manage_invitation ]
 				    	});
 				    	
 				    	var panel_manage = Ext.create('Ext.panel.Panel',{
@@ -130,7 +144,9 @@ Ext.application({
     	} );
     	
     	var mainPanelTab = Ext.create('Ext.form.Panel',{
-    		
+     
+    	    iconMask: true,
+    		iconCls: "icon-survey",
     		title : survey.label.poll_survey,
     		width: '100%',
     		height : 800,
@@ -144,6 +160,8 @@ Ext.application({
     	    width: '100%',  
     	    height : 800,
     	    title : survey.label.project,
+    	    
+    	    
     	    layout: {
                 type: 'fix'
             }, 

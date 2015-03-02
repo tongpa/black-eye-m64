@@ -38,7 +38,8 @@ class ScriptController(BaseController):
         # of the application twice.
         return HTTPFound(location=came_from)
     
-    @expose(content_type = 'text/plain; charset=UTF-8')#charset=windows-874')
+    #@expose(content_type = 'text/plain; charset=UTF-8')#charset=windows-874')
+    @expose(content_type="text/javascript; charset=UTF-8")
     def loadLang(self, lang=None ,**kw):
         reload(sys);
         sys.setdefaultencoding("utf-8");
@@ -58,7 +59,8 @@ class ScriptController(BaseController):
         return str;
     
     
-    @expose(content_type="text/plain")
+    #@expose(content_type="text/plain")
+    @expose(content_type="text/javascript")
     def loadModelObject(self, *args,  **kw):
         
         projectType = model.QuestionProjectType.getAll(1);
@@ -144,7 +146,8 @@ class ScriptController(BaseController):
         return  str;
             
     
-    @expose(content_type="text/plain")
+    #@expose(content_type="text/plain")
+    @expose(content_type="text/javascript")
     def loadExtjs(self,**kw):
         str = """
         
